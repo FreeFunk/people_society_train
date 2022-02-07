@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.edgedo.society.mapper.SocietyStudentCertificateMapper" >
+   
+   
+    <resultMap id="BaseResultMap" type="com.edgedo.society.entity.SocietyStudentCertificate" >
+			<id column="ID" property="id"/>
+			<result column="CREATE_TIME" property="createTime"/>
+			<result column="OWNER_SCHOOL_ID" property="ownerSchoolId"/>
+			<result column="OWNER_SCHOOL_NAME" property="ownerSchoolName"/>
+			<result column="OWNER_MAJOR_ID" property="ownerMajorId"/>
+			<result column="OWNER_MAJOR_NAME" property="ownerMajorName"/>
+			<result column="CLASS_ID" property="classId"/>
+			<result column="CLASS_NAME" property="className"/>
+			<result column="COURSE_ID" property="courseId"/>
+			<result column="COURSE_NAME" property="courseName"/>
+			<result column="STUDENT_ID" property="studentId"/>
+			<result column="STUDENT_NAME" property="studentName"/>
+			<result column="STUDENT_ID_CARD_NUM" property="studentIdCardNum"/>
+			<result column="CLASS_AND_STUDENT_ID" property="classAndStudentId"/>
+			<result column="CERTIFICATE_CODE" property="certificateCode"/>
+			<result column="CERTIFICATE_NAME" property="certificateName"/>
+			<result column="CERTIFICATE_IMAGE_URL" property="certificateImageUrl"/>
+			<result column="CERTIFICATE_TIME" property="certificateTime"/>
+			<result column="DATA_STATE" property="dataState"/>
+    </resultMap>
+   
+    <resultMap id="BaseResultViewMap" type="com.edgedo.society.queryvo.SocietyStudentCertificateView" extends="BaseResultMap">
+    
+    </resultMap>
+  
+  
+  <!-- ******* 新增字段请修改这里  ******  -->
+  <sql id="Base_Column_List">
+	 ID, CREATE_TIME, OWNER_SCHOOL_ID, OWNER_SCHOOL_NAME, OWNER_MAJOR_ID, OWNER_MAJOR_NAME, CLASS_ID, CLASS_NAME, COURSE_ID,COURSE_NAME,
+	 STUDENT_ID, STUDENT_NAME, STUDENT_ID_CARD_NUM, CLASS_AND_STUDENT_ID, CERTIFICATE_CODE, CERTIFICATE_NAME, CERTIFICATE_IMAGE_URL, CERTIFICATE_TIME, DATA_STATE
+  </sql>
+  
+  <!-- ******* 利用好这里的动态查询条件  ******  -->
+  <sql id="where">
+  	<where>
+		DATA_STATE='1'
+		<if test='queryObj != null and  queryObj.studentName != null and queryObj.studentName != ""'>
+			AND  STUDENT_NAME LIKE concat('%',#{queryObj.studentName} ,'%')
+		</if>
+		<if test='queryObj != null and  queryObj.studentIdCardNum != null and queryObj.studentIdCardNum != ""'>
+			AND  STUDENT_ID_CARD_NUM LIKE concat('%',#{queryObj.studentIdCardNum} ,'%')
+		</if>
+		<if test='queryObj != null and  queryObj.ownerSchoolId != null and queryObj.ownerSchoolId != ""'>
+			AND  OWNER_SCHOOL_ID = #{queryObj.ownerSchoolId}
+		</if>
+		<if test='queryObj != null and  queryObj.ownerSchoolName != null and queryObj.ownerSchoolName != ""'>
+			AND  OWNER_SCHOOL_NAME Like concat('%',#{queryObj.ownerSchoolName},'%')
+		</if>
+  	</where>
+  	
+  </sql>
+  
+  <!-- ******* 排序判断  ******  
+  <sql id="orderBy">
+  	<if test="orderBy != null and orderBy!= '' ">
+  		order by  ${orderBy}
+  	</if>
+  </sql>-->
+  
+  
+  <!-- 分页条件查询  -->
+  <select id="listPage" parameterType="com.edgedo.society.queryvo.SocietyStudentCertificateQuery" resultMap="BaseResultViewMap">
+  		select <include refid="Base_Column_List"/> from society_student_certificate 
+  		<include refid="where"/> order by CREATE_TIME asc
+  </select>
+  
+   <!-- 不分页条件查询  -->
+  <select id="listByObj" parameterType="com.edgedo.society.queryvo.SocietyStudentCertificateQuery" resultMap="BaseResultViewMap">
+  		select <include refid="Base_Column_List"/> from society_student_certificate 
+  		<include refid="where"/>
+  </select>
+  <!--根据学员id和课程id查询证书-->
+	<select id="loadByStudentIdAndCourseId" parameterType="string" resultMap="BaseResultViewMap">
+		select <include refid="Base_Column_List"/> from society_student_certificate
+		where DATA_STATE = '1'
+		and COURSE_ID = #{courseId}
+		and STUDENT_ID = #{studentId}
+	</select>
+
+
+	<delete id="deleteByStuId" parameterType="string">
+		delete from society_student_certificate where STUDENT_ID=#{id}
+	</delete>
+
+
+	<update id="updateByStuId" parameterType="map">
+		update society_student_certificate set STUDENT_NAME=#{stuName},STUDENT_ID_CARD_NUM=#{idcard}
+		where STUDENT_ID=#{stuId}
+	</update>
+
+	<update id="updateByCourseIdAndCourseName" parameterType="map">
+		update society_student_certificate set COURSE_NAME=#{courseName}
+		where DATA_STATE = '1' and COURSE_ID = #{courseId}
+	</update>
+
+	<update id="updateByMajorId" parameterType="string">
+		update society_student_certificate set OWNER_MAJOR_NAME=#{majorName}
+		where DATA_STATE = '1' and OWNER_MAJOR_ID = #{majorId}
+	</update>
+
+	<delete id="deleteByStudentIdAndCourseId" parameterType="string">
+		delete from society_student_certificate where COURSE_ID = #{ownerCourseId}
+		and STUDENT_ID = #{studentId} and DATA_STATE = '1'
+	</delete>
+
+</mapper>

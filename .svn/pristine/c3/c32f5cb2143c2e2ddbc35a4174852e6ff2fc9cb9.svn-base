@@ -1,0 +1,599 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>学员课程进度统计,学校管理员页面</title>
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=0">
+    <link rel="stylesheet" href="/layuiadmin/layui/css/layui.css" media="all">
+    <link rel="stylesheet" href="/layuiadmin/style/admin.css" media="all">
+    <style type="text/css">
+        .layui-table-cell {
+            padding: 0 5px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="layui-fluid">
+    <div class="layui-card">
+        <div class="layui-form layui-card-header layuiadmin-card-header-auto">
+            <div class="layui-form-item">
+                <div class="layui-inline">
+                    <label class="layui-form-label">学员姓名</label>
+                    <div class="layui-input-inline">
+                        <input type="text" name="queryObj.studentName" placeholder="请输入" autocomplete="off" class="layui-input">
+                    </div>
+                </div>
+                <div class="layui-inline">
+                    <label class="layui-form-label">身份证号</label>
+                    <div class="layui-input-inline">
+                        <input type="text" name="queryObj.studentIdCardNum" placeholder="请输入" autocomplete="off" class="layui-input">
+                    </div>
+                </div>
+                <div class="layui-inline">
+                    <label class="layui-form-label">专业名称</label>
+                    <div class="layui-input-inline">
+                        <input type="text" name="queryObj.ownerMajorName" placeholder="请输入专业名称" autocomplete="off" class="layui-input">
+                    </div>
+                </div>
+                <div class="layui-inline">
+                    <label class="layui-form-label">班级名称</label>
+                    <div class="layui-input-inline">
+                        <input type="text" name="queryObj.className" placeholder="请输入班级名称" autocomplete="off" class="layui-input">
+                    </div>
+                </div>
+                <div class="layui-inline">
+                    <label class="layui-form-label">课程名称</label>
+                    <div class="layui-input-inline">
+                        <input type="text" name="queryObj.courseName" placeholder="请输入课程名称" autocomplete="off" class="layui-input">
+                    </div>
+                </div>
+                <div class="layui-inline">
+                    <label class="layui-form-label">是否实名</label>
+                    <div class="layui-input-inline">
+                        <select id="isRealNameAuth" name="isRealNameAuth">
+                            <option value=""></option>
+                            <option value="1">是</option>
+                            <option value="0">否</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="layui-inline">
+                    <label class="layui-form-label" style="width: 98px;">学习进度%</label>
+                    <div class="layui-input-inline" style="left: 6%;">
+                        <button id="subtractionCourseProgressStart" style="width: 21%;height: 100%;position: absolute;right: 95%;" type="button" class="layui-btn layui-btn-primary layui-btn-sm">
+                            <i class="layui-icon layui-icon-subtraction" style="left: 27%;top: 42%;"></i>
+                        </button>
+                        <input style="text-align: center;width: 58%" value="0" id="courseProgressInputStartId" type="text" name="queryObj.courseProgressStart" placeholder="输入数值" autocomplete="off" class="layui-input">
+                        <button id="addCourseProgressStart" style="width: 21%;height: 100%;position: absolute;left: 58%;top: 1%;" type="button" class="layui-btn layui-btn-primary layui-btn-sm">
+                            <i class="layui-icon layui-icon-addition" style="right: 22%;top: 42%;"></i>
+                        </button>
+                    </div>
+                    <div style="position: absolute;left: 59.5%;">至</div>
+                    <div class="layui-input-inline" style="left: 7%;">
+                        <button id="subtractionCourseProgressEnd" style="width: 21%;height: 100%;position: absolute;right: 95%;" type="button" class="layui-btn layui-btn-primary layui-btn-sm">
+                            <i class="layui-icon layui-icon-subtraction" style="left: 27%;top: 42%;"></i>
+                        </button>
+                        <input style="text-align: center;width: 58%" value="100" id="courseProgressInputEndId" type="text" name="queryObj.courseProgressEnd" placeholder="输入数值" autocomplete="off" class="layui-input">
+                        <button id="addCourseProgressEnd" style="width: 21%;height: 100%;position: absolute;left: 58%;top: 1%;" type="button" class="layui-btn layui-btn-primary layui-btn-sm">
+                            <i class="layui-icon layui-icon-addition" style="right: 22%;top: 42%;"></i>
+                        </button>
+                    </div>
+                </div>
+                <div style="padding-left: 1%;">
+                    <div class="layui-inline" style="left: 2%;">
+                        <button class="layui-btn layuiadmin-btn-comm layui-btn-sm" data-type="reload" lay-submit lay-filter="SocietySchoolCourse-search">
+                            <i class="layui-icon layui-icon-search layuiadmin-button-btn"></i>查询
+                        </button>
+                    </div>
+                    <div class="layui-inline " style="left: 2%;">
+                        <button type="button" class="layui-btn layuiadmin-btn-comm layui-btn-sm" onclick="exportData()">
+                            <i class="layui-icon layui-icon-export layuiadmin-button-btn"></i>导出
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="layui-card-body">
+            <!--<div style="padding-bottom: 10px;">
+                <button class="layui-btn layuiadmin-btn-comm  layui-btn-sm" data-type="batchdel">删除</button>
+                <button class="layui-btn layuiadmin-btn-comm  layui-btn-sm" data-type="add">添加</button>
+            </div>-->
+            <table id="SocietySchoolCourse-list" lay-filter="SocietySchoolCourse-list"></table>
+            <script type="text/html" id="table-SocietySchoolCourse-list">
+                <a class="layui-btn layui-btn-normal layui-btn-xs" lay-event="studyInfo">学习详情</a>
+                <a class="layui-btn layui-btn-normal layui-btn-xs" lay-event="studentStudyArchives">学员学习档案</a>
+              <!--  <a class="layui-btn layui-btn-normal layui-btn-xs" lay-event="edit"><i class="layui-icon layui-icon-edit"></i>编辑</a>
+                <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del"><i class="layui-icon layui-icon-delete"></i>删除</a>-->
+            </script>
+        </div>
+    </div>
+</div>
+<!--进度条模板-->
+<script type="text/html" id="studentLeranTpl">
+    {{#  if(d.courseProgress>=0 && d.courseProgress<=30){ }}
+    <div style="margin-top: 12px;" class="layui-progress" lay-showpercent="yes">
+        <div  class="layui-progress-bar layui-bg-red" lay-percent="{{d.courseProgress}}%"></div>
+    </div>
+    {{#  }else if(d.courseProgress==null) { }}
+    <div style="margin-top: 12px;" class="layui-progress" lay-showpercent="yes">
+        <div  class="layui-progress-bar layui-bg-blue" lay-percent="{{0}}%"></div>
+    </div>
+    {{#  }else if(d.courseProgress<=70) { }}
+    <div style="margin-top: 12px;" class="layui-progress" lay-showpercent="yes">
+        <div  class="layui-progress-bar layui-bg-blue" lay-percent="{{d.courseProgress}}%"></div>
+    </div>
+    {{#  } else { }}
+    <div style="margin-top: 12px;" class="layui-progress" lay-showpercent="yes">
+        <div  class="layui-progress-bar " lay-percent="{{d.courseProgress}}%"></div>
+    </div>
+    {{#  } }}
+</script>
+<script src="/layuiadmin/layui/layui.js"></script>
+<script>
+        layui.config({
+            base: '/layuiadmin/' //静态资源所在路径
+        }).extend({
+            index:'lib/index',
+            common:'common',
+            $tool:'tool'
+        }).use(['index','table', 'form','common','element','excel','$tool'], function(exports){
+            var $ = layui.$
+                ,table = layui.table
+                ,common = layui.common
+                ,element = layui.element
+                ,$tool = layui.$tool
+                ,admin = layui.admin
+                ,excel = layui.excel
+                ,form = layui.form;
+
+
+            //减1%
+            $("#subtractionCourseProgressStart").click(function(){
+                var testRightRate = $("#courseProgressInputStartId").val();
+                if(testRightRate=='0'){//禁用按钮
+                    $("#courseProgressInputStartId").val('0');
+                }else {
+                    var num = Number(testRightRate);
+                    var s = (num-1).toString();
+                    $("#courseProgressInputStartId").val(s);
+                }
+            });
+            //加1
+            $("#addCourseProgressStart").click(function(){
+                var testRightRate = $("#courseProgressInputStartId").val();
+                if(testRightRate=='100'){//禁用按钮
+                    $("#courseProgressInputStartId").val('100');
+                }else {
+                    var num = Number(testRightRate);
+                    var s = (num+1).toString();
+                    $("#courseProgressInputStartId").val(s);
+                }
+            });
+
+            //减1%
+            $("#subtractionCourseProgressEnd").click(function(){
+                var testRightRate = $("#courseProgressInputEndId").val();
+                if(testRightRate=='0'){//禁用按钮
+                    $("#courseProgressInputEndId").val('0');
+                }else {
+                    var num = Number(testRightRate);
+                    var s = (num-1).toString();
+                    $("#courseProgressInputEndId").val(s);
+                }
+            });
+            //加1
+            $("#addCourseProgressEnd").click(function(){
+                var testRightRate = $("#courseProgressInputEndId").val();
+                if(testRightRate=='100'){//禁用按钮
+                    $("#courseProgressInputEndId").val('100');
+                }else {
+                    var num = Number(testRightRate);
+                    var s = (num+1).toString();
+                    $("#courseProgressInputEndId").val(s);
+                }
+            });
+
+
+            //查询
+            form.on('submit(SocietySchoolCourse-search)', function(data){
+                var field = data.field;
+                var startNum = Number(field["queryObj.courseProgressStart"]);
+                var endNum = Number(field["queryObj.courseProgressEnd"]);
+                if (startNum<0 || endNum<0){
+                    return layer.msg('搜索数值不能小于0');
+                }
+                if(startNum>100 || endNum>100){
+                    return layer.msg('搜索数值不能大于100');
+                }
+                if(startNum>endNum){
+                    return layer.msg('开始进度不能大于结束进度');
+                }
+                field["queryObj.courseProgressStart"] = Number(field["queryObj.courseProgressStart"]);
+                field["queryObj.courseProgressEnd"] = Number(field["queryObj.courseProgressEnd"]);
+                field.isRealNameAuth = $("#isRealNameAuth").val();
+
+                //执行重载
+                table.reload('SocietySchoolCourse-list', {
+                    where: field,page:{curr:1}
+                });
+            });
+
+            /*
+            * 定义表格
+            * */
+            defineTable = function () {
+                var headers = layui.admin.getTokenHeader();
+                table.render({
+                    elem: '#SocietySchoolCourse-list' //指定原始表格的选择器（id选择器）
+                    ,url:layui.setter.basePath +'/society/societyStudentAndCourse/listpageforschool.jsn' //模拟接口
+                    ,headers:headers
+                    ,height:390
+                    ,method: 'post'
+                    ,parseData: function(res){ //res 即为原始返回的数据
+                        return {
+                            "code": res.success, //解析接口状态
+                            "msg": res.errMsg, //解析提示文本
+                            "count": res.totalCount, //解析数据长度
+                            "data": res.list //解析数据列表
+                        };
+                    }
+                    ,response: {
+                        statusCode: true //规定成功的状态码，默认：0
+                    }
+                    ,cols: [[
+                        {type: 'numbers', fixed: 'left', title:'序号'}
+                        ,{field: 'id',align: 'center', width: 200, title: '主键',sort: true,hide:true}
+                        ,{field: 'studentName',align: 'center', width:  '7%', title: '姓名'}
+                        ,{field: 'studentIdCardNum',align: 'center', width: '10%', title: '身份证号'}
+                        ,{field: 'stuPhone',align: 'center', width: '8%', title: '手机号'}
+                        ,{field: 'className',align: 'center', width: '12%', title: '班级名称'}
+                        ,{field: 'courseName',align: 'center', width: '12%', title: '课程名称'}
+                        ,{field: 'isRealName',align: 'center', width: '7%', title: '是否实名',
+                            templet: function (d) {
+                                if(d.isRealName=='1'){
+                                    return "是";
+                                }else {
+                                    return "否";
+                                }
+                            }
+                        }
+                        ,{field: 'totalLessons',align: 'center', width:  '7%', title: '总课时'}
+                        ,{field: 'finishNodeNum',align: 'center', width: '8%', title: '已完成课时'}
+                         ,{field: 'courseProgress',align: 'center', width: '12%', title: '学习进度',templet:"#studentLeranTpl",sort: true}
+                        ,{title: '操作', width: '14%', align: 'center', fixed: 'right', toolbar: '#table-SocietySchoolCourse-list'}
+                    ]]
+                    ,autoSort: false
+                    ,page: true
+                    ,limit: 50
+                    ,limits: [10, 20, 30,40,50]
+                    ,text: {
+                    none: '暂无相关数据'
+                    }
+                    ,done:function () {
+                        element.init();
+                    }
+            });
+
+                //为toolbar添加事件响应
+                table.on('tool(SocietySchoolCourse-list)', function(obj){ //注：tool是工具条事件名，test是table原始容器的属性 lay-filter="对应的值"
+                    /*var data = obj.data;*///获得当前行数据
+                    //区分事件
+                    switch(obj.event){
+                        case 'del':
+                            deleteVo(obj);
+                            break;
+                        case 'edit':
+                            editVo(obj);
+                            break;
+                        case 'studyInfo':
+                            studyInfo(obj);
+                            break;
+                        case 'studentStudyArchives':
+                            studentStudyArchives(obj);
+                            break;
+                    };
+                });
+                /*
+                * 查看学习进度详情
+                * */
+                studyInfo = function (obj) {
+                    $tool.JumpPage('../studyCount/SocietySchoolCountyStudentList.html', obj.data);
+                }
+
+
+                function newTab(url,tit){
+                    if(top.layui.index){
+                        top.layui.index.openTabsPage(url,tit)
+                    }else{
+                        window.open(url)
+                    }
+                }
+                //监听排序事件
+                table.on('sort(SocietySchoolCourse-list)', function(obj){ //注：sort是工具条事件名，LAY-app-province-list是table原始容器的属性 lay-filter="对应的值"
+                    var sort = obj.field;
+                    //默认排序
+                    switch(obj.field){
+                        case 'id':
+                            sort ="ID";
+                            break;
+                        case 'createTime':
+                            sort ="CREATE_TIME";
+                            break;
+                        case 'createUserId':
+                            sort ="CREATE_USER_ID";
+                            break;
+                        case 'createUserName':
+                            sort ="CREATE_USER_NAME";
+                            break;
+                        case 'ownerSchoolId':
+                            sort ="OWNER_SCHOOL_ID";
+                            break;
+                        case 'ownerSchoolName':
+                            sort ="OWNER_SCHOOL_NAME";
+                            break;
+                        case 'ownerMajorId':
+                            sort ="OWNER_MAJOR_ID";
+                            break;
+                        case 'ownerMajorName':
+                            sort ="OWNER_MAJOR_NAME";
+                            break;
+                        case 'courseClsId':
+                            sort ="COURSE_CLS_ID";
+                            break;
+                        case 'courseClsName':
+                            sort ="COURSE_CLS_NAME";
+                            break;
+                        case 'courseName':
+                            sort ="COURSE_NAME";
+                            break;
+                        case 'courseImage':
+                            sort ="COURSE_IMAGE";
+                            break;
+                        case 'courseDesc':
+                            sort ="COURSE_DESC";
+                            break;
+                        case 'courseOrgPrice':
+                            sort ="COURSE_ORG_PRICE";
+                            break;
+                        case 'coursePrice':
+                            sort ="COURSE_PRICE";
+                            break;
+                        case 'totalLessons':
+                            sort ="TOTAL_LESSONS";
+                            break;
+                        case 'courseTimeLength':
+                            sort ="COURSE_TIME_LENGTH";
+                            break;
+                        case 'courseScore':
+                            sort ="COURSE_SCORE";
+                            break;
+                        case 'totalStudentNum':
+                            sort ="TOTAL_STUDENT_NUM";
+                            break;
+                        case 'finishedStudentNum':
+                            sort ="FINISHED_STUDENT_NUM";
+                            break;
+                        case 'notFinishedStudentNum':
+                            sort ="NOT_FINISHED_STUDENT_NUM";
+                            break;
+                        case 'orderNum':
+                            sort ="ORDER_NUM";
+                            break;
+                        case 'isOpen':
+                            sort ="IS_OPEN";
+                            break;
+                        case 'shState':
+                            sort ="SH_STATE";
+                            break;
+                        case 'dataState':
+                            sort ="DATA_STATE";
+                            break;
+                        case 'courseProgress':
+                            sort ="COURSE_PROGRESS";
+                            break;
+                    };
+                    if(obj.type==null){
+                        table.reload('SocietySchoolCourse-list', {
+                            initSort: obj//记录初始排序，如果不设的话，将无法标记表头的排序状态。
+                            ,where: { //请求参数（注意：这里面的参数可任意定义，并非下面固定的格式）
+                                orderBy: sort+" "+"ASC" //排序字段
+                            }
+                        });
+                    }else {
+                        //有些时候，你可能需要根据当前排序的字段，重新向服务端发送请求，从而实现服务端排序，如：
+                        table.reload('SocietySchoolCourse-list', {
+                            initSort: obj//记录初始排序，如果不设的话，将无法标记表头的排序状态。
+                            ,where: { //请求参数（注意：这里面的参数可任意定义，并非下面固定的格式）
+                                orderBy: sort+" "+obj.type //排序字段
+                            }
+                        });
+                    }
+                });
+            }
+            defineTable();
+
+            /**
+             * 学员学习档案导出pdf
+             * @param obj
+             */
+            studentStudyArchives = function(obj){
+                if(obj.data.learnIsFinished=='1'){
+                    newOpen("views/society/schooladmin/societystudentandcourse/SocietyStudentStudyPDF.html", obj.data);
+                }else {
+                    return layer.msg('学生未学完课程!');
+                }
+            }
+
+            function newOpen(url,params) {
+                var pStr = '';
+                for(var p in params){
+                    if(pStr.indexOf("?")==-1){
+                        pStr += "?"+p+"="+encodeURI(params[p]);
+                    }else {
+                        pStr += "&"+p+"="+encodeURI(params[p]);
+                    }
+                }
+                top.layui.index.openTabsPage(url+pStr,"学员学习档案");
+            }
+
+
+            //Excel导出
+            exportData = function () {
+                layer.confirm('确定导出吗？', function(index){
+                    exportDataDetail();
+                });
+            }
+
+            exportDataDetail = function () {
+                layer.open({
+                    title: '提示'
+                    ,content: '正在导出，请稍后！！！'
+                    ,id:'id_alert'
+                    ,btn:[]
+                });
+                admin.req({
+                    url:layui.setter.basePath +'/society/societyStudentAndCourse/listByObjforschool.jsn',
+                    data:{
+                        'queryObj.studentName':$('input[name="queryObj.studentName"]').val()
+                        ,'queryObj.studentIdCardNum':$('input[name="queryObj.studentIdCardNum"]').val()
+                        ,'queryObj.className':$('input[name="queryObj.className"]').val()
+                        ,'queryObj.courseName':$('input[name="queryObj.courseName"]').val()
+                        ,'queryObj.courseProgress':$('input[name="queryObj.courseProgress"]').val()
+                        ,'queryObj.courseProgressStart':$('input[name="queryObj.courseProgressStart"]').val()
+                        ,'queryObj.courseProgressEnd':$('input[name="queryObj.courseProgressEnd"]').val()
+                        ,'isRealNameAuth':$('#isRealNameAuth').val()
+                    },
+                    method:"post",
+                    success:function (data) {
+                        if(data.list&&data.list.length>0){
+                            // 1. 数组头部新增表头
+
+                            // 2. 如果需要调整顺序，请执行梳理函数
+                            var dataE = excel.filterExportData(data.list, {
+                                studentName: 'studentName',
+                                studentIdCardNum: 'studentIdCardNum',
+                                stuPhone: 'stuPhone',
+                                className: 'className',
+                                courseName: 'courseName',
+                                totalLessons: 'totalLessons',
+                                finishNodeNum: 'finishNodeNum',
+                                isRealName: 'isRealName',
+                                isComment: 'isComment',
+                                isTepar: 'isTepar',
+                                learnIsFinished: 'learnIsFinished'
+                            });
+
+                            dataE.unshift({
+                                studentName: '学生姓名',
+                                studentIdCardNum: '身份证号',
+                                stuPhone: '手机号',
+                                className: '班级名称',
+                                courseName: '课程名称',
+                                totalLessons: '要求总学时',
+                                finishNodeNum: '已完成学时',
+                                isRealName: '是否实名',
+                                isComment: '是否评价',
+                                isTepar: '是否通过考试',
+                                learnIsFinished: '学习状态'
+                            })
+                            dataE.unshift({
+                                studentName: '学习统计导出',
+                                studentIdCardNum: '',
+                                stuPhone: '',
+                                className: '',
+                                courseName: '',
+                                totalLessons: '',
+                                finishNodeNum: '',
+                                isRealName: '',
+                                isComment: '',
+                                isTepar: '',
+                                learnIsFinished: ''
+                            })
+                            // 3. 执行导出函数，系统会弹出弹框
+
+                            //标题行样式
+                            excel.setExportCellStyle(dataE, 'A1:K2', {
+                                s: {
+                                    fill: { bgColor: { indexed: 64 }, fgColor: { rgb: "C0C0C0" } },
+                                    alignment: {
+                                        horizontal: 'center',
+                                        vertical: 'center'
+                                    },
+                                    font:{
+                                        name:'微软雅黑',
+                                        sz: '10',
+                                        bold: true
+                                    },
+                                    border:{
+                                        top: {style: 'thin', color: {rgb: 'FF000000'}},
+                                        bottom: {style: 'thin', color: {rgb: 'FF000000'}},
+                                        left: {style: 'thin', color: {rgb: 'FF000000'}},
+                                        right: {style: 'thin', color: {rgb: 'FF000000'}}
+                                    }
+                                }
+                            }, function(cell, newCell, row, config, currentRow, currentCol, fieldKey) {
+                                // 回调参数，cell:原有数据，newCell:根据批量设置规则自动生成的样式，row:所在行数据，config:传入的配置,currentRow:当前行索引,currentCol:当前列索引，fieldKey:当前字段索引
+                                return newCell;
+                            } );
+                            //数据行样式
+                            excel.setExportCellStyle(dataE, 'A3:K'+Number(dataE.length), {
+                                s: {
+                                    alignment: {
+                                        horizontal: 'center',
+                                        vertical: 'center'
+                                    },
+                                    font:{
+                                        name:'微软雅黑',
+                                        sz: '10'
+                                    },
+                                    border:{
+                                        top: {style: 'thin', color: {rgb: 'FF000000'}},
+                                        bottom: {style: 'thin', color: {rgb: 'FF000000'}},
+                                        left: {style: 'thin', color: {rgb: 'FF000000'}},
+                                        right: {style: 'thin', color: {rgb: 'FF000000'}}
+                                    }
+                                }
+                            }, function(cell, newCell, row, config, currentRow, currentCol, fieldKey) {
+                                // 回调参数，cell:原有数据，newCell:根据批量设置规则自动生成的样式，row:所在行数据，config:传入的配置,currentRow:当前行索引,currentCol:当前列索引，fieldKey:当前字段索引
+                                return newCell;
+                            } );
+                            // 设置列宽
+                            var colConf = excel.makeColConfig({
+                                'B': 110,
+                                'Z': 80
+                            }, 80);
+                            var merges = excel.makeMergeConfig([
+                                ['A1','K1']
+                            ]);
+                            //导出
+                            excel.exportExcel({
+                                sheet1: dataE
+                            }, '学习进度统计_'+ new Date().toLocaleString() +'.xlsx', 'xlsx', {
+                                extend: {
+                                    sheet1:{
+                                        '!merges': merges,
+                                        '!cols': colConf
+                                    }
+                                }
+                            });
+                            $('#id_alert').parent().find('a[class="layui-layer-btn0"]').click()
+                            layer.msg('导出成功！');
+                        }else{
+                            $('#id_alert').parent().find('a[class="layui-layer-btn0"]').click()
+                            layer.msg('无数据！');
+                        }
+
+                    },
+                });
+            }
+
+
+        });
+
+</script>
+</body>
+</html>
+

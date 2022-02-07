@@ -1,0 +1,252 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.edgedo.society.mapper.SocietyStudentPractiseQuestionMapper" >
+   
+   
+    <resultMap id="BaseResultMap" type="com.edgedo.society.entity.SocietyStudentPractiseQuestion" >
+			<id column="ID" property="id"/>
+			<result column="CREATE_TIME" property="createTime"/>
+			<result column="UPDATE_TIME" property="updateTime"/>
+			<result column="OWNER_STUDENT_AND_NODE_ID" property="ownerStudentAndNodeId"/>
+			<result column="OWNER_STU_COURSE_ID" property="ownerStuCourseId"/>
+			<result column="STUDENT_ID" property="studentId"/>
+			<result column="STUDENT_NAME" property="studentName"/>
+			<result column="STUDENT_ID_CARD_NUM" property="studentIdCardNum"/>
+			<result column="OWNER_SCHOOL_ID" property="ownerSchoolId"/>
+			<result column="OWNER_SCHOOL_NAME" property="ownerSchoolName"/>
+			<result column="OWNER_COURSE_ID" property="ownerCourseId"/>
+			<result column="OWNER_COURSE_NAME" property="ownerCourseName"/>
+			<result column="OWNER_NODE_ID" property="ownerNodeId"/>
+			<result column="OWNER_NODE_NAME" property="ownerNodeName"/>
+			<result column="QUERSION_ID" property="quersionId"/>
+			<result column="QUESTION_NAME" property="questionName"/>
+			<result column="QUESTION_TYPE" property="questionType"/>
+			<result column="QUESTION_SCORE" property="questionScore"/>
+			<result column="QUESTION_ANALYSIS" property="questionAnalysis"/>
+			<result column="GET_SCORE" property="getScore"/>
+			<result column="ORDER_NUM" property="orderNum"/>
+			<result column="ANSWER_STATE" property="answerState"/>
+			<result column="STU_SELECT_OP_ID" property="stuSelectOpId"/>
+			<result column="LAST_ANSWER_TIME" property="lastAnswerTime"/>
+			<result column="DATA_STATE" property="dataState"/>
+    </resultMap>
+   
+    <resultMap id="BaseResultViewMap" type="com.edgedo.society.queryvo.SocietyStudentPractiseQuestionView" extends="BaseResultMap">
+    
+    </resultMap>
+  
+  
+  <!-- ******* 新增字段请修改这里  ******  -->
+  <sql id="Base_Column_List">
+	 ID, CREATE_TIME, UPDATE_TIME, OWNER_STU_COURSE_ID,OWNER_STUDENT_AND_NODE_ID, STUDENT_ID,
+	  STUDENT_NAME, STUDENT_ID_CARD_NUM, OWNER_SCHOOL_ID, OWNER_SCHOOL_NAME, OWNER_COURSE_ID,
+	  OWNER_COURSE_NAME, OWNER_NODE_ID, OWNER_NODE_NAME, QUERSION_ID, QUESTION_NAME, QUESTION_TYPE,
+	   QUESTION_SCORE, QUESTION_ANALYSIS, GET_SCORE, ORDER_NUM,ANSWER_STATE,STU_SELECT_OP_ID,
+	   LAST_ANSWER_TIME, DATA_STATE
+  </sql>
+  
+  <!-- ******* 利用好这里的动态查询条件  ******  -->
+  <sql id="where">
+  	<where>
+		<if test='queryObj != null and  queryObj.id != null and @org.apache.commons.lang3.StringUtils@isNotEmpty(queryObj.id)'>
+		AND  ID = #{queryObj.id}
+		</if>
+		<if test='queryObj != null and  queryObj.createTime != null'>
+			AND  CREATE_TIME = #{queryObj.createTime}
+		</if>
+		<if test='queryObj != null and  queryObj.updateTime != null'>
+			AND  UPDATE_TIME = #{queryObj.updateTime}
+		</if>
+		<if test='queryObj != null and  queryObj.ownerStudentAndNodeId != null and @org.apache.commons.lang3.StringUtils@isNotEmpty(queryObj.ownerStudentAndNodeId)'>
+		AND  OWNER_STUDENT_AND_NODE_ID = #{queryObj.ownerStudentAndNodeId}
+		</if>
+		<if test='queryObj != null and  queryObj.studentId != null and @org.apache.commons.lang3.StringUtils@isNotEmpty(queryObj.studentId)'>
+		AND  STUDENT_ID = #{queryObj.studentId}
+		</if>
+		<if test='queryObj != null and  queryObj.studentName != null and @org.apache.commons.lang3.StringUtils@isNotEmpty(queryObj.studentName)'>
+		AND  STUDENT_NAME = #{queryObj.studentName}
+		</if>
+		<if test='queryObj != null and  queryObj.studentIdCardNum != null and @org.apache.commons.lang3.StringUtils@isNotEmpty(queryObj.studentIdCardNum)'>
+		AND  STUDENT_ID_CARD_NUM = #{queryObj.studentIdCardNum}
+		</if>
+		<if test='queryObj != null and  queryObj.ownerSchoolId != null and @org.apache.commons.lang3.StringUtils@isNotEmpty(queryObj.ownerSchoolId)'>
+		AND  OWNER_SCHOOL_ID = #{queryObj.ownerSchoolId}
+		</if>
+		<if test='queryObj != null and  queryObj.ownerSchoolName != null and @org.apache.commons.lang3.StringUtils@isNotEmpty(queryObj.ownerSchoolName)'>
+		AND  OWNER_SCHOOL_NAME = #{queryObj.ownerSchoolName}
+		</if>
+		<if test='queryObj != null and  queryObj.ownerCourseId != null and @org.apache.commons.lang3.StringUtils@isNotEmpty(queryObj.ownerCourseId)'>
+		AND  OWNER_COURSE_ID = #{queryObj.ownerCourseId}
+		</if>
+		<if test='queryObj != null and  queryObj.ownerCourseName != null and @org.apache.commons.lang3.StringUtils@isNotEmpty(queryObj.ownerCourseName)'>
+		AND  OWNER_COURSE_NAME = #{queryObj.ownerCourseName}
+		</if>
+		<if test='queryObj != null and  queryObj.ownerNodeId != null and @org.apache.commons.lang3.StringUtils@isNotEmpty(queryObj.ownerNodeId)'>
+		AND  OWNER_NODE_ID = #{queryObj.ownerNodeId}
+		</if>
+		<if test='queryObj != null and  queryObj.ownerNodeName != null and @org.apache.commons.lang3.StringUtils@isNotEmpty(queryObj.ownerNodeName)'>
+		AND  OWNER_NODE_NAME = #{queryObj.ownerNodeName}
+		</if>
+		<if test='queryObj != null and  queryObj.quersionId != null and @org.apache.commons.lang3.StringUtils@isNotEmpty(queryObj.quersionId)'>
+		AND  QUERSION_ID = #{queryObj.quersionId}
+		</if>
+		<if test='queryObj != null and  queryObj.questionName != null and @org.apache.commons.lang3.StringUtils@isNotEmpty(queryObj.questionName)'>
+		AND  QUESTION_NAME = #{queryObj.questionName}
+		</if>
+		<if test='queryObj != null and  queryObj.questionType != null and @org.apache.commons.lang3.StringUtils@isNotEmpty(queryObj.questionType)'>
+		AND  QUESTION_TYPE = #{queryObj.questionType}
+		</if>
+		<if test='queryObj != null and  queryObj.questionScore != null and @org.apache.commons.lang3.StringUtils@isNotEmpty(queryObj.questionScore)'>
+			AND  QUESTION_SCORE = #{queryObj.questionScore}
+		</if>
+		<if test='queryObj != null and  queryObj.questionAnalysis != null and @org.apache.commons.lang3.StringUtils@isNotEmpty(queryObj.questionAnalysis)'>
+		AND  QUESTION_ANALYSIS = #{queryObj.questionAnalysis}
+		</if>
+		<if test='queryObj != null and  queryObj.getScore != null and @org.apache.commons.lang3.StringUtils@isNotEmpty(queryObj.getScore)'>
+			AND  GET_SCORE = #{queryObj.getScore}
+		</if>
+		<if test='queryObj != null and  queryObj.lastAnswerTime != null'>
+			AND  LAST_ANSWER_TIME = #{queryObj.lastAnswerTime}
+		</if>
+		<if test='queryObj != null and  queryObj.dataState != null and @org.apache.commons.lang3.StringUtils@isNotEmpty(queryObj.dataState)'>
+		AND  DATA_STATE = #{queryObj.dataState}
+		</if>
+  	</where>
+  	
+  </sql>
+  
+  <!-- ******* 排序判断  ******  
+  <sql id="orderBy">
+  	<if test="orderBy != null and orderBy!= '' ">
+  		order by  ${orderBy}
+  	</if>
+  </sql>-->
+  
+  
+  <!-- 分页条件查询  -->
+  <select id="listPage" parameterType="com.edgedo.society.queryvo.SocietyStudentPractiseQuestionQuery" resultMap="BaseResultViewMap">
+  		select <include refid="Base_Column_List"/> from society_student_practise_question 
+  		<include refid="where"/>
+  </select>
+  
+   <!-- 不分页条件查询  -->
+  <select id="listByObj" parameterType="com.edgedo.society.queryvo.SocietyStudentPractiseQuestionQuery" resultMap="BaseResultViewMap">
+  		select <include refid="Base_Column_List"/> from society_student_practise_question 
+  		<include refid="where"/>
+  </select>
+
+	<!--  根据问题+学生章节历史 -->
+	<select id="selectByQueAndStuNode" parameterType="map" resultMap="BaseResultViewMap">
+		select <include refid="Base_Column_List"/> from society_student_practise_question
+		where
+			OWNER_STUDENT_AND_NODE_ID = #{ownerStudentAndNodeId}
+			AND  QUERSION_ID = #{quersionId}
+			and  DATA_STATE='1'
+	</select>
+
+	<select id="selectByQueAndStuNodeNew" parameterType="map" resultMap="BaseResultViewMap">
+		select <include refid="Base_Column_List"/> from society_student_practise_question_${ascii}
+		where
+		OWNER_STUDENT_AND_NODE_ID = #{ownerStudentAndNodeId}
+		AND  QUERSION_ID = #{quersionId}
+		and  DATA_STATE='1'
+	</select>
+
+
+	<select id="selectByStuNodeId" parameterType="string" resultType="int">
+		select count(1) from society_student_practise_question
+		where
+		OWNER_STUDENT_AND_NODE_ID = #{stuNodeId}
+		and  DATA_STATE='1'
+	</select>
+
+	<!--  删除节点的题目记录  -->
+	<delete id="deleteStuQuestionByStuNode" parameterType="string">
+		delete from society_student_practise_question_${ascii} where  OWNER_STUDENT_AND_NODE_ID = #{stuNodeId}
+	</delete>
+
+
+	<insert id="insertNewList" useGeneratedKeys="false">
+		insert into society_student_practise_question_${ascii}
+		( ID, OWNER_STUDENT_AND_NODE_ID, STUDENT_ID, STUDENT_ID_CARD_NUM,STUDENT_NAME,
+		OWNER_SCHOOL_ID, OWNER_SCHOOL_NAME, OWNER_COURSE_ID, OWNER_COURSE_NAME,
+		OWNER_NODE_ID, OWNER_NODE_NAME, QUERSION_ID, QUESTION_NAME, QUESTION_TYPE,
+		QUESTION_SCORE, QUESTION_ANALYSIS, GET_SCORE, ORDER_NUM, DATA_STATE,STU_SELECT_OP_ID,ANSWER_STATE,
+		OWNER_STU_COURSE_ID,CREATE_TIME,LAST_ANSWER_TIME,UPDATE_TIME)
+		values
+		<foreach collection="quetionList" item="question" index="index" separator=",">
+			(
+			#{question.id},#{question.ownerStudentAndNodeId},#{question.studentId},#{question.studentIdCardNum},
+			#{question.studentName},#{question.ownerSchoolId},#{question.ownerSchoolName},#{question.ownerCourseId},
+			#{question.ownerCourseName},#{question.ownerNodeId},#{question.ownerNodeName},#{question.quersionId},
+			#{question.questionName},#{question.questionType},#{question.questionScore},#{question.questionAnalysis},
+			#{question.getScore},#{question.orderNum},#{question.dataState},#{question.stuSelectOpId},
+			#{question.answerState},#{question.ownerStuCourseId},#{question.createTime},#{question.lastAnswerTime},
+			#{question.updateTime}
+			)
+		</foreach>
+	</insert>
+
+
+	<!--  根据学生学习节点来查询所有学生的答题情况 -->
+	<select id="listByOwnerStuNodeId" parameterType="string" resultMap="BaseResultViewMap">
+		select <include refid="Base_Column_List"/> from society_student_practise_question
+		where
+		OWNER_STUDENT_AND_NODE_ID = #{ownerStudentAndNodeId}
+		and  DATA_STATE='1'
+	</select>
+
+	<!--  根据学生学习节点来查询所有学生的答题情况 -->
+	<select id="listByOwnerStuNodeIdNew" parameterType="string" resultMap="BaseResultViewMap">
+		select <include refid="Base_Column_List"/> from society_student_practise_question_${ascii}
+		where
+		OWNER_STUDENT_AND_NODE_ID = #{stuNodeId}
+		and  DATA_STATE='1'
+	</select>
+
+	<!--  设置所有节点的习题未答题  -->
+	<update id="updateAllStuNodeQuestUnAnswer" parameterType="string">
+		update society_student_practise_question SET
+		GET_SCORE=0,ANSWER_STATE='0',STU_SELECT_OP_ID=null,LAST_ANSWER_TIME=null
+		where  OWNER_STUDENT_AND_NODE_ID = #{stuNodeId}
+	</update>
+
+	<update id="updateAllStuNodeQuestUnAnswerNew" parameterType="string">
+		update society_student_practise_question_${ascii} SET
+		GET_SCORE=0,ANSWER_STATE='0',STU_SELECT_OP_ID=null,LAST_ANSWER_TIME=null
+		where  OWNER_STUDENT_AND_NODE_ID = #{stuNodeId}
+	</update>
+
+	<insert id="insertNew" >
+		insert into society_student_practise_question_${ascii}
+		(	 ID, OWNER_STUDENT_AND_NODE_ID, STUDENT_ID, STUDENT_ID_CARD_NUM,STUDENT_NAME,
+	 OWNER_SCHOOL_ID, OWNER_SCHOOL_NAME, OWNER_COURSE_ID, OWNER_COURSE_NAME,
+	 OWNER_NODE_ID, OWNER_NODE_NAME, QUERSION_ID, QUESTION_NAME, QUESTION_TYPE,
+	 QUESTION_SCORE, QUESTION_ANALYSIS, GET_SCORE, ORDER_NUM, DATA_STATE,STU_SELECT_OP_ID,ANSWER_STATE,
+	 OWNER_STU_COURSE_ID,CREATE_TIME,LAST_ANSWER_TIME,UPDATE_TIME)
+		 values(
+		   #{question.id},#{question.ownerStudentAndNodeId},#{question.studentId},#{question.studentIdCardNum},
+		   #{question.studentName},#{question.ownerSchoolId},#{question.ownerSchoolName},#{question.ownerCourseId},
+		   #{question.ownerCourseName},#{question.ownerNodeId},#{question.ownerNodeName},#{question.quersionId},
+		   #{question.questionName},#{question.questionType},#{question.questionScore},#{question.questionAnalysis},
+		   #{question.getScore},#{question.orderNum},#{question.dataState},#{question.stuSelectOpId},
+		   #{question.answerState},#{question.ownerStuCourseId},#{question.createTime},#{question.lastAnswerTime},
+		   #{question.updateTime}
+		)
+	</insert>
+
+
+	<update id="updateByIdNew">
+		update society_student_practise_question_${ascii}
+		<set>
+			STU_SELECT_OP_ID=#{question.stuSelectOpId},
+			ANSWER_STATE=#{question.answerState},
+			GET_SCORE=#{question.getScore},
+			LAST_ANSWER_TIME=#{question.lastAnswerTime}
+		</set>
+		<where>
+			ID=#{question.id}
+		</where>
+	</update>
+
+</mapper>

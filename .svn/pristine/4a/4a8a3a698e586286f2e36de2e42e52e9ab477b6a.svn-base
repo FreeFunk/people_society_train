@@ -1,0 +1,605 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>学员课程进度统计,学校管理员页面</title>
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=0">
+    <link rel="stylesheet" href="/layuiadmin/layui/css/layui.css" media="all">
+    <link rel="stylesheet" href="/layuiadmin/style/admin.css" media="all">
+    <style type="text/css">
+        .layui-table td{
+            border:0.5px solid black;
+        }
+        body,td,th {color: black;}
+        .bodyDiv{
+            width: 794px;
+            height: 1123px;
+            text-align: center;
+            margin-left: 15%;
+            margin-bottom: 0.6%;
+            page-break-before:left;
+        }
+        .bodyTitle{
+            font-size: 30px;
+            font-family: monospace;
+            font-weight: 700;
+        }
+        .bodyTitleLeft{
+            float: left;
+            font-family: monospace;
+            font-size: 16px;
+            padding-left: 4%;
+        }
+        .bodyTitleRight{
+            float: right;
+            font-family: monospace;
+            font-size: 16px;
+            padding-right: 4%;
+        }
+        .bodyThirdTitleDiv{
+            position: relative;
+            left: 3.5%;
+            top: 5.4%;
+        }
+        .tiltFont{
+            font-family: initial;
+            font-size: 60px;
+            font-weight: 500;
+            color: rgb(125 125 125 / 16%);
+            -ms-transform: rotate(-37deg);
+            -moz-transform: rotate(-37deg);
+            -webkit-transform: rotate(-37deg);
+            position: absolute;
+            -o-transform: rotate(-37deg);
+            z-index: 2;
+            margin-top: 25%;
+            /*margin-left: 8%;*/
+        }
+        .sencondStudySealDiv{
+            opacity: 0.8;
+            transform: rotate(90deg);
+            height: 162px;
+            border: none;
+            position: absolute;
+            top: 2%;
+            left: 22%;
+        }
+        .officialSealAll{
+            opacity: 1.8;
+            height: 162px;
+            border: none;
+            /*width: 50px;*/
+            margin-top: 40%;
+            /* max-width: 165px; */
+            z-index: 9;
+            position: absolute;
+            background-size: 162px 162px;
+            /*background-position-x: -100px;*/
+            background-image: url(/layuiadmin/images/hege.png);
+        }
+    </style>
+</head>
+<body>
+
+<div class="layui-fluid">
+    <div class="layui-inline " style="left: 91%;position: fixed">
+        <button type="button" class="layui-btn layuiadmin-btn-comm layui-btn-sm" onclick="exportData()">
+            <i class="layui-icon layui-icon-export layuiadmin-button-btn"></i>导出
+        </button>
+    </div>
+    <div class="layui-card bodyDiv" >
+
+        <div style="height: 1050px">
+            <div style="padding-top: 6%;">
+                <div class="bodyTitle">学员统计情况总表</div>
+                <img class="sencondStudySealDiv" src="/layuiadmin/images/hege.png">
+                <div>
+                    <p class="bodyTitleLeft" id="textLeft"></p>
+                    <p class="bodyTitleRight" id="textRight"></p>
+                </div>
+            </div>
+            <div class="officialSealAll">
+                <!--            <img style="height: 162px;margin-top: 50%;max-width: 165px;z-index: 9;position: absolute;" class="officialSealAll" src="/layuiadmin/images/hege.png">-->
+            </div>
+            <div class="tiltFont"></div>
+            <div style="padding: 0px 40px 14px 40px;">
+                <table  class="layui-table">
+                    <tbody id="thirdTable">
+                        <tr>
+                            <td colspan="2">机构名称</td>
+                            <td colspan="2">班级名称</td>
+                            <td colspan="6">班级编码</td>
+                        </tr>
+                        <tr>
+                            <td colspan="2" id="platformName"></td>
+                            <td colspan="2" id="className"></td>
+                            <td colspan="6" id="classCode"></td>
+                        </tr>
+                        <tr>
+                            <td colspan="2" >培训时间</td>
+                            <td colspan="2" >培训职业/工种</td>
+                            <td colspan="6" >培训等级</td>
+                        </tr>
+                        <tr>
+                            <td colspan="2" id="studyTime"></td>
+                            <td colspan="2" id="studyType"></td>
+                            <td colspan="6" id="studyLevel"></td>
+                        </tr>
+                        <tr>
+                            <td colspan="2" >计划课时</td>
+                            <td colspan="2" >培训人数</td>
+                            <td colspan="6" >合格人数</td>
+                        </tr>
+                        <tr>
+                            <td colspan="2" id="planCourse"></td>
+                            <td colspan="2" id="studyNum"></td>
+                            <td colspan="6" id="studyFinishNum"></td>
+                        </tr>
+                        <tr>
+                            <td colspan="10">合格学员名单</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    <div  id="thirdTableTwoDiv" style="display: none" >
+
+        <div style="height: 1050px">
+            <div class="officialSealAll">
+                <!--            <img style="height: 162px;margin-top: 50%;max-width: 165px;z-index: 9;position: absolute;" class="officialSealAll" src="/layuiadmin/images/hege.png">-->
+            </div>
+            <div class="tiltFont"></div>
+            <div class="bodyThirdTitleDiv" style="width: 93%;">
+                <table class="layui-table" style="border:1px solid black;">
+                    <tbody id="thirdTableTwo"></tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    <div  id="thirdTableThreeDiv" style="display: none" >
+
+        <div style="height: 1050px">
+            <div class="officialSealAll">
+                <!--            <img style="height: 162px;margin-top: 50%;max-width: 165px;z-index: 9;position: absolute;" class="officialSealAll" src="/layuiadmin/images/hege.png">-->
+            </div>
+            <div class="tiltFont"></div>
+            <div class="bodyThirdTitleDiv" style="width: 93%;">
+                <table class="layui-table" style="border:1px solid black;">
+                    <tbody id="thirdTableThree"></tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    <div id="thirdTableFourDiv" style="display: none" >
+
+        <div style="height: 1050px">
+            <div class="officialSealAll">
+                <!--            <img style="height: 162px;margin-top: 50%;max-width: 165px;z-index: 9;position: absolute;" class="officialSealAll" src="/layuiadmin/images/hege.png">-->
+            </div>
+            <div class="tiltFont"></div>
+            <div class="bodyThirdTitleDiv" style="width: 93%;">
+                <table class="layui-table" style="border:1px solid black;">
+                    <tbody id="thirdTableFour"></tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<script src="/layuiadmin/layui/layui.js"></script>
+<script>
+    layui.config({
+        base: '/layuiadmin/' //静态资源所在路径
+    }).extend({
+        index:'lib/index',
+        common:'common',
+        $tool:'tool',
+        html2canvas: 'layui_ext/html2canvas/html2canvas',
+        jspdf: 'layui_ext/jspdf/jspdf.debug'
+    }).use(['index','common','excel','$tool','html2canvas','jspdf'], function(exports){
+        var $ = layui.$
+            ,common = layui.common
+            ,$tool = layui.$tool
+            ,html2canvas = layui.html2canvas
+            ,jspdf = layui.jspdf
+            ,admin = layui.admin;
+
+        var queryArgs = $tool.getUrlParams();//获取查询参数
+        var classId = queryArgs.classId;
+        var className = '';
+
+        //动态赋值
+        function init(){
+
+            var loadIndex =  layer.load(1, {shade: [0.1, '#393D49']});
+            admin.req({
+                url:layui.setter.basePath +'/society/societySchoolClassAndStudent/studentCountSituation.jsn',
+                data:{
+                    'classId':classId
+                },
+                method:"post",
+                success:function (data) {
+                    debugger
+                    console.log(data.data);
+                    var arr = document.getElementsByClassName('tiltFont');
+                    $.each(arr, function(i, value) {
+                        value.innerText='手机培训宝平台学员统计专用'
+                    });
+
+                    //第一部分
+                    firstData(data.data.first);
+                    //第二部分
+                    secondData(data.data);
+
+                    layer.close(loadIndex);
+                }
+            });
+        }
+        init();
+        function page() {
+            var index = 0;
+            var arr = document.getElementsByClassName('layui-card bodyDiv');
+            $.each(arr, function(name, value) {
+                if (value.style.display=='' || value.style.display=='block'){
+                    index++;
+                }
+            });
+            var officialSealArr = document.getElementsByClassName('officialSealAll');
+            var lastWidth = 0;
+            if (index<=2){
+                $.each(officialSealArr, function(i, value) {
+                    var height = window.getComputedStyle(value,null).height;
+                    var onceWidth = (height.split('px')[0])/index;
+                    value.style.width = onceWidth+"px";
+                    value.style.marginLeft = "37.5%";
+                    value.style.backgroundPositionX = lastWidth+"px";
+                    lastWidth = lastWidth-onceWidth;
+                });
+            }else {
+                $.each(officialSealArr, function(i, value) {
+                    var height = window.getComputedStyle(value,null).height;
+                    var onceWidth = (height.split('px')[0])/index;
+                    value.style.width = onceWidth+"px";
+                    value.style.marginLeft = "43.9%";
+                    value.style.backgroundPositionX = lastWidth+"px";
+                    lastWidth = lastWidth-onceWidth;
+                });
+            }
+
+            console.log(index);
+        }
+
+        function firstData(data){
+            $('#textLeft').html(data.ownerSchoolName);
+            $('#textRight').html(data.createTimeStr);
+            $('#platformName').html(data.platformName);
+            $('#className').html(data.className);
+            className = data.className;
+            $('#classCode').html(data.classCode);
+            $('#studyTime').html(data.studyTime);
+            $('#studyType').html(data.studyType);
+            $('#studyLevel').html(data.studyLevel);
+            $('#planCourse').html(data.courseTotalNum);
+            $('#studyNum').html(data.studyPersonNum);
+            $('#studyFinishNum').html(data.classUseNum);
+        }
+
+        function secondData(data){
+            //thirdTable thirdTableTwo thirdTableThree thirdTableFour
+            var html = '<tr>\n' +
+                '<td >序号</td>\n' +
+                '<td  >姓名</td>\n' +
+                '<td >身份证号</td>\n' +
+                '<td >手机号</td>\n' +
+                '<td  >性别</td>\n' +
+                '<td >完成学时</td>\n' +
+                '<td >结业考试成绩</td>\n' +
+                '</tr>';
+            var thirdTableTwo = '';
+            var thirdTableThree = '';
+            $.each(data.second, function(i,val){
+                if(i<=14){
+                    html = html+'<tr>\n' +
+                        '<td >'+(i+1)+'</td>\n' +
+                        '<td >'+val.studentName+'</td>\n' +
+                        '<td >'+val.studentIdCardNum+'</td>\n' +
+                        '<td >'+val.stuPhone+'</td>\n' +
+                        '<td >'+val.sex+'</td>\n' +
+                        '<td >'+val.finishNodeNum+'</td>\n' +
+                        '<td >-</td>\n' +
+                        '</tr>';
+                }else if(i>=15 & i<=39){
+                    thirdTableTwo = thirdTableTwo+'<tr>\n' +
+                        '<td >'+(i+1)+'</td>\n' +
+                        '<td >'+val.studentName+'</td>\n' +
+                        '<td >'+val.studentIdCardNum+'</td>\n' +
+                        '<td >'+val.stuPhone+'</td>\n' +
+                        '<td >'+val.sex+'</td>\n' +
+                        '<td >'+val.finishNodeNum+'</td>\n' +
+                        '<td >-</td>\n' +
+                        '</tr>';
+                }else if(i>=40 & i<=77){
+                    thirdTableThree = thirdTableThree+'<tr>\n' +
+                        '<td >'+(i+1)+'</td>\n' +
+                        '<td >'+val.studentName+'</td>\n' +
+                        '<td >'+val.studentIdCardNum+'</td>\n' +
+                        '<td >'+val.stuPhone+'</td>\n' +
+                        '<td >'+val.sex+'</td>\n' +
+                        '<td >'+val.finishNodeNum+'</td>\n' +
+                        '<td >-</td>\n' +
+                        '</tr>';
+                }
+            });
+            var htmlTable = $('#thirdTable').html();
+            $('#thirdTable').html(htmlTable+html);
+            if(thirdTableTwo!=''){//layui-card bodyDiv
+                $('#thirdTableTwoDiv').addClass("layui-card bodyDiv");
+                $('#thirdTableTwoDiv').css('display','block');
+                $('#thirdTableTwo').html(thirdTableTwo);
+            }
+            if(thirdTableThree!=''){
+                $('#thirdTableThreeDiv').addClass("layui-card bodyDiv");
+                $('#thirdTableThreeDiv').css('display','block');
+                $('#thirdTableThree').html(thirdTableThree);
+            }
+
+
+            if (data.third.length!=0){
+                if (data.second.length<15){
+                    var lastHtml = $('#thirdTable').html();
+                    var table = document.getElementById("thirdTable");
+                    var rows = table.rows.length;
+                    var noFinishHtml = '';
+                    var noFinishHtmlTwo = '';
+                    var html = '<tr>\n' +
+                        '       <td colspan="10">未完成学员名单</td>\n' +
+                        '</tr>'+
+                        '<tr>\n' +
+                        '<td >序号</td>\n' +
+                        '<td  >姓名</td>\n' +
+                        '<td >身份证号</td>\n' +
+                        '<td >手机号</td>\n' +
+                        '<td  >性别</td>\n' +
+                        '<td >完成学时</td>\n' +
+                        '<td >结业考试成绩</td>\n' +
+                        '</tr>';
+                    $.each(data.third, function(i,val){
+                        if (i<=(20-rows)){
+                            html = html+'<tr>\n' +
+                                '<td >'+(i+1)+'</td>\n' +
+                                '<td >'+val.studentName+'</td>\n' +
+                                '<td >'+val.studentIdCardNum+'</td>\n' +
+                                '<td >'+val.stuPhone+'</td>\n' +
+                                '<td >'+val.sex+'</td>\n' +
+                                '<td >'+val.finishNodeNum+'</td>\n' +
+                                '<td >-</td>\n' +
+                                '</tr>';
+                        }else if(i>=((20-rows)+1) & i<=((20-rows)+25)){
+                            noFinishHtml = noFinishHtml+'<tr>\n' +
+                                '<td >'+(i+1)+'</td>\n' +
+                                '<td >'+val.studentName+'</td>\n' +
+                                '<td >'+val.studentIdCardNum+'</td>\n' +
+                                '<td >'+val.stuPhone+'</td>\n' +
+                                '<td >'+val.sex+'</td>\n' +
+                                '<td >'+val.finishNodeNum+'</td>\n' +
+                                '<td >-</td>\n' +
+                                '</tr>';
+                        }else if(i>=((20-rows)+26) & i<=((20-rows)+50)){
+                            noFinishHtmlTwo = noFinishHtmlTwo+'<tr>\n' +
+                                '<td >'+(i+1)+'</td>\n' +
+                                '<td >'+val.studentName+'</td>\n' +
+                                '<td >'+val.studentIdCardNum+'</td>\n' +
+                                '<td >'+val.stuPhone+'</td>\n' +
+                                '<td >'+val.sex+'</td>\n' +
+                                '<td >'+val.finishNodeNum+'</td>\n' +
+                                '<td >-</td>\n' +
+                                '</tr>';
+                        }
+                    });
+                    $('#thirdTable').html(lastHtml+html);
+                    if(noFinishHtml!=''){
+                        $('#thirdTableTwoDiv').addClass("layui-card bodyDiv");
+                        $('#thirdTableTwoDiv').css('display','block');
+                        $('#thirdTableTwo').html(noFinishHtml);
+                    }
+                    if(noFinishHtmlTwo!=''){
+                        $('#thirdTableThreeDiv').addClass("layui-card bodyDiv");
+                        $('#thirdTableThreeDiv').css('display','block');
+                        $('#thirdTableThree').html(noFinishHtmlTwo);
+                    }
+                }
+                if (thirdTableTwo!=''){
+                    if (thirdTableThree!=''){
+                        var lastHtml = $('#thirdTableThree').html();
+                        var table = document.getElementById("thirdTableThree");
+                        var rows = table.rows.length;
+                        var noFinishHtml = '';
+                        var html = '<tr>\n' +
+                            '       <td colspan="10">未完成学员名单</td>\n' +
+                            '</tr>'+
+                            '<tr>\n' +
+                            '<td >序号</td>\n' +
+                            '<td  >姓名</td>\n' +
+                            '<td >身份证号</td>\n' +
+                            '<td >手机号</td>\n' +
+                            '<td  >性别</td>\n' +
+                            '<td >完成学时</td>\n' +
+                            '<td >结业考试成绩</td>\n' +
+                            '</tr>';
+                        $.each(data.third, function(i,val){
+                            if (i<=(20-rows)){
+                                html = html+'<tr>\n' +
+                                    '<td >'+(i+1)+'</td>\n' +
+                                    '<td >'+val.studentName+'</td>\n' +
+                                    '<td >'+val.studentIdCardNum+'</td>\n' +
+                                    '<td >'+val.stuPhone+'</td>\n' +
+                                    '<td >'+val.sex+'</td>\n' +
+                                    '<td >'+val.finishNodeNum+'</td>\n' +
+                                    '<td >-</td>\n' +
+                                    '</tr>';
+                            }else {
+                                noFinishHtml = noFinishHtml+'<tr>\n' +
+                                    '<td >'+(i+1)+'</td>\n' +
+                                    '<td >'+val.studentName+'</td>\n' +
+                                    '<td >'+val.studentIdCardNum+'</td>\n' +
+                                    '<td >'+val.stuPhone+'</td>\n' +
+                                    '<td >'+val.sex+'</td>\n' +
+                                    '<td >'+val.finishNodeNum+'</td>\n' +
+                                    '<td >-</td>\n' +
+                                    '</tr>';
+                            }
+                        });
+                        $('#thirdTableThree').html(lastHtml+html);
+                        if(noFinishHtml!=''){
+                            $('#thirdTableFourDiv').addClass("layui-card bodyDiv");
+                            $('#thirdTableFourDiv').css('display','block');
+                            $('#thirdTableFour').html(noFinishHtml);
+                        }
+                    }else {
+                        var lastHtml = $('#thirdTableTwo').html();
+                        var table =document.getElementById("thirdTableTwo");
+                        var rows = table.rows.length;
+                        var noFinishHtml = '';
+                        var html = '<tr>\n' +
+                            '       <td colspan="10">未完成学员名单</td>\n' +
+                            '</tr>'+
+                            '<tr>\n' +
+                            '<td >序号</td>\n' +
+                            '<td  >姓名</td>\n' +
+                            '<td >身份证号</td>\n' +
+                            '<td >手机号</td>\n' +
+                            '<td  >性别</td>\n' +
+                            '<td >完成学时</td>\n' +
+                            '<td >结业考试成绩</td>\n' +
+                            '</tr>';
+                        $.each(data.third, function(i,val){
+                            if (i<=(20-rows)){
+                                html = html+'<tr>\n' +
+                                    '<td >'+(i+1)+'</td>\n' +
+                                    '<td >'+val.studentName+'</td>\n' +
+                                    '<td >'+val.studentIdCardNum+'</td>\n' +
+                                    '<td >'+val.stuPhone+'</td>\n' +
+                                    '<td >'+val.sex+'</td>\n' +
+                                    '<td >'+val.finishNodeNum+'</td>\n' +
+                                    '<td >-</td>\n' +
+                                    '</tr>';
+                            }else {
+                                noFinishHtml = noFinishHtml+'<tr>\n' +
+                                    '<td >'+(i+1)+'</td>\n' +
+                                    '<td >'+val.studentName+'</td>\n' +
+                                    '<td >'+val.studentIdCardNum+'</td>\n' +
+                                    '<td >'+val.stuPhone+'</td>\n' +
+                                    '<td >'+val.sex+'</td>\n' +
+                                    '<td >'+val.finishNodeNum+'</td>\n' +
+                                    '<td >-</td>\n' +
+                                    '</tr>';
+                            }
+                        });
+                        $('#thirdTableTwo').html(lastHtml+html);
+                        if(noFinishHtml!=''){
+                            $('#thirdTableThreeDiv').addClass("layui-card bodyDiv");
+                            $('#thirdTableThreeDiv').css('display','block');
+                            $('#thirdTableThree').html(noFinishHtml);
+                        }
+                    }
+                }
+            }
+            page();
+        }
+
+
+
+        exportData = function () {
+            var loadIndex =  parent.layer.load(1, {shade: [0.1, '#393D49']});
+            window.pageYOffset = 0;
+            document.documentElement.scrollTop = 0;
+            document.body.scrollTop = 0;
+            var pdf = new jsPDF('', 'pt', 'a4');
+            var flag1 = false;
+            var pageData1;
+            var imgHeight1;
+            html2canvas(document.getElementsByClassName('layui-card bodyDiv')[0],{useCORS:true,allowTaint : false, taintTest: true,scale: 2}).then(function (canvas) {
+                var contentWidth = canvas.width;
+                var contentHeight = canvas.height;
+                imgHeight1 = 592.28/contentWidth * contentHeight;
+                pageData1 = canvas.toDataURL('image/jpeg', 1.0);
+                flag1 = true;
+            })
+            var flag2 = false;
+            var pageData2;
+            var imgHeight2;
+            html2canvas(document.getElementsByClassName('layui-card bodyDiv')[1],{useCORS:true,allowTaint : false, taintTest: true,scale: 2}).then(function (canvas) {
+                var contentWidth = canvas.width;
+                var contentHeight = canvas.height;
+                imgHeight2 = 592.28/contentWidth * contentHeight;
+                pageData2 = canvas.toDataURL('image/jpeg', 1.0);
+                flag2 = true;
+            })
+            var flag3 = false;
+            var pageData3;
+            var imgHeight3;
+            var indexFlag3 = false;
+            if (!($.isEmptyObject(document.getElementsByClassName('layui-card bodyDiv')[2]))){
+                html2canvas(document.getElementsByClassName('layui-card bodyDiv')[2],{useCORS:true,allowTaint : false, taintTest: true,scale: 2}).then(function (canvas) {
+                    var contentWidth = canvas.width;
+                    var contentHeight = canvas.height;
+                    imgHeight3 = 592.28/contentWidth * contentHeight;
+                    pageData3 = canvas.toDataURL('image/jpeg', 1.0);
+                    flag3 = true;
+                })
+            }else {
+                indexFlag3 = true;
+                flag3 = true;
+            }
+            var flag4 = false;
+            var pageData4;
+            var imgHeight4;
+            var indexFlag4 = false;
+            if (!($.isEmptyObject(document.getElementsByClassName('layui-card bodyDiv')[3]))){
+                html2canvas(document.getElementsByClassName('layui-card bodyDiv')[3],{useCORS:true,allowTaint : false, taintTest: true,scale: 2}).then(function (canvas) {
+                    var contentWidth = canvas.width;
+                    var contentHeight = canvas.height;
+                    imgHeight4 = 592.28/contentWidth * contentHeight;
+                    pageData4 = canvas.toDataURL('image/jpeg', 1.0);
+                    flag4 = true;
+                })
+            }else {
+                indexFlag4 = true;
+                flag4 = true;
+            }
+
+            var downLoadPdf = setInterval(function () {
+                if(flag1 && flag2 && flag3 && flag4){
+                    pdf.addImage(pageData1, 'JPEG', 0, 0, 595.28, imgHeight1 );
+                    pdf.addPage();
+                    pdf.addImage(pageData2, 'JPEG', 0, 0, 595.28, imgHeight2 );
+                    if (!indexFlag3){
+                        pdf.addPage();
+                        pdf.addImage(pageData3, 'JPEG', 0, 0, 595.28, imgHeight3);
+                    }
+                    if (!indexFlag4){
+                        pdf.addPage();
+                        pdf.addImage(pageData4, 'JPEG', 0, 0, 595.28, imgHeight4 );
+                    }
+                    parent.layer.close(loadIndex);
+                    pdf.save(new Date().toLocaleString()+className+'学员统计情况总表.pdf');
+                    clearInterval(downLoadPdf);
+                }
+                if (flag3){
+
+                }
+            },300)
+
+        }
+
+
+    });
+
+</script>
+</body>
+</html>
+

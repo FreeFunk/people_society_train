@@ -1,0 +1,117 @@
+@charset "utf-8";
+/* CSS Document */
+
+html,body {
+    color: #333;
+    margin: 0;
+    height: 100%;
+    font-family: "Myriad Set Pro","Helvetica Neue",Helvetica,Arial,Verdana,sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    font-weight: normal;
+}
+body::-webkit-scrollbar {
+    display: none;
+}
+* {
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
+}
+
+a {
+    text-decoration: none;
+    color: #000;
+}
+
+a, label, button, input, select {
+    -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+}
+
+img {
+    border: 0;
+}
+
+body {
+    background: #fff;
+    color: #666;
+}
+
+html, body, div, dl, dt, dd, ol, ul, li, h1, h2, h3, h4, h5, h6, p, blockquote, pre, button, fieldset, form, input, legend, textarea, th, td {
+    margin: 0;
+    padding: 0;
+}
+
+a {
+    text-decoration: none;
+    color: #08acee;
+}
+
+button {
+    outline: 0;
+}
+
+img {
+    border: 0;
+}
+
+button,input,optgroup,select,textarea {
+    margin: 0;
+    font: inherit;
+    color: inherit;
+    outline: none;
+}
+
+li {
+    list-style: none;
+}
+
+a {
+    color: #666;
+}
+
+.clearfix::after {
+    clear: both;
+    content: ".";
+    display: block;
+    height: 0;
+    visibility: hidden;
+}
+
+.clearfix {
+}
+
+.fl{ float: left!important;} .fr{ float: right!important}
+.divHeight {
+    width: 100%;
+    height: 10px;
+    background: #f5f5f5;
+    position: relative;
+    overflow: hidden;
+}
+.hr {
+    width: 100%;
+    height: 1px;
+    background: #f5f5f5;
+    position: relative;
+    overflow: hidden;
+}
+
+.white{ color:#fff}
+.bold{ font-weight: 600}
+.mr10{ margin-right:15px;}
+.ml5{ margin-left: 5px;}
+.pt3{ padding-top:3px;}
+.f8{ font-size:0.8rem!important}
+.pl15{ padding-left:15px;}
+.mt20{ margin-top: 20px;}
+.blank20 {CLEAR: both; DISPLAY: block; OVERFLOW: hidden; HEIGHT:5rem; line-height:5rem; font-size: 0px;}
+.blank15 {CLEAR: both; DISPLAY: block; OVERFLOW: hidden; HEIGHT:3rem; line-height:3rem; font-size: 0px;}
+.blank10 {CLEAR: both; DISPLAY: block; OVERFLOW: hidden; HEIGHT:2rem; line-height:2rem; font-size: 0px;}
+.blank5 {CLEAR: both; DISPLAY: block; OVERFLOW: hidden; HEIGHT:1rem; line-height:1rem; font-size: 0px;}
+.btn{ display:inline-block; padding:.6rem 1.5rem; color:#fff; fon-size:.9rem; text-align:center;background:#5d99e5; border-radius:3px}
+
+.font18{ font-size:20px!important;}
+.wss{ width:40%; margin:auto; margin-top:40%}
+.wss img{ width:100%}
+.wss p{ margin-top:2rem; text-align:center}

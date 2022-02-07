@@ -1,0 +1,55 @@
+.aui-navBar{
+    background: #b37060 !important;
+}
+.aui-navBar0{
+    background: #b37060 !important;
+}
+.aui-bird-box{
+    background-image: url(../images/head-juxian.png) !important;
+}
+.bg{
+    background: url('../images/head-juxian.png') no-repeat center !important;
+}
+.fenlei ul li.on{
+    color: #b37060 !important;
+}
+.fenlei ul li.on:before{
+    background-color: #b37060 !important;
+}
+.dh a.on {
+     border: 1px solid #b37060 !important;
+     background: #b37060 !important;
+}
+.tuichu{
+    background: #b37060 !important;
+}
+.aui-sign-login{
+    background-color: #b37060 !important;
+}
+.regBtn{
+    color: #b37060 !important;
+}
+.btn{
+    background: #b37060 !important;
+}
+.scrolltab-title:after{
+    background: #b37060 !important;
+}
+.scrolltab-title{
+    color: #b37060 !important;
+}
+.aui-tabBar-item-active{
+    color: #b37060 !important;
+}
+.aui-tabBar-item-active .aui-tabBar-item-text{
+    color: #b37060 !important;
+}
+.paperHead{
+    background-color: #b37060 !important;
+}
+.paperBtn{
+    background-color: #b37060 !important;
+}
+.paperTime{
+    background-color: #b37060 !important;
+}

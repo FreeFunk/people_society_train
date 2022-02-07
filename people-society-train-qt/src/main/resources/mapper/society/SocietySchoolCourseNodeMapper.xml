@@ -1,0 +1,140 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.edgedo.society.mapper.SocietySchoolCourseNodeMapper" >
+   
+   
+    <resultMap id="BaseResultMap" type="com.edgedo.society.entity.SocietySchoolCourseNode" >
+			<id column="ID" property="id"/>
+			<result column="CREATE_TIME" property="createTime"/>
+			<result column="CREATE_USER_ID" property="createUserId"/>
+			<result column="CREATE_USER_NAME" property="createUserName"/>
+			<result column="OWNER_SCHOOL_ID" property="ownerSchoolId"/>
+			<result column="OWNER_SCHOOL_NAME" property="ownerSchoolName"/>
+			<result column="OWNER_MAJOR_ID" property="ownerMajorId"/>
+			<result column="OWNER_MAJOR_NAME" property="ownerMajorName"/>
+			<result column="OWNER_COURSE_CLS_ID" property="ownerCourseClsId"/>
+			<result column="OWNER_COURSE_CLS_NAME" property="ownerCourseClsName"/>
+			<result column="OWNER_COURSE_ID" property="ownerCourseId"/>
+			<result column="OWNER_COURSE_NAME" property="ownerCourseName"/>
+			<result column="NODE_NAME" property="nodeName"/>
+			<result column="NODE_TIME_LENGTH" property="nodeTimeLength"/>
+			<result column="IMAGE_URL" property="imageUrl"></result>
+			<result column="FILE_URL" property="fileUrl"/>
+			<result column="ORDER_NUM" property="orderNum"/>
+			<result column="SH_STATE" property="shState"/>
+			<result column="DATA_STATE" property="dataState"/>
+			<result column="OWNER_NODE_RESOURCES_ID" property="ownerNodeResourcesId"/>
+			<result column="OWNER_NODE_RESOURCES_NAME" property="ownerNodeResourcesName"/>
+			<result column="OWNER_NODE_RESOURCES_SCHOOL_ID" property="ownerNodeResourcesSchoolId"/>
+    </resultMap>
+   
+    <resultMap id="BaseResultViewMap" type="com.edgedo.society.queryvo.SocietySchoolCourseNodeView" extends="BaseResultMap">
+    
+    </resultMap>
+  
+  
+  <!-- ******* 新增字段请修改这里  ******  -->
+  <sql id="Base_Column_List">
+	 ID, CREATE_TIME, CREATE_USER_ID, CREATE_USER_NAME,
+	 OWNER_SCHOOL_ID, OWNER_SCHOOL_NAME, OWNER_MAJOR_ID,
+	 OWNER_MAJOR_NAME, OWNER_COURSE_CLS_ID, OWNER_COURSE_CLS_NAME,
+	 OWNER_COURSE_ID, OWNER_COURSE_NAME, NODE_NAME, NODE_TIME_LENGTH,
+	 FILE_URL,IMAGE_URL, ORDER_NUM, SH_STATE, DATA_STATE,OWNER_NODE_RESOURCES_ID,
+	 OWNER_NODE_RESOURCES_NAME,OWNER_NODE_RESOURCES_SCHOOL_ID
+  </sql>
+
+	<sql id="Base_Column_List_Simple">
+		ID,  NODE_NAME, NODE_TIME_LENGTH, FILE_URL,IMAGE_URL
+	</sql>
+
+  
+  <!-- ******* 利用好这里的动态查询条件  ******  -->
+  <sql id="where">
+  	<where>
+		<if test='queryObj != null and  queryObj.id != null and @org.apache.commons.lang3.StringUtils@isNotEmpty(queryObj.id)'>
+		AND  ID = #{queryObj.id}
+		</if>
+		<if test='queryObj != null and  queryObj.createTime != null'>
+			AND  CREATE_TIME = #{queryObj.createTime}
+		</if>
+		<if test='queryObj != null and  queryObj.createUserId != null and @org.apache.commons.lang3.StringUtils@isNotEmpty(queryObj.createUserId)'>
+		AND  CREATE_USER_ID = #{queryObj.createUserId}
+		</if>
+		<if test='queryObj != null and  queryObj.createUserName != null and @org.apache.commons.lang3.StringUtils@isNotEmpty(queryObj.createUserName)'>
+		AND  CREATE_USER_NAME = #{queryObj.createUserName}
+		</if>
+		<if test='queryObj != null and  queryObj.ownerSchoolId != null and @org.apache.commons.lang3.StringUtils@isNotEmpty(queryObj.ownerSchoolId)'>
+		AND  OWNER_SCHOOL_ID = #{queryObj.ownerSchoolId}
+		</if>
+		<if test='queryObj != null and  queryObj.ownerSchoolName != null and @org.apache.commons.lang3.StringUtils@isNotEmpty(queryObj.ownerSchoolName)'>
+		AND  OWNER_SCHOOL_NAME = #{queryObj.ownerSchoolName}
+		</if>
+		<if test='queryObj != null and  queryObj.ownerMajorId != null and @org.apache.commons.lang3.StringUtils@isNotEmpty(queryObj.ownerMajorId)'>
+		AND  OWNER_MAJOR_ID = #{queryObj.ownerMajorId}
+		</if>
+		<if test='queryObj != null and  queryObj.ownerMajorName != null and @org.apache.commons.lang3.StringUtils@isNotEmpty(queryObj.ownerMajorName)'>
+		AND  OWNER_MAJOR_NAME = #{queryObj.ownerMajorName}
+		</if>
+		<if test='queryObj != null and  queryObj.ownerCourseClsId != null and @org.apache.commons.lang3.StringUtils@isNotEmpty(queryObj.ownerCourseClsId)'>
+		AND  OWNER_COURSE_CLS_ID = #{queryObj.ownerCourseClsId}
+		</if>
+		<if test='queryObj != null and  queryObj.ownerCourseClsName != null and @org.apache.commons.lang3.StringUtils@isNotEmpty(queryObj.ownerCourseClsName)'>
+		AND  OWNER_COURSE_CLS_NAME = #{queryObj.ownerCourseClsName}
+		</if>
+		<if test='queryObj != null and  queryObj.ownerCourseId != null and @org.apache.commons.lang3.StringUtils@isNotEmpty(queryObj.ownerCourseId)'>
+		AND  OWNER_COURSE_ID = #{queryObj.ownerCourseId}
+		</if>
+		<if test='queryObj != null and  queryObj.ownerCourseName != null and @org.apache.commons.lang3.StringUtils@isNotEmpty(queryObj.ownerCourseName)'>
+		AND  OWNER_COURSE_NAME = #{queryObj.ownerCourseName}
+		</if>
+		<if test='queryObj != null and  queryObj.nodeName != null and @org.apache.commons.lang3.StringUtils@isNotEmpty(queryObj.nodeName)'>
+		AND  NODE_NAME = #{queryObj.nodeName}
+		</if>
+		<if test='queryObj != null and  queryObj.nodeTimeLength != null and @org.apache.commons.lang3.StringUtils@isNotEmpty(queryObj.nodeTimeLength)'>
+			AND  NODE_TIME_LENGTH = #{queryObj.nodeTimeLength}
+		</if>
+		<if test='queryObj != null and  queryObj.fileUrl != null and @org.apache.commons.lang3.StringUtils@isNotEmpty(queryObj.fileUrl)'>
+		AND  FILE_URL = #{queryObj.fileUrl}
+		</if>
+		<if test='queryObj != null and  queryObj.shState != null and @org.apache.commons.lang3.StringUtils@isNotEmpty(queryObj.shState)'>
+		AND  SH_STATE = #{queryObj.shState}
+		</if>
+		<if test='queryObj != null and  queryObj.dataState != null and @org.apache.commons.lang3.StringUtils@isNotEmpty(queryObj.dataState)'>
+		AND  DATA_STATE = #{queryObj.dataState}
+		</if>
+  	</where>
+  	
+  </sql>
+  
+  <!-- ******* 排序判断  ******  
+  <sql id="orderBy">
+  	<if test="orderBy != null and orderBy!= '' ">
+  		order by  ${orderBy}
+  	</if>
+  </sql>-->
+  
+  
+  <!-- 分页条件查询  -->
+  <select id="listPage" parameterType="com.edgedo.society.queryvo.SocietySchoolCourseNodeQuery" resultMap="BaseResultViewMap">
+  		select <include refid="Base_Column_List"/> from society_school_course_node 
+  		<include refid="where"/>
+  </select>
+  
+   <!-- 不分页条件查询  -->
+  <select id="listByObj" parameterType="com.edgedo.society.queryvo.SocietySchoolCourseNodeQuery" resultMap="BaseResultViewMap">
+  		select <include refid="Base_Column_List"/> from society_school_course_node 
+  		<include refid="where"/>
+  </select>
+
+	<!-- 根据课程id查询课程章节  -->
+	<select id="selectCousrseNodesByCourseIdSimple" parameterType="string" resultMap="BaseResultViewMap">
+		select <include refid="Base_Column_List_Simple"/> from society_school_course_node
+		where OWNER_COURSE_ID = #{courseId} and DATA_STATE='1' order by ORDER_NUM asc
+	</select>
+
+	<!--  根据主键查询节点名 -->
+	<select id="selectCousrseNodeNameById" parameterType="string" resultType="java.lang.String">
+		select NODE_NAME from society_school_course_node where id=#{id}
+	</select>
+  
+</mapper>

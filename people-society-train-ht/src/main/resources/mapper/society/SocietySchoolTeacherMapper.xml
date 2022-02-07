@@ -1,0 +1,151 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.edgedo.society.mapper.SocietySchoolTeacherMapper" >
+   
+   
+    <resultMap id="BaseResultMap" type="com.edgedo.society.entity.SocietySchoolTeacher" >
+			<id column="ID" property="id"/>
+			<result column="CREATE_TIME" property="createTime"/>
+			<result column="CREATE_USER_ID" property="createUserId"/>
+			<result column="CREATE_USER_NAME" property="createUserName"/>
+			<result column="PROVINCE_ID" property="provinceId"/>
+			<result column="PROVINCE_NAME" property="provinceName"/>
+			<result column="CITY_ID" property="cityId"/>
+			<result column="CITY_NAME" property="cityName"/>
+			<result column="XIANQU_ID" property="xianquId"/>
+			<result column="XIANQU_NAME" property="xianquName"/>
+			<result column="OWNER_SCHOOL_ID" property="ownerSchoolId"/>
+			<result column="OWNER_SCHOOL_NAME" property="ownerSchoolName"/>
+			<result column="TEACHER_NAME" property="teacherName"/>
+			<result column="TEACHER_SEX" property="teacherSex"/>
+			<result column="TEACHER_AGE" property="teacherAge"/>
+			<result column="TEACHER_PHONE_NUM" property="teacherPhoneNum"/>
+			<result column="TEACHER_ID_CARD_NUM" property="teacherIdCardNum"/>
+			<result column="CERT_TYPE" property="certType"/>
+			<result column="CERT_CODE" property="certCode"/>
+			<result column="CERT_END_TIME" property="certEndTime"/>
+			<result column="CERT_IMG_URL" property="certImgUrl"/>
+			<result column="DATA_STATE" property="dataState"/>
+    </resultMap>
+   
+    <resultMap id="BaseResultViewMap" type="com.edgedo.society.queryvo.SocietySchoolTeacherView" extends="BaseResultMap">
+    
+    </resultMap>
+  
+  
+  <!-- ******* 新增字段请修改这里  ******  -->
+  <sql id="Base_Column_List">
+	 ID, CREATE_TIME, CREATE_USER_ID, CREATE_USER_NAME, PROVINCE_ID, PROVINCE_NAME, CITY_ID, CITY_NAME, XIANQU_ID, XIANQU_NAME, OWNER_SCHOOL_ID, OWNER_SCHOOL_NAME, TEACHER_NAME, TEACHER_SEX, TEACHER_AGE, TEACHER_PHONE_NUM, TEACHER_ID_CARD_NUM, CERT_TYPE, CERT_CODE, CERT_END_TIME, CERT_IMG_URL, DATA_STATE
+  </sql>
+  
+  <!-- ******* 利用好这里的动态查询条件  ******  -->
+  <sql id="where">
+  	<where>
+		DATA_STATE = '1'
+		<if test='queryObj != null and  queryObj.id != null and @org.apache.commons.lang3.StringUtils@isNotEmpty(queryObj.id)'>
+		AND  ID = #{queryObj.id}
+		</if>
+		<if test='queryObj != null and  queryObj.createTime != null'>
+			AND  CREATE_TIME = #{queryObj.createTime}
+		</if>
+		<if test='queryObj != null and  queryObj.createUserId != null and @org.apache.commons.lang3.StringUtils@isNotEmpty(queryObj.createUserId)'>
+		AND  CREATE_USER_ID = #{queryObj.createUserId}
+		</if>
+		<if test='queryObj != null and  queryObj.createUserName != null and @org.apache.commons.lang3.StringUtils@isNotEmpty(queryObj.createUserName)'>
+		AND  CREATE_USER_NAME = #{queryObj.createUserName}
+		</if>
+		<if test='queryObj != null and  queryObj.provinceId != null and @org.apache.commons.lang3.StringUtils@isNotEmpty(queryObj.provinceId)'>
+		AND  PROVINCE_ID = #{queryObj.provinceId}
+		</if>
+		<if test='queryObj != null and  queryObj.provinceName != null and @org.apache.commons.lang3.StringUtils@isNotEmpty(queryObj.provinceName)'>
+		AND  PROVINCE_NAME = #{queryObj.provinceName}
+		</if>
+		<if test='queryObj != null and  queryObj.cityId != null and @org.apache.commons.lang3.StringUtils@isNotEmpty(queryObj.cityId)'>
+		AND  CITY_ID = #{queryObj.cityId}
+		</if>
+		<if test='queryObj != null and  queryObj.cityName != null and @org.apache.commons.lang3.StringUtils@isNotEmpty(queryObj.cityName)'>
+		AND  CITY_NAME = #{queryObj.cityName}
+		</if>
+		<if test='queryObj != null and  queryObj.xianquId != null and @org.apache.commons.lang3.StringUtils@isNotEmpty(queryObj.xianquId)'>
+		AND  XIANQU_ID = #{queryObj.xianquId}
+		</if>
+		<if test='queryObj != null and  queryObj.xianquName != null and @org.apache.commons.lang3.StringUtils@isNotEmpty(queryObj.xianquName)'>
+		AND  XIANQU_NAME = #{queryObj.xianquName}
+		</if>
+		<if test='queryObj != null and  queryObj.ownerSchoolId != null and @org.apache.commons.lang3.StringUtils@isNotEmpty(queryObj.ownerSchoolId)'>
+		AND  OWNER_SCHOOL_ID = #{queryObj.ownerSchoolId}
+		</if>
+		<if test='queryObj != null and  queryObj.ownerSchoolName != null and @org.apache.commons.lang3.StringUtils@isNotEmpty(queryObj.ownerSchoolName)'>
+		AND  OWNER_SCHOOL_NAME = #{queryObj.ownerSchoolName}
+		</if>
+		<if test='queryObj != null and  queryObj.teacherName != null and @org.apache.commons.lang3.StringUtils@isNotEmpty(queryObj.teacherName)'>
+		AND  TEACHER_NAME like concat('%',#{queryObj.teacherName},'%')
+		</if>
+		<if test='queryObj != null and  queryObj.teacherSex != null and @org.apache.commons.lang3.StringUtils@isNotEmpty(queryObj.teacherSex)'>
+		AND  TEACHER_SEX = #{queryObj.teacherSex}
+		</if>
+		<if test='queryObj != null and  queryObj.teacherAge != null and @org.apache.commons.lang3.StringUtils@isNotEmpty(queryObj.teacherAge)'>
+			AND  TEACHER_AGE = #{queryObj.teacherAge}
+		</if>
+		<if test='queryObj != null and  queryObj.teacherPhoneNum != null and @org.apache.commons.lang3.StringUtils@isNotEmpty(queryObj.teacherPhoneNum)'>
+		AND  TEACHER_PHONE_NUM like concat('%',#{queryObj.teacherPhoneNum},'%')
+		</if>
+		<if test='queryObj != null and  queryObj.teacherIdCardNum != null and @org.apache.commons.lang3.StringUtils@isNotEmpty(queryObj.teacherIdCardNum)'>
+		AND  TEACHER_ID_CARD_NUM like concat('%',#{queryObj.teacherIdCardNum},'%')
+		</if>
+		<if test='queryObj != null and  queryObj.certType != null and @org.apache.commons.lang3.StringUtils@isNotEmpty(queryObj.certType)'>
+		AND  CERT_TYPE = #{queryObj.certType}
+		</if>
+		<if test='queryObj != null and  queryObj.certCode != null and @org.apache.commons.lang3.StringUtils@isNotEmpty(queryObj.certCode)'>
+		AND  CERT_CODE = #{queryObj.certCode}
+		</if>
+		<if test='queryObj != null and  queryObj.certEndTime != null and @org.apache.commons.lang3.StringUtils@isNotEmpty(queryObj.certEndTime)'>
+		AND  CERT_END_TIME = #{queryObj.certEndTime}
+		</if>
+		<if test='queryObj != null and  queryObj.certImgUrl != null and @org.apache.commons.lang3.StringUtils@isNotEmpty(queryObj.certImgUrl)'>
+		AND  CERT_IMG_URL = #{queryObj.certImgUrl}
+		</if>
+  	</where>
+  	
+  </sql>
+  
+  <!-- ******* 排序判断  ******  
+  <sql id="orderBy">
+  	<if test="orderBy != null and orderBy!= '' ">
+  		order by  ${orderBy}
+  	</if>
+  </sql>-->
+  
+  
+  <!-- 分页条件查询  -->
+  <select id="listPage" parameterType="com.edgedo.society.queryvo.SocietySchoolTeacherQuery" resultMap="BaseResultViewMap">
+  		select <include refid="Base_Column_List"/> from society_school_teacher 
+  		<include refid="where"/>
+  </select>
+  
+   <!-- 不分页条件查询  -->
+  <select id="listByObj" parameterType="com.edgedo.society.queryvo.SocietySchoolTeacherQuery" resultMap="BaseResultViewMap">
+  		select <include refid="Base_Column_List"/> from society_school_teacher 
+  		<include refid="where"/>
+  </select>
+
+<!--	根据学校id查询所有讲师-->
+	<select id="listBySchoolId" parameterType="string" resultMap="BaseResultViewMap">
+		select <include refid="Base_Column_List"/> from society_school_teacher
+		where DATA_STATE = '1' AND  OWNER_SCHOOL_ID = #{schoolId}
+	</select>
+
+	<update id="updateVoId" parameterType="string">
+		update society_school_teacher set DATA_STATE='0'
+		where DATA_STATE='1'
+		and ID in
+		<foreach item="item" index="index" collection="list" open="(" separator="," close=")">
+			#{item}
+		</foreach>
+	</update>
+	<select id="selectByTeacherName" parameterType="string" resultMap="BaseResultViewMap">
+		select <include refid="Base_Column_List"/> from society_school_teacher
+		where DATA_STATE = '1' AND  TEACHER_NAME = #{teacherNameStr} limit 1
+	</select>
+  
+</mapper>

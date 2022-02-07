@@ -1,0 +1,912 @@
+package com.edgedo.society.controller;
+
+
+import java.awt.*;
+import java.awt.image.BufferedImage;
+import java.io.*;
+import java.util.*;
+
+import com.edgedo.common.base.BaseController;
+import com.edgedo.common.base.annotation.Pass;
+import com.edgedo.common.constant.ThirdPartyReqKey;
+import com.edgedo.common.constant.ThirdPartyType;
+import com.edgedo.common.util.*;
+import com.edgedo.face.entity.FaceMatchInfo;
+import com.edgedo.face.entity.FaceMatchInfoExt;
+import com.edgedo.face.service.IFaceAiService;
+import com.edgedo.society.constant.RedisKeyConstant;
+import com.edgedo.society.constant.SocietyTrainContant;
+import com.edgedo.society.entity.*;
+import com.edgedo.society.queryvo.SocietyStudentCertificateQuery;
+import com.edgedo.society.queryvo.SocietyStudentQuery;
+import com.edgedo.society.queryvo.SocietyStudentView;
+import com.edgedo.society.service.*;
+import com.edgedo.text.Service.ITextFenxiAiService;
+import com.edgedo.text.entity.IdCardResult;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.models.Model;
+import io.swagger.models.auth.In;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.servlet.ModelAndView;
+
+import javax.imageio.ImageIO;
+import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletResponse;
+
+
+@Api(tags = "SocietyStudent")
+@Controller
+@RequestMapping("/stu")
+public class SocietyStudentController extends BaseController{
+
+	@Value("${app.fileForder}")
+	String fileForder;
+
+	@Autowired
+	RedisUtil redisUtil;
+
+	@Value("${app.studyfacecheck}")
+	private boolean studyfacecheck;
+	@Value("${app.faceai.maxfacelength}")
+	private Integer app_faceai_maxfacelength;
+	@Value("${app.faceai.imgcompresswidth}")
+	private Integer app_faceai_imgcompresswidth;
+
+	@Autowired
+	private SocietyStudentService service;
+	@Autowired
+	private SocietyStudentUniqueService  studentUniqueService;
+	@Autowired
+	private SocietyStudentCertificateService certificateService;
+	@Autowired
+	private SocietyStudentAndCourseService studentAndCourseService;
+	@Autowired
+	private SocietySchoolClassAndStudentService classAndStudentService;
+	//人脸识别服务
+	@Autowired
+	private IFaceAiService faceAiService;
+	@Autowired
+	private ITextFenxiAiService textFenxiAiService;
+	//过程人脸记录
+	@Autowired
+	private SocietyStudentStudyProcessFaceService studyProcessFaceService;
+	@Autowired
+	private SocietySchoolService schoolService;
+	@Autowired
+	private SocietySchoolClassService schoolClassService;
+	@Autowired
+	private SocietySchoolConfigService schoolConfigService;
+	@Autowired
+	private SocietySchoolConfigKeyService schoolConfigKeyService;
+
+	/**
+	 * @Author ZhangCC
+	 * @Description 获取当前登录人
+	 * @Date 2020/5/29 9:55
+	 **/
+	@RequestMapping("/getCurrentStuRole")
+	public ModelAndView getCurrentStuRole(){
+		ModelAndView modelAndView = new ModelAndView();
+		SocietyStudentUnique student = getLoginStudent(studentUniqueService);
+		return buildResponse(modelAndView);
+	}
+
+	/**
+	 * @Author ZhangCC
+	 * @Description 学员登录接口
+	 * @Date 2020/5/5 18:52
+	 **/
+	@RequestMapping("/studentLogin")
+	@Pass
+	public ModelAndView studentLogin(
+			String studentPhoneNum,
+			String password,
+			HttpServletResponse response
+	){
+		ModelAndView modelAndView = new ModelAndView();
+		if(studentPhoneNum!=null){
+			studentPhoneNum = studentPhoneNum.trim();
+		}
+		//没有学校的情况下
+		SocietyStudentUnique  studentUnique = studentUniqueService.selectOneStuByPhoneNum(studentPhoneNum);
+		if(studentUnique == null){
+			return buildErrorResponse(modelAndView,"学员不存在！");
+		}
+		String stuId = studentUnique.getId();
+		String encodePwd = MD5.encode(MD5.encode(password)+stuId);
+		String stuPwd = studentUnique.getPassword();
+		if(stuPwd != null && !stuPwd.equals(encodePwd)){
+			return buildErrorResponse(modelAndView,"密码错误！");
+		}
+		String accessToken = getAccessToken();
+
+		if(isWx()){
+			//登录成功，存一下openid
+			String wxOpenId = getThirdPartyLoginOpenId();
+			studentUnique.setWxOpenId(wxOpenId);
+			//清空相同openid的学员de openid
+			SocietyStudentUnique oraStudent = studentUniqueService.selectByOpenIdAndType(ThirdPartyType.wechat,wxOpenId);
+			if(oraStudent != null){
+				String oraStuId = oraStudent.getId();
+				if(!oraStuId.equals(stuId)){
+					studentUniqueService.deleteStuWxOpenId(oraStudent.getId());
+					studentUniqueService.clearStudentCatch(oraStudent);
+				}
+			}
+		}
+
+
+		if(accessToken==null){
+			accessToken = Guid.guid();
+			//将token写回到浏览器cookie
+			Cookie cookie = new Cookie("access-token",accessToken);
+			cookie.setPath("/");
+			response.addCookie(cookie);
+		}
+		studentUnique.setAccessToken(accessToken);
+		studentUniqueService.update(studentUnique);
+		studentUniqueService.clearStudentCatch(studentUnique);
+		return buildResponse(modelAndView,studentUnique);
+	}
+
+	/**
+	 * @Author ZhangCC
+	 * @Description 学员登录接口
+	 * @Date 2020/5/5 18:52
+	 **/
+	@RequestMapping("/studentLoginWx")
+	public ModelAndView studentLoginWx(
+			String studentPhoneNum,
+			String password,
+			HttpServletResponse response
+	){
+		return studentLogin(studentPhoneNum,password,response);
+	}
+
+	/**
+	 * @Author ZhangCC
+	 * @Description 学员退出
+	 * @Date 2020/5/12 20:07
+	 **/
+	@RequestMapping("/studentLogout")
+	public ModelAndView studentLogout(HttpServletResponse response){
+		ModelAndView modelAndView = new ModelAndView();
+		String accessToken = getAccessToken();
+		SocietyStudentUnique student = getLoginStudent(studentUniqueService);
+		if(isWx()){
+			studentUniqueService.deleteStuWxOpenId(student.getId());
+		}
+		studentUniqueService.deleteStuAccessToken(accessToken);
+		studentUniqueService.clearStudentCatch(student);
+		//TODO:可能有问题
+		//将cookie清空
+		/*Cookie cookie = new Cookie("access-token",getAccessToken());
+		cookie.setPath("/");
+		cookie.setMaxAge(0);
+		response.addCookie(cookie);*/
+		return buildResponse(modelAndView);
+	}
+
+
+	/**
+	 * @Author ZhangCC
+	 * @Description 学员修改密码
+	 * @Date 2020/5/10 9:06
+	 **/
+	@RequestMapping("/studentUpPwd")
+	public ModelAndView studentUpPwd(String oldPassword,String newPassword,String conPassword){
+		ModelAndView modelAndView = new ModelAndView();
+		if(oldPassword == null || oldPassword.equals("")){
+			return buildErrorResponse(modelAndView,"原始密码不能为空！");
+		}
+		SocietyStudentUnique loginStu = getLoginStudent(studentUniqueService);
+		String stuId = loginStu.getId();
+		SocietyStudentUnique student = studentUniqueService.loadById(stuId);
+
+		oldPassword = MD5.encode(MD5.encode(oldPassword)+stuId);
+		String oraPwd = student.getPassword();
+		if(!oldPassword.equals(oraPwd)){
+			return buildErrorResponse(modelAndView,"原始密码错误！");
+		}
+		if(newPassword == null || newPassword.equals("")){
+			return buildErrorResponse(modelAndView,"请输入新密码！");
+		}
+		if(conPassword == null || conPassword.equals("")){
+			return buildErrorResponse(modelAndView,"请输入确认密码！");
+		}
+		if(!newPassword.equals(conPassword)){
+			return buildErrorResponse(modelAndView,"两次输入的密码不同！");
+		}
+		String encodePwd = MD5.encode(MD5.encode(newPassword)+stuId);
+		student.setPassword(encodePwd);
+		student.setIsUpPwd("1");
+		studentUniqueService.update(student);
+		return buildResponse(modelAndView);
+	}
+
+	/**
+	 * @Author ZhangCC
+	 * @Description 获取学员信息
+	 * @Date 2020/5/7 15:21
+	 **/
+	@RequestMapping("/getUserInfo")
+	public ModelAndView getUserInfo(){
+		ModelAndView modelAndView = new ModelAndView();
+		Map<String,Object> resultMap = new HashMap<>();
+		SocietyStudentUnique student = getLoginStudent(studentUniqueService);
+//		SocietyStudent student = service.loadById(loginStudent.getId());
+		resultMap.put("student",student);
+		//查询学员所在班级信息
+		/*String ownerSchoolId= student.getOwnerSchoolId();
+		SocietySchoolClassAndStudent classAndStudent = classAndStudentService.selectClassByStuId(ownerSchoolId,student.getId());
+		if(classAndStudent != null){
+			resultMap.put("className",classAndStudent.getClassName());
+		}*/
+		return buildResponse(modelAndView,resultMap);
+	}
+
+	/**
+	 * @Author ZhangCC
+	 * @Description 获取未实名认证的学员信息
+	 * @Date 2020/5/7 15:21
+	 **/
+	@RequestMapping("/getUserInfoNotRealName")
+	public ModelAndView getUserInfoNotRealName(){
+		ModelAndView modelAndView = new ModelAndView();
+		SocietyStudentUnique loginStudent = getLoginStudentIgnoreRealName(studentUniqueService);
+		String studentId = loginStudent.getId();
+		SocietyStudentUnique student = studentUniqueService.loadById(studentId);
+		if(student != null){
+			String isRealNameAuth = student.getIsRealNameAuth();
+			if(isRealNameAuth != null && isRealNameAuth.equals("1")){
+				//刷新redis缓存中的认证状态
+				studentUniqueService.clearStudentCatch(student);
+			}
+		}
+		return buildResponse(modelAndView,student);
+	}
+
+	/**
+	 * @Author ZhangCC
+	 * @Description 学员更改自己的头像和班级
+	 * @Date 2020/5/7 15:21
+	 **/
+	@RequestMapping("/updateHeadPhotoAndClass")
+	public ModelAndView updateHeadPhotoAndClass(SocietyStudent student,String classId){
+		String school = getSchoolId();
+		if(school==null || school.trim().equals("")){//如果没有学校文件夹名字命名成这个
+			school = "globle";
+		}
+		ModelAndView modelAndView = new ModelAndView();
+		SocietyStudentUnique loginStu = getLoginStudentIgnoreRealName(studentUniqueService);
+		student.setId(loginStu.getId());
+
+		String headPhoto = student.getHeadPhoto();
+		try{
+			if(headPhoto != null&&!headPhoto.equals("")){
+				if(headPhoto != null && headPhoto.indexOf("head") == -1){
+					String headForder = fileForder + File.separator + school + File.separator + "head";
+					String headPhotoPath = FileUtil.saveBase64Img(headPhoto,headForder,true);
+					headPhotoPath = "/" + school +"/head" + headPhotoPath;
+					SocietyStudentUnique param  = new SocietyStudentUnique();
+					param.setId(loginStu.getId());
+					param.setHeadPhoto(headPhotoPath);
+					loginStu.setHeadPhoto(headPhotoPath);
+					studentUniqueService.update(param);
+				}
+			}
+			//add by wangzhen 清空缓存
+			studentUniqueService.clearStudentCatch(loginStu);
+		}catch (Exception e){
+			e.printStackTrace();
+		}
+		return buildResponse(modelAndView);
+	}
+
+	/**
+	 * @Author ZhangCC
+	 * @Description 获取学员信息和证书、课程信息
+	 * @Date 2020/5/7 15:21
+	 **/
+	@RequestMapping("/getUserInfoAndExtendInfo")
+	public ModelAndView getUserInfoAndExtendInfo(){
+		ModelAndView modelAndView = new ModelAndView();
+		Map<String,Object> resultMap = new HashMap<>();
+		SocietyStudentUnique student = getLoginStudentIgnoreRealName(studentUniqueService);
+		String stuIdCardNum = student.getId();
+		resultMap.put("student",student);
+		//查询证书数量
+		int certCount = certificateService.countStudentCertByStudenIdCard(stuIdCardNum);
+		resultMap.put("certCount",certCount);
+		//查询课程数量
+		int  courseCount = studentAndCourseService.countCourseByStuIdCardNum(stuIdCardNum);
+		resultMap.put("courseCount",courseCount);
+		return buildResponse(modelAndView,resultMap);
+	}
+
+	/**
+	 * @Author ZhangCC
+	 * @Description 学员实名认证
+	 * @Date 2020/5/7 19:10
+	 **/
+	@RequestMapping("/studentRealName")
+	public ModelAndView studentRealName(@ModelAttribute SocietyStudent student){
+		ModelAndView modelAndView = new ModelAndView();
+		SocietyStudentUnique loginStu = getLoginStudentIgnoreRealName(studentUniqueService);
+		String realNameState = loginStu.getIsRealNameAuth();
+		if(realNameState!=null && realNameState.equals("1")){
+			return buildErrorResponse(modelAndView,"您已经完成实名认证");
+		}
+		try{
+			String idCardImage = student.getIdCardImage();
+			if(idCardImage == null || idCardImage.equals("")){
+				return buildErrorResponse(modelAndView,"请上传身份证正面图片！");
+			}
+			String faceImageUrl = student.getFaceImageUrl();
+			if(faceImageUrl == null || faceImageUrl.equals("")){
+				return buildErrorResponse(modelAndView,"请拍摄清晰的人脸图片！");
+			}
+			if(idCardImage != null && idCardImage.indexOf("tempfile") == -1){
+//				idCardImage = FileUtil.compressImg(idCardImage,600);
+				String idCardImgPath = FileUtil.saveBase64Img(idCardImage,fileForder + File.separator + "tempfile",true);
+
+				idCardImgPath = "/tempfile" + idCardImgPath;
+				loginStu.setIdCardImage(idCardImgPath);
+			}
+			if(faceImageUrl != null && faceImageUrl.indexOf("tempfile") == -1){
+				int base64Length = faceImageUrl.length();
+				int base64Kb = (int)(base64Length*0.75/1024);
+				if(base64Kb>=app_faceai_maxfacelength){
+					faceImageUrl = FileUtil.compressImg(faceImageUrl,app_faceai_imgcompresswidth);
+				}
+				String faceImagePath = FileUtil.saveBase64Img(faceImageUrl,fileForder + File.separator + "tempfile",true);
+				faceImagePath = "/tempfile"+faceImagePath;
+				loginStu.setFaceImageUrl(faceImagePath);
+			}
+			//提交人脸对比
+			String faceToken = faceAiService.submitFaceMatch(
+					idCardImage,FaceMatchInfo.FaceTypeEnum.IDCARD,
+					faceImageUrl,FaceMatchInfo.FaceTypeEnum.LIVE);
+			//提交身份证分析
+			String idCardToken = textFenxiAiService.submitIdCardFenxi(idCardImage);
+			//将这两个token放到缓存中去
+			Map<String,Object> tokenMap = new HashMap<>();
+			tokenMap.put("faceToken",faceToken);
+			tokenMap.put("idCardToken",idCardToken);
+			//放到本地缓存中人脸识别检查换粗存放5分钟
+			redisUtil.hmset(RedisKeyConstant.STUDENT_LEARN_FACE_PREFIX+getAccessToken(),tokenMap,300);
+			//审核中前边的是身份证分析状态,后边的是身份证和人脸匹配状态
+			loginStu.setIsRealNameAuth("0");//0是审核中
+			//设置错误小为空
+//			loginStu.setRealNameErrMsg("");
+			studentUniqueService.update(loginStu);
+
+
+		}catch (Exception e){
+			e.printStackTrace();
+		}
+
+		return buildResponse(modelAndView);
+	}
+
+
+
+	/**
+	 * @Author WangZhen
+	 * @Description 检查实名的匹配状态
+	 * @Date 2020/5/10 19:18
+	 **/
+	@RequestMapping("/checkRealName")
+	public ModelAndView checkRealName(){
+		ModelAndView modelAndView = new ModelAndView();
+		String schoolId = getSchoolId();
+		SocietyStudentUnique stu = getLoginStudentIgnoreRnWhole(studentUniqueService);
+		String at = getAccessToken();
+		String key = RedisKeyConstant.STUDENT_LEARN_FACE_PREFIX+at;
+		Map<String,Object > result = new HashMap<>();
+		String state = "notpass";
+		String failReason = "";
+		Object faceToken = redisUtil.hget(key,"faceToken");
+		Double score = faceAiService.queryFaceMatchScore(faceToken+"");
+		if(score!=null) {
+			if (score.doubleValue() == -99) {//等待
+				state = "wait";
+			}else if(score.doubleValue()>60){//及格分数可调
+				state = "pass";
+			}else{
+				state = "notpass";
+				failReason = "人脸照片和身份证照片不匹配,请重新拍摄人脸和身份证图片!";
+			}
+		}
+		String name = "";
+		if(state.equals("pass")){
+			Object idCardToken = redisUtil.hget(key,"idCardToken");
+			IdCardResult idResult = textFenxiAiService.queryIdCard(idCardToken+"");
+			if(idResult != null){
+				String idCardState = idResult.getState();
+				if(idCardState!=null && idCardState.equals("success")){
+					String idCard = idResult.getIdCardNum();
+					name = idResult.getName();
+					if(
+							idCard!=null && idCard.equals(stu.getStudentIdCardNum())
+							/*&& name!=null && name.equals(stu.getStudentName())*/
+					){
+						state = "pass";
+					}else{
+						state = "notpass";
+						failReason = "身份证照片与学员信息不符,请联系学校!";
+					}
+				}else{
+					state="notpass";
+					failReason = "身份证照片未识别,请重新拍摄身份证!";
+				}
+			}else{
+				state="wait";
+			}
+		}
+		// 如果是通过那么修改实名认证状态
+		if(state.equals("pass")){
+			//TODO:  将临时文件保存到对应的目录
+			String temFaceImageUrl = stu.getFaceImageUrl();
+			String temIdCardImage = stu.getIdCardImage();
+			String faceFilePath = fileForder + FileUtil.changeWebPathToFilePath(temFaceImageUrl);
+			String idCardFilePath =  fileForder + FileUtil.changeWebPathToFilePath(temIdCardImage);
+
+			try {
+				String faceWebPath = FileUtil.saveFile(
+						new File(faceFilePath),
+						fileForder +
+								File.separator
+								+ schoolId
+								+ File.separator + "faceimg", true);
+				String idCardWebPath = FileUtil.saveFile(
+						new File(idCardFilePath),
+						fileForder +
+								File.separator
+								+ schoolId
+								+ File.separator + "idcard", true);
+				stu.setFaceImageUrl("/" + schoolId + "/faceimg" + faceWebPath);
+				stu.setIdCardImage("/" + schoolId + "/idcard" + idCardWebPath);
+				stu.setIsRealNameAuth("1");
+				stu.setNickName(stu.getStudentName());
+				stu.setHeadPhoto(stu.getFaceImageUrl());
+				stu.setStudentName(name);
+				studentUniqueService.updateStudentRealName(stu);
+				studentUniqueService.clearStudentCatch(stu);
+			}catch (Exception e){
+				e.printStackTrace();
+				stu.setIsRealNameAuth("0");
+				studentUniqueService.updateStudentRealName(stu);
+				studentUniqueService.clearStudentCatch(stu);
+			}
+
+		}
+
+		result.put("state",state);
+		result.put("failReason",failReason);
+		return buildResponse(modelAndView,result);
+
+	}
+
+	/**
+	 * @Author ZhangCC
+	 * @Description 学员注册时提交实名认证信息
+	 * @Date 2020/5/25 16:14
+	 **/
+	/*@Pass
+	@RequestMapping("/studentSubmitRealName")
+	public ModelAndView studentSubmitRealName(@ModelAttribute SocietyStudentUnique student){
+		ModelAndView modelAndView = new ModelAndView();
+		if(true){//TODO:取消掉注册，需要时打开即可
+			return buildErrorResponse(modelAndView,"请联系学校注册学籍.");
+		}
+		Map<String,Object> stuRealNameInfo = new HashMap<>();
+		try{
+			String idCardImage = student.getIdCardImage();
+			if(idCardImage == null || idCardImage.equals("")){
+				return buildErrorResponse(modelAndView,"请上传身份证正面图片！");
+			}
+			String faceImageUrl = student.getFaceImageUrl();
+			if(faceImageUrl == null || faceImageUrl.equals("")){
+				return buildErrorResponse(modelAndView,"请拍摄清晰的人脸图片！");
+			}
+			if(idCardImage != null && idCardImage.indexOf("tempfile") == -1){
+				String idCardImgPath = FileUtil.saveBase64Img(idCardImage,fileForder + File.separator + "tempfile",true);
+				idCardImgPath = "/tempfile" + idCardImgPath;
+				stuRealNameInfo.put("idCardImgPath",idCardImgPath);
+			}
+			if(faceImageUrl != null && faceImageUrl.indexOf("tempfile") == -1){
+				String faceImagePath = FileUtil.saveBase64Img(faceImageUrl,fileForder + File.separator + "tempfile",true);
+				faceImagePath = "/tempfile"+faceImagePath;
+				stuRealNameInfo.put("faceImagePath",faceImagePath);
+			}
+			//提交人脸对比
+			String faceToken = faceAiService.submitFaceMatch(
+					idCardImage,FaceMatchInfo.FaceTypeEnum.IDCARD,
+					faceImageUrl,FaceMatchInfo.FaceTypeEnum.LIVE);
+			//提交身份证分析
+			String idCardToken = textFenxiAiService.submitIdCardFenxi(idCardImage);
+			//将这两个token放到缓存中去
+			Map<String,Object> tokenMap = new HashMap<>();
+			tokenMap.put("faceToken",faceToken);
+			tokenMap.put("idCardToken",idCardToken);
+			//放到本地缓存中人脸识别检查换粗存放5分钟
+			redisUtil.hmset(RedisKeyConstant.STUDENT_LEARN_FACE_PREFIX+getAccessToken(),tokenMap,300);
+		}catch (Exception e){
+			e.printStackTrace();
+		}
+		return buildResponse(modelAndView,stuRealNameInfo);
+	}*/
+
+	/**
+	 * @Author ZhangCC
+	 * @Description 检查学员注册时实名认证信息
+	 * @Date 2020/5/25 16:33
+	 **/
+	/*@Pass
+	@RequestMapping("/checkStudentRegisterRealNameInfo")
+	public ModelAndView checkStudentRegisterRealNameInfo(@ModelAttribute SocietyStudentView student, HttpServletResponse response){
+		ModelAndView modelAndView = new ModelAndView();
+		if(true){//TODO:取消掉注册，需要时打开即可
+			return buildErrorResponse(modelAndView,"请联系学校注册学籍.");
+		}
+		String at = getAccessToken();
+		String key = RedisKeyConstant.STUDENT_LEARN_FACE_PREFIX+at;
+		Map<String,Object > result = new HashMap<>();
+		String state = "notpass";
+		String failReason = "";
+		Object faceToken = redisUtil.hget(key,"faceToken");
+		Double score = faceAiService.queryFaceMatchScore(faceToken+"");
+		if(score!=null) {
+			if((score.intValue()+99)==0){//等待
+				state = "wait";
+			}else if(score.doubleValue()>60){//及格分数可调
+				state = "pass";
+			}else{
+				state = "notpass";
+				failReason = "人脸照片和身份证照片不匹配!";
+				System.out.println("notpass:" + score);
+			}
+		}
+		if(state.equals("pass")){
+			Object idCardToken = redisUtil.hget(key,"idCardToken");
+			IdCardResult idResult = textFenxiAiService.queryIdCard(idCardToken+"");
+			if(idResult != null){
+				String idCardState = idResult.getState();
+				if(idCardState!=null && idCardState.equals("success")){
+					//当学员身份证号存在时判断一下
+					String schoolId = getSchoolId();
+					String idCardNum = idResult.getIdCardNum();
+					SocietyStudent checkStu = service.selectOneByIdCardNumAndSchool(idCardNum,schoolId);
+					if(checkStu != null){
+						//判断一下手机号是否可以使用
+						String checkPhoneNum = checkStu.getStudentPhoneNum();
+						String stuPhoneNum = student.getStudentPhoneNum();
+						if(checkPhoneNum != null && !checkPhoneNum.equals(stuPhoneNum)){
+							SocietyStudent checkPhoneStu = service.selectOneByPhoneNumAndSchool(stuPhoneNum,schoolId);
+							if(checkPhoneStu != null){
+								return buildErrorResponse(modelAndView,"系统内手机号已经存在！");
+							}
+						}
+						String isRealNameAuth = checkStu.getIsRealNameAuth();
+						if(isRealNameAuth != null && isRealNameAuth.equals("1")){
+							//更新下密码
+							String stuId = checkStu.getId();
+							checkStu.setStudentPhoneNum(student.getStudentPhoneNum());
+							String encodePwd = MD5.encode(MD5.encode(student.getPassword())+stuId);
+							checkStu.setPassword(encodePwd);
+							service.update(checkStu);
+
+							//刷新redis缓存中的认证状态
+							studentUniqueService.clearStudentCatch(checkStu);
+
+							Map<String,Object> param = new HashMap<>();
+							param.put("studentPhoneNum",student.getStudentPhoneNum());
+							param.put("password",student.getPassword());
+							param.put("state","already_real_name");
+							return buildResponse(modelAndView,param);
+						}else{
+							student.setId(checkStu.getId());
+						}
+					}else{
+						//身份证不存在时判断手机号是否已经存在
+						String stuPhoneNum = student.getStudentPhoneNum();
+						SocietyStudent checkPhoneStu = service.selectOneByPhoneNumAndSchool(stuPhoneNum,schoolId);
+						if(checkPhoneStu != null){
+							return buildErrorResponse(modelAndView,"系统内手机号已经存在！");
+						}
+					}
+
+					student.setStudentIdCardNum(idResult.getIdCardNum());
+					student.setStudentName(idResult.getName());
+					student.setStudentSex(idResult.getSex());
+					int age = IdCardUtil.getAgeByIdCard(idResult.getIdCardNum());
+					student.setStudentAge(age);
+				}else{
+					state="notpass";
+					failReason = "身份证照片未识别!";
+				}
+			}else{
+				state="wait";
+			}
+		}
+		// 如果是通过那么修改实名认证状态
+		if(state.equals("pass")){
+			String temFaceImageUrl = student.getFaceImageUrlParam();
+			String temIdCardImage = student.getIdCardImageParam();
+			String faceFilePath = fileForder + FileUtil.changeWebPathToFilePath(temFaceImageUrl);
+			String idCardFilePath =  fileForder + FileUtil.changeWebPathToFilePath(temIdCardImage);
+			String schoolId = getSchoolId();
+			new Thread(()->{
+				try {
+					String faceWebPath = FileUtil.saveFile(
+							new File(faceFilePath),
+							fileForder +
+									File.separator
+									+ schoolId
+									+ File.separator + "faceimg", true);
+					String idCardWebPath = FileUtil.saveFile(
+							new File(idCardFilePath),
+							fileForder +
+									File.separator
+									+ schoolId
+									+ File.separator + "idcard", true);
+					student.setFaceImageUrl("/" + schoolId + "/faceimg" + faceWebPath);
+					student.setIdCardImage("/" + schoolId + "/idcard" + idCardWebPath);
+					student.setHeadPhoto(student.getFaceImageUrl());
+					student.setNickName(student.getNickName());
+					student.setIsRealNameAuth("1");
+					SocietySchool school = schoolService.loadById(schoolId);
+					student.setOwnerSchoolId(schoolId);
+					student.setOwnerSchoolName(school.getSchoolName());
+					service.insertOrUpdateInfoAndEncodePwd(student);
+					//刷新redis缓存中的认证状态
+					service.clearStudentCatch(student);
+				}catch (Exception e){
+					e.printStackTrace();
+				}
+			}).start();
+		}
+		result.put("state",state);
+		result.put("failReason",failReason);
+		return buildResponse(modelAndView,result);
+	}*/
+
+	/**
+	 * @Author WangZhen
+	 * @Description 提交人脸识别任务学生人脸和上传上来的人脸进行对比
+	 * @Date 2020/5/5 10:29
+	 **/
+	@RequestMapping("/subLeaFaceMat")
+	public ModelAndView subLeaFaceMat( String face){
+		String accessToken =  getAccessToken();
+		SocietyStudentUnique student = getLoginStudent(studentUniqueService);
+		String faceUrl = student.getFaceImageUrl();
+		ModelAndView mav = new ModelAndView();
+		//1.读取原有的人脸图片
+		String relativePath = FileUtil.changeWebPathToFilePath(faceUrl);
+		String realPath  = fileForder + relativePath;
+		//原有人脸
+		String face1 = FileUtil.getImageBase64Str(new File(realPath));
+		//压缩一下人脸
+		try {
+			//判断如果图片小于40k 就不进行压缩
+			int base64Length = face.length();
+			int base64Kb = (int)(base64Length*0.75/1024);
+			if(base64Kb>=app_faceai_maxfacelength){
+				face = FileUtil.compressImg(face,app_faceai_imgcompresswidth);
+			}
+
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		//2.提交人脸对比
+		String token = faceAiService.submitFaceMatch(face1,face);
+		//3.保存上传的人脸图片
+		try {
+			String path = FileUtil.saveBase64Img(face,fileForder + File.separator + "tempfile",true);
+			path = "/tempfile" + path;
+			//将信息存入缓存
+			FaceMatchInfoExt faceMatchInfo = new FaceMatchInfoExt();
+			faceMatchInfo.setFace1(faceUrl);
+			faceMatchInfo.setFace2(path);
+			faceMatchInfo.setId(token);
+			faceMatchInfo.setAt(accessToken);
+			//没通过的人脸暂存5分钟
+			String key = RedisKeyConstant.STUDENT_LEARN_FACE_PREFIX + student.getId();
+			redisUtil.set(key,faceMatchInfo,300);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		//4.将token返回
+		return buildResponse(mav,token);
+
+	}
+
+
+	/**
+	 * @Author WangZhen
+	 * @Description 提交人脸识别任务学生人脸和上传上来的人脸进行对比
+	 * @Date 2020/5/5 10:29
+	 **/
+	@RequestMapping("/checkLeaFaceMat")
+	public ModelAndView checkLeaFaceMat(String token){
+		String schoolId = getSchoolId();
+		if(schoolId==null && schoolId.trim().equals("")){
+			schoolId = "globle";
+		}
+		String accessToken =  getAccessToken();
+		SocietyStudentUnique student = getLoginStudent(studentUniqueService);
+		String key = RedisKeyConstant.STUDENT_LEARN_FACE_PREFIX + student.getId();
+		ModelAndView mav = new ModelAndView();
+		FaceMatchInfoExt faceMatchInfo = (FaceMatchInfoExt)redisUtil.get(key);
+		String faceState = "notpass";
+		if(faceMatchInfo != null){
+			//登录token
+			String acctoken = faceMatchInfo.getAt();
+			//人脸token
+			String faceToken = faceMatchInfo.getId();
+
+			if(accessToken.equals(acctoken) && token.equals(faceToken)){
+				boolean passSta = faceMatchInfo.isPass();
+				if(passSta){
+					faceState = "pass";
+				}else{
+					//调用人脸服务查询人脸结果
+					Double score = faceAiService.queryFaceMatchScore(token);
+					if(score!=null){
+						if(score.doubleValue()==-99){//等待
+							faceState = "wait";
+						}else{
+							if(score.doubleValue()>60){//及格分数可调
+								faceState = "pass";
+								//及格之后设置缓存中的人脸识别
+								faceMatchInfo.setPass(true);
+								faceMatchInfo.setScore(score);
+								//TODO:随机生成人脸的生效时间,根据学校设置的时间来
+								//TODO: 目前写死一个随机数吧
+								//先从学校配置里获取人脸识别的间隔分钟，找不到的话从公共配置获取
+								String faceMatchMinute = "";
+								SocietySchoolConfig schoolConfig = schoolConfigService.selectBySchoolIdAndKey(schoolId,"FACE_MATCH_MINUTE");
+								if(schoolConfig==null){
+									SocietySchoolConfigKey schoolConfigKey = schoolConfigKeyService.loadById("FACE_MATCH_MINUTE");
+									faceMatchMinute = schoolConfigKey.getConfigValue();
+								}else {
+									faceMatchMinute = schoolConfig.getConfigValue();
+								}
+								/*int maxMinute = 100;//最高100分钟
+								int minMinute = 10;//最低10分钟
+								int random = new Random().nextInt(maxMinute);
+								if(random<minMinute){
+									random = minMinute;
+								}*/
+								//固定十分钟超时
+								redisUtil.set(
+										key,faceMatchInfo,
+										Integer.parseInt(faceMatchMinute)*60);
+
+								//存一下人脸记录
+								studyProcessFaceService.insertFaceMatch(student,faceMatchInfo,schoolId);
+
+							}else{
+								faceState = "notpass";
+							}
+
+						}
+					}
+
+				}
+			}
+
+		}
+
+		return buildResponse(mav,faceState);
+
+	}
+
+	/**
+	 * @Author WangZhen
+	 * @Description 提交人脸识别任务学生人脸和上传上来的人脸进行对比
+	 * @Date 2020/5/5 10:29
+	 **/
+	@RequestMapping("/subFaceDetect")
+	public ModelAndView subFaceDetect(String face){
+		ModelAndView mav = new ModelAndView();
+		if(studyfacecheck) {
+			String accessToken = getAccessToken();
+//		SocietyStudent student = getLoginStudent(service);
+
+			//1.提交人脸检测
+			String token = faceAiService.submitFaceDetect(face);
+			//2.将token返回
+			return buildResponse(mav, token);
+		}else{
+			return buildResponse(mav, Guid.guid());
+		}
+	}
+
+	/**
+	 * @Author WangZhen
+	 * @Description 提交人脸识别任务学生人脸和上传上来的人脸进行对比
+	 * @Date 2020/5/5 10:29
+	 **/
+	@RequestMapping("/checkFaceDetect")
+	public ModelAndView checkFaceDetect(String token){
+		String accessToken =  getAccessToken();
+//		SocietyStudent student = getLoginStudent(service);
+		ModelAndView mav = new ModelAndView();
+		//后台可配置的是否启用人离线断
+		if(studyfacecheck) {
+			Integer faceNum = faceAiService.queryFaceDetectNum(token);
+			if (faceNum == null) {
+				faceNum = 0;
+			}
+			//如果是-99 那么就是还没完成人脸检测任务
+			return buildResponse(mav, faceNum);
+		}else{
+			return buildResponse(mav, 1);
+		}
+
+	}
+
+	/**
+	 * @Author ZhangCC
+	 * @Description 查询证书列表
+	 * @Date 2020/5/19 15:10
+	 **/
+	@RequestMapping("/selectStuCertListPage")
+	public ModelAndView selectStuCertListPage(@ModelAttribute SocietyStudentCertificateQuery certQuery){
+		ModelAndView modelAndView = new ModelAndView();
+		SocietyStudentUnique student = getLoginStudent(studentUniqueService);
+		certQuery.getQueryObj().setStudentIdCardNum(student.getId());
+		certificateService.listPage(certQuery);
+		return  buildResponse(modelAndView,certQuery);
+	}
+
+	/**
+	 * @Author ZhangCC
+	 * @Description 查询证书详情
+	 * @Date 2020/5/19 16:03
+	 **/
+	@RequestMapping("/selectStuCertInfo")
+	public ModelAndView selectStuCertInfo(String stuCertId){
+		ModelAndView modelAndView = new ModelAndView();
+		SocietyStudentUnique student = getLoginStudent(studentUniqueService);
+		SocietyStudentCertificate stuCert = certificateService.loadById(stuCertId);
+		String idCard = student.getId();
+		String idCardCert = stuCert.getStudentIdCardNum();
+		if(!idCard.equals(idCardCert)){
+			return buildErrorResponse(modelAndView,"未找到证书");
+		}
+		return  buildResponse(modelAndView,stuCert);
+	}
+
+	/**
+	 * @Author ZhangCC
+	 * @Description 学员根据课程查询证书详情
+	 * @Date 2020/5/19 16:03
+	 **/
+	//TODO:有问题
+	@RequestMapping("/selectStuCertInfoByCourse")
+	public ModelAndView selectStuCertInfoByCourse(String courseId){
+		ModelAndView modelAndView = new ModelAndView();
+		SocietyStudentUnique student = getLoginStudent(studentUniqueService);
+		SocietyStudentCertificate stuCert = certificateService.selectCertByStuIdCardAndCourse(student.getId(),courseId);
+		if(stuCert == null){
+			return buildErrorResponse(modelAndView,"未查询到证书信息！");
+		}
+		return  buildResponse(modelAndView,stuCert);
+	}
+
+
+	
+}

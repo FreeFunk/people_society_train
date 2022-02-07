@@ -1,0 +1,28 @@
+<section class="aui-flexView">
+	<section class="aui-scrollView">
+		<div class="paperHead">
+			<p>《{{testPaper.ownerCourseName}}》试卷</p>
+			<p>最高得分</p>
+			<p ng-show="testPaper.topScore != -1">{{testPaper.topScore}}分</p>
+			<p ng-show="testPaper.topScore == -1">未答题</p>
+		</div>
+		<div class="blank15"></div>
+		<div>
+			<p style="text-align: center">总分({{testPaper.totalScore}}分)</p>
+			<div class="blank5"></div>
+			<div>
+				<div class="quesTypeLeft"><p>选择题</p></div>
+				<div class="quesTypeRight"><p>判断题</p></div>
+			</div>
+			<div>
+				<div class="quesTypeLeft"><p>共{{testPaper.optionQuestionCount}}道</p></div>
+				<div class="quesTypeRight"><p>共{{testPaper.judgeQuestionCount}}道</p></div>
+			</div>
+		</div>
+		<div class="paperContainer">
+			<div class="blank10"></div>
+			<div ng-show="createPaperState == '0'" class="paperBtn" ng-click="gotoExamPage()">开始考试</div>
+			<div ng-show="createPaperState == '1'" style="width: 100%;text-align: center;">正在生成试卷...</div>
+		</div>
+	</section>
+</section>

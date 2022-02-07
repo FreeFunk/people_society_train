@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.edgedo.society.mapper.SocietyStudentStudyProcessFaceMapper" >
+   
+   
+    <resultMap id="BaseResultMap" type="com.edgedo.society.entity.SocietyStudentStudyProcessFace" >
+			<id column="ID" property="id"/>
+			<result column="CREATE_TIME" property="createTime"/>
+			<result column="STU_COURSE_ID" property="stuCourseId"/>
+			<result column="OWNER_SCHOOL_ID" property="ownerSchoolId"/>
+			<result column="OWNER_SCHOOL_NAME" property="ownerSchoolName"/>
+			<result column="OWNER_COURSE_ID" property="ownerCourseId"/>
+			<result column="OWNER_COURSE_NAME" property="ownerCourseName"/>
+			<result column="OWNER_NODE_ID" property="ownerNodeId"/>
+			<result column="OWNER_NODE_NAME" property="ownerNodeName"/>
+			<result column="OWNER_STUDY_PROCESS_ID" property="ownerStudyProcessId"/>
+			<result column="STUDENT_ID" property="studentId"/>
+			<result column="STUDENT_NAME" property="studentName"/>
+			<result column="FACE_IMAGE_URL" property="faceImageUrl"/>
+			<result column="FACE_SCORE" property="faceScore"/>
+			<result column="FACE_TYPE" property="faceType"/>
+			<result column="TIME_OUT_SEC" property="timeOutSec"/>
+    </resultMap>
+   
+    <resultMap id="BaseResultViewMap" type="com.edgedo.society.queryvo.SocietyStudentStudyProcessFaceView" extends="BaseResultMap">
+    
+    </resultMap>
+  
+  
+  <!-- ******* 新增字段请修改这里  ******  -->
+  <sql id="Base_Column_List">
+	 ID, CREATE_TIME, STU_COURSE_ID, OWNER_SCHOOL_ID, OWNER_SCHOOL_NAME, OWNER_COURSE_ID, OWNER_COURSE_NAME, OWNER_NODE_ID, OWNER_NODE_NAME, OWNER_STUDY_PROCESS_ID, STUDENT_ID, STUDENT_NAME, FACE_IMAGE_URL, FACE_SCORE, FACE_TYPE,TIME_OUT_SEC
+  </sql>
+  
+  <!-- ******* 利用好这里的动态查询条件  ******  -->
+  <sql id="where">
+  	<where>
+		<if test='queryObj != null and  queryObj.id != null and @org.apache.commons.lang3.StringUtils@isNotEmpty(queryObj.id)'>
+		AND  ID = #{queryObj.id}
+		</if>
+		<if test='queryObj != null and  queryObj.createTime != null'>
+			AND  CREATE_TIME = #{queryObj.createTime}
+		</if>
+		<if test='queryObj != null and  queryObj.stuCourseId != null and @org.apache.commons.lang3.StringUtils@isNotEmpty(queryObj.stuCourseId)'>
+		AND  STU_COURSE_ID = #{queryObj.stuCourseId}
+		</if>
+		<if test='queryObj != null and  queryObj.ownerSchoolId != null and @org.apache.commons.lang3.StringUtils@isNotEmpty(queryObj.ownerSchoolId)'>
+		AND  OWNER_SCHOOL_ID = #{queryObj.ownerSchoolId}
+		</if>
+		<if test='queryObj != null and  queryObj.ownerSchoolName != null and @org.apache.commons.lang3.StringUtils@isNotEmpty(queryObj.ownerSchoolName)'>
+		AND  OWNER_SCHOOL_NAME = #{queryObj.ownerSchoolName}
+		</if>
+		<if test='queryObj != null and  queryObj.ownerCourseId != null and @org.apache.commons.lang3.StringUtils@isNotEmpty(queryObj.ownerCourseId)'>
+		AND  OWNER_COURSE_ID = #{queryObj.ownerCourseId}
+		</if>
+		<if test='queryObj != null and  queryObj.ownerCourseName != null and @org.apache.commons.lang3.StringUtils@isNotEmpty(queryObj.ownerCourseName)'>
+		AND  OWNER_COURSE_NAME = #{queryObj.ownerCourseName}
+		</if>
+		<if test='queryObj != null and  queryObj.ownerNodeId != null and @org.apache.commons.lang3.StringUtils@isNotEmpty(queryObj.ownerNodeId)'>
+		AND  OWNER_NODE_ID = #{queryObj.ownerNodeId}
+		</if>
+		<if test='queryObj != null and  queryObj.ownerNodeName != null and @org.apache.commons.lang3.StringUtils@isNotEmpty(queryObj.ownerNodeName)'>
+		AND  OWNER_NODE_NAME = #{queryObj.ownerNodeName}
+		</if>
+		<if test='queryObj != null and  queryObj.ownerStudyProcessId != null and @org.apache.commons.lang3.StringUtils@isNotEmpty(queryObj.ownerStudyProcessId)'>
+		AND  OWNER_STUDY_PROCESS_ID = #{queryObj.ownerStudyProcessId}
+		</if>
+		<if test='queryObj != null and  queryObj.studentId != null and @org.apache.commons.lang3.StringUtils@isNotEmpty(queryObj.studentId)'>
+		AND  STUDENT_ID = #{queryObj.studentId}
+		</if>
+		<if test='queryObj != null and  queryObj.studentName != null and @org.apache.commons.lang3.StringUtils@isNotEmpty(queryObj.studentName)'>
+		AND  STUDENT_NAME = #{queryObj.studentName}
+		</if>
+		<if test='queryObj != null and  queryObj.faceImageUrl != null and @org.apache.commons.lang3.StringUtils@isNotEmpty(queryObj.faceImageUrl)'>
+		AND  FACE_IMAGE_URL = #{queryObj.faceImageUrl}
+		</if>
+		<if test='queryObj != null and  queryObj.faceType != null and @org.apache.commons.lang3.StringUtils@isNotEmpty(queryObj.faceType)'>
+		AND  FACE_TYPE = #{queryObj.faceType}
+		</if>
+  	</where>
+  	
+  </sql>
+  
+  <!-- ******* 排序判断  ******  
+  <sql id="orderBy">
+  	<if test="orderBy != null and orderBy!= '' ">
+  		order by  ${orderBy}
+  	</if>
+  </sql>-->
+  
+  
+  <!-- 分页条件查询  -->
+  <select id="listPage" parameterType="com.edgedo.society.queryvo.SocietyStudentStudyProcessFaceQuery" resultMap="BaseResultViewMap">
+  		select <include refid="Base_Column_List"/> from society_student_study_process_face 
+  		<include refid="where"/>
+  </select>
+  
+   <!-- 不分页条件查询  -->
+  <select id="listByObj" parameterType="com.edgedo.society.queryvo.SocietyStudentStudyProcessFaceQuery" resultMap="BaseResultViewMap">
+  		select <include refid="Base_Column_List"/> from society_student_study_process_face 
+  		<include refid="where"/>
+  </select>
+
+	<!--  更新人脸记录的所属学习过程 -->
+  <update id="updateFaceRecYwId" parameterType="map" >
+	  update society_student_study_process_face set OWNER_STUDY_PROCESS_ID=#{ownerStudyProcessId}
+	  where ID=#{id}
+
+  </update>
+
+	<!--  统计学生课程节点人脸数量 -->
+	<select id="selectCountByStuCourseAndNode" parameterType="map" resultType="int">
+		select count(1) from society_student_study_process_face
+		where  STU_COURSE_ID = #{stuCourseId}
+			AND  OWNER_NODE_ID = #{ownerNodeId}
+	</select>
+
+	<select id="selectByCourseNodeIdAndStuCourseIdStart" parameterType="string" resultMap="BaseResultMap">
+		select <include refid="Base_Column_List"/> from society_student_study_process_face
+		where DATA_STATE='1' AND  STU_COURSE_ID=#{stuCourseId} AND  OWNER_NODE_ID=#{courseNodeId} order by CREATE_TIME asc limit 1
+	</select>
+
+	<select id="selectByCourseNodeIdAndStuCourseIdEnd" parameterType="string" resultMap="BaseResultMap">
+		select <include refid="Base_Column_List"/> from society_student_study_process_face
+		where DATA_STATE='1' AND  STU_COURSE_ID=#{stuCourseId} AND  OWNER_NODE_ID=#{courseNodeId} order by CREATE_TIME desc limit 1
+	</select>
+</mapper>

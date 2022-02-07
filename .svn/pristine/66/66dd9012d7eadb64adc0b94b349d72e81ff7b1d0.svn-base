@@ -1,0 +1,350 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.edgedo.society.mapper.SocietySchoolCourseMapper" >
+   
+   
+    <resultMap id="BaseResultMap" type="com.edgedo.society.entity.SocietySchoolCourse" >
+			<id column="ID" property="id"/>
+			<result column="CREATE_TIME" property="createTime"/>
+			<result column="CREATE_USER_ID" property="createUserId"/>
+			<result column="CREATE_USER_NAME" property="createUserName"/>
+			<result column="OWNER_SCHOOL_ID" property="ownerSchoolId"/>
+			<result column="OWNER_SCHOOL_NAME" property="ownerSchoolName"/>
+			<result column="OWNER_MAJOR_ID" property="ownerMajorId"/>
+			<result column="OWNER_MAJOR_NAME" property="ownerMajorName"/>
+			<result column="COURSE_CLS_ID" property="courseClsId"/>
+			<result column="COURSE_CLS_NAME" property="courseClsName"/>
+			<result column="COURSE_NAME" property="courseName"/>
+			<result column="COURSE_IMAGE" property="courseImage"/>
+			<result column="COURSE_DESC" property="courseDesc"/>
+			<result column="COURSE_ORG_PRICE" property="courseOrgPrice"/>
+			<result column="COURSE_PRICE" property="coursePrice"/>
+			<result column="TOTAL_LESSONS" property="totalLessons"/>
+			<result column="COURSE_TIME_LENGTH" property="courseTimeLength"/>
+			<result column="COURSE_SCORE" property="courseScore"/>
+			<result column="TOTAL_STUDENT_NUM" property="totalStudentNum"/>
+			<result column="FINISHED_STUDENT_NUM" property="finishedStudentNum"/>
+			<result column="NOT_FINISHED_STUDENT_NUM" property="notFinishedStudentNum"/>
+			<result column="ORDER_NUM" property="orderNum"/>
+			<result column="IS_OPEN" property="isOpen"/>
+			<result column="SH_STATE" property="shState"/>
+			<result column="DATA_STATE" property="dataState"/>
+			<result column="TEACHER_ID" property="teacherId"/>
+			<result column="TEACHER_NAME" property="teacherName"/>
+			<result column="ORD_STU_COURSE_STUDY_NUM" property="ordStuCourseStudyNum"/>
+			<result column="IMP_STU_COURSE_STUDY_NUM" property="impStuCourseStudyNum"/>
+			<result column="COMP_STU_COURSE_STUDY_NUM" property="compStuCourseStudyNum"/>
+			<result column="COURSE_IS_NEED_FACE_CONTRAST" property="courseIsNeedFaceContrast"/>
+			<result column="COURSE_STUDY_NUM" property="courseStudyNum"/>
+			<result column="OWNER_COURSE_ID" property="ownerCourseId"/>
+			<result column="OWNER_COURSE_NAME" property="ownerCourseName"/>
+			<result column="OWNER_SCHOOL_COURSE_ID" property="ownerSchoolCourseId"/>
+	</resultMap>
+   
+    <resultMap id="BaseResultViewMap" type="com.edgedo.society.queryvo.SocietySchoolCourseView" extends="BaseResultMap">
+    
+    </resultMap>
+  
+  
+  <!-- ******* 新增字段请修改这里  ******  -->
+  <sql id="Base_Column_List">
+	 ID, CREATE_TIME, CREATE_USER_ID, CREATE_USER_NAME, OWNER_SCHOOL_ID, OWNER_SCHOOL_NAME, OWNER_MAJOR_ID,
+	 OWNER_MAJOR_NAME, COURSE_CLS_ID, COURSE_CLS_NAME, COURSE_NAME, COURSE_IMAGE, COURSE_DESC, COURSE_ORG_PRICE,COURSE_PRICE,
+	  TOTAL_LESSONS, COURSE_TIME_LENGTH, COURSE_SCORE, TOTAL_STUDENT_NUM, FINISHED_STUDENT_NUM, NOT_FINISHED_STUDENT_NUM,
+	  ORDER_NUM, IS_OPEN, SH_STATE, DATA_STATE,TEACHER_ID,TEACHER_NAME,ORD_STU_COURSE_STUDY_NUM,
+	  IMP_STU_COURSE_STUDY_NUM,COMP_STU_COURSE_STUDY_NUM,COURSE_IS_NEED_FACE_CONTRAST,COURSE_STUDY_NUM
+	  ,OWNER_COURSE_ID,OWNER_COURSE_NAME,OWNER_SCHOOL_COURSE_ID
+  </sql>
+  
+  <!-- ******* 利用好这里的动态查询条件  ******  -->
+  <sql id="where">
+  	<where>
+		DATA_STATE = '1'
+		<if test='queryObj != null and  queryObj.id != null and @org.apache.commons.lang3.StringUtils@isNotEmpty(queryObj.id)'>
+		AND  ID = #{queryObj.id}
+		</if>
+		<if test='queryObj != null and  queryObj.createTime != null'>
+			AND  CREATE_TIME = #{queryObj.createTime}
+		</if>
+		<if test='queryObj != null and  queryObj.createUserId != null and @org.apache.commons.lang3.StringUtils@isNotEmpty(queryObj.createUserId)'>
+		AND  CREATE_USER_ID = #{queryObj.createUserId}
+		</if>
+		<if test='queryObj != null and  queryObj.createUserName != null and @org.apache.commons.lang3.StringUtils@isNotEmpty(queryObj.createUserName)'>
+		AND  CREATE_USER_NAME = #{queryObj.createUserName}
+		</if>
+		<if test='queryObj != null and  queryObj.ownerSchoolId != null and @org.apache.commons.lang3.StringUtils@isNotEmpty(queryObj.ownerSchoolId)'>
+		AND  OWNER_SCHOOL_ID = #{queryObj.ownerSchoolId}
+		</if>
+		<if test='queryObj != null and  queryObj.ownerSchoolName != null and @org.apache.commons.lang3.StringUtils@isNotEmpty(queryObj.ownerSchoolName)'>
+		AND  OWNER_SCHOOL_NAME = #{queryObj.ownerSchoolName}
+		</if>
+		<if test="queryObj != null and  queryObj.ownerMajorId != null and queryObj.ownerMajorId != '' ">
+		AND  OWNER_MAJOR_ID = #{queryObj.ownerMajorId}
+		</if>
+		<if test="queryObj != null and  queryObj.ownerMajorName != null and  queryObj.ownerMajorName != ''">
+		AND  OWNER_MAJOR_NAME like concat('%',#{queryObj.ownerMajorName},'%')
+		</if>
+		<if test='queryObj != null and  queryObj.courseClsId != null and @org.apache.commons.lang3.StringUtils@isNotEmpty(queryObj.courseClsId)'>
+		AND  COURSE_CLS_ID = #{queryObj.courseClsId}
+		</if>
+		<if test='queryObj != null and  queryObj.courseClsName != null and @org.apache.commons.lang3.StringUtils@isNotEmpty(queryObj.courseClsName)'>
+		AND  COURSE_CLS_NAME = #{queryObj.courseClsName}
+		</if>
+		<if test="queryObj != null and  queryObj.courseName != null and queryObj.courseName != ''">
+		AND  COURSE_NAME like concat('%',#{queryObj.courseName},'%')
+		</if>
+		<if test='queryObj != null and  queryObj.courseImage != null and @org.apache.commons.lang3.StringUtils@isNotEmpty(queryObj.courseImage)'>
+		AND  COURSE_IMAGE = #{queryObj.courseImage}
+		</if>
+		<if test='queryObj != null and  queryObj.courseDesc != null and @org.apache.commons.lang3.StringUtils@isNotEmpty(queryObj.courseDesc)'>
+		AND  COURSE_DESC = #{queryObj.courseDesc}
+		</if>
+		<if test='queryObj != null and  queryObj.totalLessons != null and @org.apache.commons.lang3.StringUtils@isNotEmpty(queryObj.totalLessons)'>
+			AND  TOTAL_LESSONS = #{queryObj.totalLessons}
+		</if>
+		<if test='queryObj != null and  queryObj.courseTimeLength != null and @org.apache.commons.lang3.StringUtils@isNotEmpty(queryObj.courseTimeLength)'>
+			AND  COURSE_TIME_LENGTH = #{queryObj.courseTimeLength}
+		</if>
+		<if test='queryObj != null and  queryObj.totalStudentNum != null and @org.apache.commons.lang3.StringUtils@isNotEmpty(queryObj.totalStudentNum)'>
+			AND  TOTAL_STUDENT_NUM = #{queryObj.totalStudentNum}
+		</if>
+		<if test='queryObj != null and  queryObj.finishedStudentNum != null and @org.apache.commons.lang3.StringUtils@isNotEmpty(queryObj.finishedStudentNum)'>
+			AND  FINISHED_STUDENT_NUM = #{queryObj.finishedStudentNum}
+		</if>
+		<if test='queryObj != null and  queryObj.notFinishedStudentNum != null and @org.apache.commons.lang3.StringUtils@isNotEmpty(queryObj.notFinishedStudentNum)'>
+			AND  NOT_FINISHED_STUDENT_NUM = #{queryObj.notFinishedStudentNum}
+		</if>
+		<if test='queryObj != null and  queryObj.isOpen != null and @org.apache.commons.lang3.StringUtils@isNotEmpty(queryObj.isOpen)'>
+		AND  IS_OPEN = #{queryObj.isOpen}
+		</if>
+		<if test='queryObj != null and  queryObj.shState != null and @org.apache.commons.lang3.StringUtils@isNotEmpty(queryObj.shState)'>
+		AND  SH_STATE = #{queryObj.shState}
+		</if>
+		<if test='queryObj != null and  queryObj.dataState != null and @org.apache.commons.lang3.StringUtils@isNotEmpty(queryObj.dataState)'>
+		AND  DATA_STATE = #{queryObj.dataState}
+		</if>
+		<if test='queryObj != null and  queryObj.ownerSchoolCourseId != null and @org.apache.commons.lang3.StringUtils@isNotEmpty(queryObj.ownerSchoolCourseId)'>
+			AND  OWNER_SCHOOL_COURSE_ID = #{queryObj.ownerSchoolCourseId}
+		</if>
+  	</where>
+  	
+  </sql>
+
+	<sql id="where1">
+		<where>
+			DATA_STATE = '1'
+			<if test='queryObj != null and  queryObj.ownerSchoolId != null and @org.apache.commons.lang3.StringUtils@isNotEmpty(queryObj.ownerSchoolId)'>
+				AND  OWNER_SCHOOL_ID = #{queryObj.ownerSchoolId}
+			</if>
+			<if test='queryObj != null and  queryObj.nowSchoolId != null and @org.apache.commons.lang3.StringUtils@isNotEmpty(queryObj.nowSchoolId)'>
+				AND  OWNER_SCHOOL_ID != #{queryObj.nowSchoolId}
+			</if>
+			<if test="queryObj != null and  queryObj.courseName != null and queryObj.courseName != ''">
+				AND  COURSE_NAME like concat('%',#{queryObj.courseName},'%')
+			</if>
+			<if test='queryObj != null and  queryObj.courseClsId != null and @org.apache.commons.lang3.StringUtils@isNotEmpty(queryObj.courseClsId)'>
+				AND  COURSE_CLS_ID = #{queryObj.courseClsId}
+			</if>
+			<if test="queryObj != null and  queryObj.ownerMajorId != null and queryObj.ownerMajorId != '' ">
+				AND  OWNER_MAJOR_ID = #{queryObj.ownerMajorId}
+			</if>
+		</where>
+	</sql>
+  <!-- ******* 排序判断  ******  
+  <sql id="orderBy">
+  	<if test="orderBy != null and orderBy!= '' ">
+  		order by  ${orderBy}
+  	</if>
+  </sql>-->
+  
+  
+  <!-- 分页条件查询  -->
+  <select id="listPage" parameterType="com.edgedo.society.queryvo.SocietySchoolCourseQuery" resultMap="BaseResultViewMap">
+  		select <include refid="Base_Column_List"/> from society_school_course 
+  		<include refid="where"/>
+  </select>
+
+	<select id="listPageCourseGloble" parameterType="com.edgedo.society.queryvo.SocietySchoolCourseQuery" resultMap="BaseResultViewMap">
+		select <include refid="Base_Column_List"/> from society_school_course
+		<include refid="where1"/>
+		AND ID not IN (
+			select COURSE_ID from society_school_course_use_globle
+			where DATA_STATE='1' AND SCHOOL_ID = #{queryObj.ownerSchoolId}
+		)
+	</select>
+
+	<select id="listPageCourseGlobleNew" parameterType="com.edgedo.society.queryvo.SocietySchoolCourseQuery" resultMap="BaseResultViewMap">
+		select <include refid="Base_Column_List"/> from society_school_course
+		<include refid="where1"/>
+		<if test='queryObj != null and  queryObj.nowSchoolId != null and @org.apache.commons.lang3.StringUtils@isNotEmpty(queryObj.nowSchoolId)'>
+			AND ID not IN (
+			select COURSE_ID from society_school_course_use_globle
+			where DATA_STATE='1' AND SCHOOL_ID = #{queryObj.nowSchoolId}
+			)
+		</if>
+	</select>
+  
+   <!-- 不分页条件查询  -->
+  <select id="listByObj" parameterType="com.edgedo.society.queryvo.SocietySchoolCourseQuery" resultMap="BaseResultViewMap">
+  		select <include refid="Base_Column_List"/> from society_school_course 
+  		<include refid="where"/>
+  </select>
+
+	<!--根据id逻辑删除课程-->
+	<select id="updateByIds" parameterType="string" >
+		update society_school_course set DATA_STATE='0'
+		where DATA_STATE='1'
+		and ID in
+		<foreach item="id" index="index" collection="list" close=")" open="(" separator=",">
+			#{id}
+		</foreach>
+	</select>
+
+	<!-- 非班级课程分页条件查询  -->
+	<select id="classNotInCourseListPage" parameterType="com.edgedo.society.queryvo.SocietyStudentQuery" resultMap="BaseResultViewMap">
+		select <include refid="Base_Column_List"/> from society_school_course
+		<include refid="where"/>
+		<if test="courseIdList != null and  courseIdList.size() > 0">
+			and ID not in
+			<foreach item="id" index="index" collection="courseIdList" separator="," open="(" close=")">
+				'${id}'
+			</foreach>
+		</if>
+	</select>
+
+	<select id="courseTablepage" parameterType="com.edgedo.society.queryvo.SocietyStudentQuery" resultMap="BaseResultViewMap">
+		select <include refid="Base_Column_List"/> from society_school_course
+		<include refid="where"/>
+		<if test="courseIdList != null and  courseIdList.size() > 0">
+			and ID not in
+			<foreach item="id" index="index" collection="courseIdList" separator="," open="(" close=")">
+				'${id}'
+			</foreach>
+		</if>
+	</select>
+
+	<select id="classYesInCourseListPage" parameterType="com.edgedo.society.queryvo.SocietyStudentQuery" resultMap="BaseResultViewMap">
+		select <include refid="Base_Column_List"/> from society_school_course
+		<include refid="where"/>
+		<if test="courseIdList != null and  courseIdList.size() > 0">
+			and ID in
+			<foreach item="id" index="index" collection="courseIdList" separator="," open="(" close=")">
+				'${id}'
+			</foreach>
+		</if>
+	</select>
+
+	<!-- 班级课程分页条件查询  -->
+	<select id="classCourseListPage" parameterType="com.edgedo.society.queryvo.SocietySchoolCourseQuery" resultMap="BaseResultViewMap">
+		select <include refid="Base_Column_List"/> from society_school_course
+		<include refid="where"/>
+		<if test="courseIdList != null and  courseIdList.size() > 0">
+			and ID in
+			<foreach item="id" index="index" collection="courseIdList" separator="," open="(" close=")">
+				'${id}'
+			</foreach>
+		</if>
+	</select>
+
+	<!-- 统计数量 -->
+	<select id="count" parameterType="com.edgedo.society.queryvo.SocietySchoolCourseQuery" resultType="Integer">
+		select count(1) count from society_school_course
+		<include refid="where"/>
+	</select>
+
+
+	<!-- 课程统计 -->
+	<select id="countCourseAllNum" resultType="Integer">
+		select count(1) count from society_school_course where DATA_STATE='1'
+	</select>
+
+	<!--根据ID逻辑删除-->
+	<select id="updateByIdNew" parameterType="string" >
+		update society_school_course set DATA_STATE='0'
+		where DATA_STATE='1'
+		and ID = #{id}
+	</select>
+
+	<!-- 非班级课程分页条件查询  -->
+	<select id="selectAllCourse" parameterType="string" resultMap="BaseResultViewMap">
+		select <include refid="Base_Column_List"/> from society_school_course
+		where  DATA_STATE='1' and OWNER_SCHOOL_ID = #{schoolId}
+		or ID in (
+			select COURSE_ID from society_school_course_use_globle where SCHOOL_ID=#{schoolId} and DATA_STATE='1'
+		)
+	</select>
+
+	<!-- 非班级课程分页条件查询  -->
+	<select id="selectBySchoolId" parameterType="String" resultType="int">
+		select count(1) from society_school_course where  DATA_STATE='1' and  OWNER_SCHOOL_ID = #{ownerSchoolId}
+	</select>
+
+<!--	根据学校id和讲师id 查出相关的课程数量-->
+	<select id="selectBySchoolIdAndTeacher" parameterType="String" resultType="int">
+		select count(1) from society_school_course
+		where  DATA_STATE='1' and OWNER_SCHOOL_ID = #{schoolId} and TEACHER_ID = #{id}
+	</select>
+
+	<select id="listBySchoolId" parameterType="string" resultMap="BaseResultViewMap">
+		select <include refid="Base_Column_List"/> from society_school_course
+		where DATA_STATE='1'
+		and OWNER_SCHOOL_ID=#{schoolId} ORDER BY ORDER_NUM ASC
+	</select>
+
+
+	<select id="selectAll" resultMap="BaseResultViewMap">
+		select <include refid="Base_Column_List"/> from society_school_course
+		where DATA_STATE='1'  ORDER BY ORDER_NUM ASC
+	</select>
+
+	<select id="listMajorId" resultMap="BaseResultViewMap">
+		select <include refid="Base_Column_List"/> from society_school_course
+		where DATA_STATE='1'
+		<if test="majorId != null and majorId != '' ">
+			and OWNER_MAJOR_ID =#{majorId}
+		</if>
+		ORDER BY ORDER_NUM ASC
+	</select>
+
+	<select id="selectCourseAllIsNoSchool" parameterType="string" resultMap="BaseResultViewMap">
+		select <include refid="Base_Column_List"/> from society_school_course
+		where DATA_STATE='1'
+		<if test="schoolId != null and schoolId != '' ">
+			and OWNER_SCHOOL_ID != #{schoolId}
+		</if>
+	</select>
+
+	<select id="selectCourseAllIsSchool" parameterType="string" resultMap="BaseResultViewMap">
+		select <include refid="Base_Column_List"/> from society_school_course
+		where DATA_STATE='1'
+		<if test="schoolId != null and schoolId != '' ">
+			and OWNER_SCHOOL_ID = #{schoolId}
+		</if>
+	</select>
+
+	<update id="updateByMajorId" parameterType="string">
+		update society_school_course set OWNER_MAJOR_NAME=#{majorName}
+		where DATA_STATE='1'
+		and OWNER_MAJOR_ID=#{majorId}
+	</update>
+
+	<update id="updateByClsId" parameterType="string">
+		update society_school_course
+		set COURSE_CLS_NAME=#{clsName},OWNER_MAJOR_NAME=#{majorName},OWNER_MAJOR_ID=#{majorId}
+		where DATA_STATE='1'
+		and COURSE_CLS_ID=#{clsId}
+	</update>
+
+	<update id="updateByTeacherId" parameterType="string">
+		update society_school_course
+		set  TEACHER_NAME=#{teacherName}
+		where DATA_STATE='1'
+		and TEACHER_ID=#{teacherId}
+	</update>
+
+	<select id="selectSchoolIdAndCourseId" parameterType="String" resultType="int">
+		select count(1) from society_school_course
+		where  DATA_STATE='1' and OWNER_SCHOOL_ID = #{schoolId} and ID = #{courseId}
+	</select>
+
+</mapper>

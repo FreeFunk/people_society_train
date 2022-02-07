@@ -1,0 +1,33 @@
+#日志配置
+logging:
+  config: log4j2-spring.xml
+  level:
+    com.edgedo: info
+#是否开启定时任务
+app.scheduling.enable: true
+#定时任务线程数量
+app.scheduling.threadnum: 10
+#是否启用mvc
+app.springmvc.enable: true
+#启用shiro 权限校验
+app.shiro.enable: true
+#微信公共服务的url
+app.commonWxServiceUrl: http://wx.qhd12328.com/wxplant
+#缓存的token时长
+app.commonTokenTimeOutSec: 1800
+#启用mybatis扫描
+app.mybatis.enable: true
+#文件存放目录
+app.fileForder: E:\societytrain
+#人脸ai服务url地址
+app.faceai.serviceUrl: http://27.128.174.240:8174
+#人脸最大图片kb
+app.faceai.maxfacelength: 50
+#压缩图片的宽度设置
+app.faceai.imgcompresswidth: 400
+#是否启用人脸识别校验
+app.studyfacecheck: true
+#全局学校ID
+app.society.defaultSchoolId: globle
+#全局学校名称
+app.society.defaultSchoolName: 手机培训宝

@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>编辑</title>
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=0">
+    <link rel="stylesheet" href="/layuiadmin/layui/css/layui.css" media="all">
+    <link rel="stylesheet" href="/layuiadmin/style/app.css" media="all">
+</head>
+<body>
+
+<div class="layui-form" lay-filter="changeClassInfo-form" id="changeClassInfo-form" style="padding: 20px 30px 0 0;">
+    <div class="layui-row">
+        <div class="layui-form-item layui-hide">
+            <label class="layui-form-label">学生id</label>
+            <div class="layui-input-block">
+                <input type="text" name="stuId" id="stuId" placeholder="请输入主键" autocomplete="off" class="layui-input">
+            </div>
+        </div>
+        <div class="layui-form-item layui-hide">
+            <label class="layui-form-label">原班级id</label>
+            <div class="layui-input-block">
+                <input type="text" name="classId" id="classId" placeholder="请输入主键" autocomplete="off" class="layui-input">
+            </div>
+        </div>
+
+        <div class="layui-form-item">
+            <label class="layui-form-label">选择班级</label>
+            <div class="layui-input-block">
+                <select name="classIdNew" id="classIdNew" lay-filter="classIdNew"  lay-search="" >
+                    <option value="">请选择转到的班级</option>
+                </select>
+            </div>
+        </div>
+    </div>
+    <div class="layui-form-item layui-hide">
+        <input type="button" lay-submit lay-filter="changeClassInfo-edit" id="changeClassInfo-edit" value="下一步">
+    </div>
+</div>
+
+<script src="/layuiadmin/layui/layui.js"></script>
+<script>
+    layui.config({
+        base: '/layuiadmin/' //静态资源所在路径
+    }).extend({
+        index: 'lib/index', //主入口模块
+        $tool:'tool'
+    }).use(['index', 'form','$tool','laydate','laytpl','transfer'], function(){
+
+        var $ = layui.$
+            ,$tool = layui.$tool
+            ,laydate = layui.laydate
+            ,admin = layui.admin
+            ,form = layui.form
+            ,laytpl = layui.laytpl
+            ,transfer = layui.transfer;
+
+
+        //初始化
+        function init() {
+            selectMajorList();
+        }
+        init();
+        //查询所有班级
+        function selectMajorList(){
+            var classIdOld = $("#classId").val();
+            admin.req({
+                url:layui.setter.basePath + "/society/societySchoolClass/selectByAllClassInfo.jsn",
+                method:'post',
+                data:{
+                    'classId':classIdOld
+                },
+                success:function(data){
+                    if(data.success){
+                        var html = "";
+                        for(var i=0;i<data.data.length;i++){
+                            if(data.data[i].id == classIdOld){
+                                html += "<option value='"+data.data[i].id+"' disabled=''>"+data.data[i].className+"</option>";
+                            }else{
+                                html += "<option value='"+data.data[i].id+"'>"+data.data[i].className+"</option>";
+                            }
+                        }
+                        $("#classIdNew").html(html);
+                        layui.form.render('select');//重新渲染表格
+                    }
+                }
+            });
+        }
+
+
+        //监听修改保存
+        form.on('submit(changeClassInfo-edit)', function(data){
+            layer.confirm('确定转出此班级吗？', function(index){
+                var index = parent.layer.getFrameIndex(window.name);//先得到当前iframe层的索引
+                var classIdOld = $('#classId').val();
+                var classIdNew = $('#classIdNew').val();
+                if (classIdNew==''){
+                    return layer.msg('请选择转到的班级!');
+                }else {
+                    admin.req({
+                        url:layui.setter.basePath +'/society/societySchoolClass/changeClassInfo.jsn',
+                        data: {
+                            'classIdOld':classIdOld,
+                            'classIdNew':classIdNew,
+                            'stuId':$('#stuId').val()
+                        },
+                        method:"post",
+                        async:false,
+                        success:function (data) {
+                            if(data.success){
+                                parent.layer.msg('转出成功', {
+                                    icon: 1
+                                });
+                                parent.layer.close(index); //再执行关闭
+                            }
+                        }
+                    });
+                }
+            });
+        });
+
+    })
+</script>
+</body>
+</html>

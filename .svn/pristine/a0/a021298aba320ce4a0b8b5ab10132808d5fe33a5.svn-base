@@ -1,0 +1,386 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>新增</title>
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=0">
+    <link rel="stylesheet" href="/layuiadmin/layui/css/layui.css" media="all">
+    <link rel="stylesheet" href="/layuiadmin/style/app.css" media="all">
+    <script type="text/javascript" src="../../../../layuiadmin/js/oos-sdk-6.0.min.js"></script>
+    <script type="text/javascript" src="../../../../layuiadmin/js/mimeutil.js"></script>
+    <script type="text/javascript" src="../../../../layuiadmin/js/pinyin/pinyin_dict_notone.js"></script>
+    <script type="text/javascript" src="../../../../layuiadmin/js/pinyin/pinyinUtil.js"></script>
+</head>
+<body>
+
+<div class="layui-form" lay-filter="SocietySchoolCourseNode-form" id="SocietySchoolCourseNode-form" style="padding: 20px 30px 0 0;">
+    <div class="layui-row">
+        <div class="layui-form-item layui-hide">
+            <label class="layui-form-label">主键</label>
+            <div class="layui-input-block">
+                <input type="text" name="id" id="id" lay-verify="required" placeholder="请输入主键" autocomplete="off" class="layui-input">
+            </div>
+        </div>
+        <input type="hidden" name="ownerCourseId" id="ownerCourseId"  autocomplete="off" class="layui-input">
+        <div class="layui-col-xs12 layui-col-sm12 layui-col-md12">
+            <div class="layui-form-item">
+                <label class="layui-form-label">章节名称</label>
+                <div class="layui-input-block">
+                    <input type="text" name="nodeName" lay-verify="required" placeholder="请输入章节名称" autocomplete="off" class="layui-input">
+                </div>
+            </div>
+        </div>
+        <input type="hidden" id="nodeTimeLength" name="nodeTimeLength" placeholder="请输入章节时长(秒)" autocomplete="off" class="layui-input">
+        <div class="layui-col-xs12 layui-col-sm12 layui-col-md12">
+            <div class="layui-form-item">
+                <label class="layui-form-label">排序号</label>
+                <div class="layui-input-block">
+                    <input type="text" name="orderNum" lay-verify="required|number" placeholder="请输入排序号" autocomplete="off" class="layui-input">
+                </div>
+            </div>
+        </div>
+        <input id="majorId" hidden type="text">
+        <input id="courseClsId" hidden type="text">
+        <div class="layui-col-xs12 layui-col-sm12 layui-col-md12">
+            <div class="layui-form-item">
+                <label class="layui-form-label">章节视频</label>
+                <button id="upload-video" class="layui-btn layui-btn-normal layuiadmin-btn-comm  layui-btn-sm"><i class="layui-icon layui-icon-upload"></i>上传文件</button>
+                <button id="copyVideoUrlButton" type="button" class="layui-btn layuiadmin-btn-comm  layui-btn-sm" data-type="copynode">
+                    <i class="layui-icon">&#xe663;</i>复制视频地址
+                </button>
+                <input type="hidden" id="fileUrl" name="fileUrl"  placeholder="请输入视频地址" autocomplete="off" class="layui-input">
+                <input type="hidden" id="fileUrlTemp" name="fileUrlTemp"  placeholder="请输入视频地址" autocomplete="off" class="layui-input">
+                <div id="fileNameId" class="layui-form-mid layui-word-aux" style="position: absolute;top: 0%;left: 28%;"></div>
+                <input id="timeLength" value="" hidden type="text"/>
+            </div>
+        </div>
+        <div class="layui-col-xs12  layui-col-sm12 layui-col-md12">
+            <div class="layui-form-item">
+                <label class="layui-form-label">上传进度</label>
+                <div class="layui-input-block">
+                    <div style="padding-top: 15px;">
+                        <div class="layui-progress" lay-showpercent="true" lay-filter="video-progress">
+                            <div class="layui-progress-bar" lay-percent="0%"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="layui-col-xs12  layui-col-sm12 layui-col-md12 layui-hide">
+            <div class="layui-form-item">
+                <label class="layui-form-label">章节视频图</label>
+                <div class="layui-input-block">
+                    <video id="videoattr" height="70px" ></video>
+                </div>
+            </div>
+        </div>
+
+        <div class="layui-form-item layui-hide">
+            <input type="button" lay-submit lay-filter="SocietySchoolCourseNode-form-edit" id="SocietySchoolCourseNode-form-edit" value="确认添加">
+        </div>
+    </div>
+</div>
+<script src="/layuiadmin/layui/layui.js"></script>
+<script>
+    layui.config({
+        base: '/layuiadmin/' //静态资源所在路径
+    }).extend({
+        index: 'lib/index' //主入口模块
+        ,$tool:'tool'
+        ,ctyun: 'ctyun/index'
+    }).use(['index', 'form','laydate','upload','$tool','ctyun','element'], function(){
+        var $ = layui.$
+            ,laydate = layui.laydate
+            ,admin  = layui.admin
+            ,upload  = layui.upload
+            ,$tool  = layui.$tool
+            ,ctyun  = layui.ctyun
+            ,element  = layui.element
+            ,form = layui.form;
+
+
+        var queryArgs = $tool.getQueryParam();//获取查询参数
+        var courseId = queryArgs['courseId'];
+        var ownerSchoolId = queryArgs['ownerSchoolId'];
+        var courseNamePinYin = queryArgs['courseNamePinYin'];
+
+        $("#ownerCourseId").val(courseId);
+
+        var BucketName = layui.setter.BucketName;
+        var accessKeyId = layui.setter.accessKeyId;
+        var secretAccessKey = layui.setter.secretAccessKey;
+        var endPoint = layui.setter.endPoint;
+        var tcloudDomain = layui.setter.tcloudDomain;
+
+        var tempFilePath = "tempfile/";
+        var tempFileName = "";
+        var guid = $tool.getGuid();
+        var initialId = "";
+        var tempMulti = [];
+        var tempMulti1 = [];
+        var MultipartUpload = {
+            Parts: []
+        };
+        var chunks = 0;
+        var currentChunk = 0;
+        var loadIndex = "";
+        var realFileName = "";
+
+        //初始化oos
+        var client;
+        function config() {
+            client = new OOS.S3({
+                accessKeyId: accessKeyId,
+                secretAccessKey: secretAccessKey,
+                endpoint: endPoint,
+                signatureVersion: 'v4', // 可选v2 或v4
+                apiVersion: '2006-03-01',
+                s3ForcePathStyle: true,
+                tempFile:''
+            });
+        }
+        config();
+
+        ctyun.loader({
+            endPoint: endPoint
+            , browse_button: "upload-video"
+            , BucketName: BucketName
+            , accessKeyId: accessKeyId
+            , secretAccessKey: secretAccessKey
+            , initial: true
+            , FilesAdded: function (uploader, files) {
+                loadIndex = parent.layer.load(1, {shade: [0.1, '#393D49'],
+                    content: '文件上传中...',
+                    success: function (layero) {
+                        layero.find('.layui-layer-content').css({
+                            'padding-top': '39px',
+                            'width': '100px'
+                        });
+                    }
+                });
+                //禁用复制课程按钮
+                $('#copyVideoUrlButton').attr('disabled',"true");
+                var fileName = files[0].name;
+                $('#fileNameId').html(fileName);
+                //动态赋值input
+                $('#nodeName').val(fileName.split('.')[0]);
+                var mineType = getMineType(files[0].name);
+                var suffix = fileName.substring(fileName.lastIndexOf("."));
+                realFileName = guid+suffix;
+                tempFileName = "video/" + ownerSchoolId+"/"+courseNamePinYin+"/"+realFileName;
+                $("#tempFileName",window.parent.document).val(tempFileName);
+                //初始化天翼云分片上传
+                client.createMultipartUpload({Bucket: BucketName,Key: tempFileName,ContentType:mineType}, function (err, data) {
+                    if (err) console.log(err, err.stack); // an error occurredw
+                    else     console.log(data);           // successful response
+                    initialId = data.UploadId;
+                    uploader.start();
+                });
+                return false;
+            }
+            ,
+            BeforeChunkUpload(uploader, file, args, chunkBlob, current) {
+                chunks = args.chunks;
+                var params = {
+                    Body: chunkBlob.getSource(),
+                    Bucket: BucketName,
+                    Key: tempFileName,
+                    PartNumber: args.chunk+1,
+                    UploadId: initialId
+                };
+                client.uploadPart(params, function (err, data) {
+                    if (err) {
+                        console.log(err, err.stack); // an error occurred
+                    } else {
+                        // MultipartUpload必须排序故放到缓存数组中
+                        // MultipartUpload.Parts.push({PartNumber: args.chunk+1, ETag: data.ETag.replace(/\"/g, "")})
+                        tempMulti[args.chunk] = data.ETag.replace(/\"/g, "");
+                        tempMulti1.push(data.ETag.replace(/\"/g, ""));
+                        currentChunk = tempMulti1.length;
+                        //设置进度条展示
+                        if(chunks>0){
+                            var process = Math.round((currentChunk/chunks)*100);
+                            element.progress('video-progress', process+'%');
+                        }
+                        if(tempMulti1.length == args.chunks){
+                            for(let index in tempMulti) {
+                                console.log(index,tempMulti[index]);
+                                MultipartUpload.Parts.push({PartNumber: Number(index)+1, ETag: tempMulti[index]})
+                            };
+                            var params = {
+                                Bucket: BucketName,
+                                Key: tempFileName,
+                                UploadId: initialId,
+                                MultipartUpload: MultipartUpload
+                            };
+                            client.completeMultipartUpload(params, function (err, data) {
+
+                                if (err) console.log(err, err.stack); // an error occurred
+                                else     console.log(data);           // successful response
+                                UploadComplete(data);
+                            });
+                        }
+                    }
+                });
+            }
+        })
+        function UploadComplete(res) {
+            if(res.Location==null){
+                layer.msg("上传失败！");
+            }else {
+                element.progress('video-progress', '100%');
+                $('#fileUrlTemp').val(tcloudDomain+'/'+res.Key);
+                $('#fileUrl').val("video/" + ownerSchoolId+"/"+courseNamePinYin+"/"+realFileName);
+                parent.layer.close(loadIndex);
+                layer.msg("上传成功！");
+            }
+        }
+
+
+        //视频拷贝
+        function copy_object() {
+            var CopyKey = "video/" + ownerSchoolId+"/"+courseNamePinYin+"/"+realFileName;
+            var CopySourceBucket = BucketName;
+            var CopySourceName = tempFileName;
+            var params = {
+                Bucket: BucketName,
+                Key: CopyKey,
+                CopySource: '/' + CopySourceBucket + '/' + encodeURIComponent(CopySourceName)
+            };
+            client.copyObject(params, function (err, data) {
+                if (err) console.log(err, err.stack); // an error occurred
+                else     console.log(data);           // successful response
+            });
+        }
+
+        //监听提交
+        form.on('submit(SocietySchoolCourseNode-form-edit)', function(data){
+            var timeLength = $('#timeLength').val();
+            if(timeLength==''){
+                if(data.field.fileUrlTemp !=''){
+                    var loadIndex =  parent.layer.load(1, {shade: [0.1, '#393D49']});
+                    // copy_object();
+                    $('#videoattr').attr('src',  data.field.fileUrlTemp);
+                    var myVideo = document.getElementById("videoattr");
+                    myVideo.addEventListener("canplaythrough", function () {
+                        var nodeTimeLength = Math.round(document.getElementById("videoattr").duration);
+                        var field = data.field; //获取提交的字段
+                        field.fileUrl = field.fileUrl;
+                        field.nodeTimeLength = nodeTimeLength;
+                        var index = parent.layer.getFrameIndex(window.name); //先得到当前iframe层的索引
+                        //提交 Ajax 成功后，关闭当前弹层并重载表格
+                        admin.req({
+                            url:layui.setter.basePath +'/society/societySchoolCourseNode/schoolsaveOrUpdate.jsn',
+                            data:field,
+                            method:"post",
+                            success:function (data) {
+                                if(data.success){
+                                    parent.layui.table.reload('SocietySchoolCourseNode-list'); //重载表格
+                                    parent.layer.close(index); //再执行关闭
+                                    parent.layer.close(loadIndex);
+                                    parent.layer.msg('编辑成功', {
+                                        icon: 1
+                                    });
+                                }else{
+                                    parent.layer.msg(data.errMsg, {
+                                    });
+                                }
+
+                            },
+                        });
+                    });
+                }else {
+                    var field = data.field; //获取提交的字段
+                    var index = parent.layer.getFrameIndex(window.name); //先得到当前iframe层的索引
+                    //提交 Ajax 成功后，关闭当前弹层并重载表格
+                    admin.req({
+                        url:layui.setter.basePath +'/society/societySchoolCourseNode/schoolsaveOrUpdate.jsn',
+                        data:field,
+                        method:"post",
+                        success:function (data) {
+                            if(data.success){
+                                parent.layui.table.reload('SocietySchoolCourseNode-list'); //重载表格
+                                parent.layer.close(index); //再执行关闭
+                                parent.layer.close(loadIndex);
+                                parent.layer.msg('编辑成功', {
+                                    icon: 1
+                                });
+                            }else{
+                                parent.layer.msg(data.errMsg, {
+                                });
+                            }
+
+                        },
+                    });
+                }
+            }else {
+                var field = data.field; //获取提交的字段
+                var index = parent.layer.getFrameIndex(window.name); //先得到当前iframe层的索引
+                field.fileUrl = $('#fileUrl').val();
+                field.nodeTimeLength = timeLength;
+                //提交 Ajax 成功后，关闭当前弹层并重载表格
+                admin.req({
+                    url:layui.setter.basePath +'/society/societySchoolCourseNode/updateCourseCopy.jsn',
+                    data:field,
+                    method:"post",
+                    success:function (data) {
+                        if(data.success){
+                            parent.layui.table.reload('SocietySchoolCourseNode-list'); //重载表格
+                            parent.layer.close(index); //再执行关闭
+                            parent.layer.close(loadIndex);
+                            parent.layer.msg('编辑成功', {
+                                icon: 1
+                            });
+                        }else{
+                            parent.layer.msg(data.errMsg, {
+                            });
+                        }
+
+                    },
+                });
+            }
+        });
+
+        //点击事件
+        var active = {
+            copynode: function(){
+                //专业id
+                var majorId = $('#majorId').val();
+                //课程分类id
+                var courseClsId = $('#courseClsId').val();
+                layer.open({
+                    type: 2
+                    ,title: '复制视频地址'
+                    ,content: 'SocietySchoolUpdateCopyCourseNodeList.html?courseId='+courseId+'&schoolId='+ownerSchoolId+'&majorId='+majorId
+                        +'&courseClsId='+courseClsId+'&courseNamePinYin='+courseNamePinYin
+                    ,maxmin: true
+                    ,area: ['400px', '450px']
+                    ,btn: ['确定复制', '取消']
+                    ,success: function(layero, index){
+                        $('#SocietySchoolCourseNode-form-edit').attr('disabled',"true");
+                        //SocietySchoolCourseNode-form-edit
+                    }
+                    ,yes: function(index, layero){
+                        var submit = layero.find('iframe').contents().find("#SocietySchoolUpdateCopyCourseNodeList-form-edit");
+                        submit.trigger('click');
+                    }
+                });
+            }
+        }
+        //绑定点击事件
+        $('.layui-btn.layuiadmin-btn-comm.layui-btn-sm').on('click', function(){
+            var type = $(this).data('type');
+            active[type] ? active[type].call(this) : '';
+        });
+
+
+        laydate.render({
+            elem: '#createTime', //指定元素
+            type:'datetime'
+        });
+    })
+</script>
+</body>
+</html>

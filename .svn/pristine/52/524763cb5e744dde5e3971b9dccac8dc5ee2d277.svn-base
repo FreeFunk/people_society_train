@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>课程管理</title>
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=0">
+    <link rel="stylesheet" href="/layuiadmin/layui/css/layui.css" media="all">
+    <link rel="stylesheet" href="/layuiadmin/style/admin.css" media="all">
+    <link rel="stylesheet" href="/layuiadmin/modules/layui_ext/dtree/dtree.css">
+    <link rel="stylesheet" href="/layuiadmin/modules/layui_ext/dtree/font/dtreefont.css">
+    <script type="text/javascript" src="../../../../layuiadmin/js/oos-sdk-6.0.min.js"></script>
+    <script type="text/javascript" src="../../../../layuiadmin/js/mimeutil.js"></script>
+    <script type="text/javascript" src="../../../../layuiadmin/js/pinyin/pinyin_dict_notone.js"></script>
+    <script type="text/javascript" src="../../../../layuiadmin/js/pinyin/pinyinUtil.js"></script>
+    <style type="text/css">
+        .layui-table-cell {
+            padding: 0 5px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="layui-fluid">
+    <div class="layui-card">
+        <div class="layui-form layui-card-header layuiadmin-card-header-auto">
+            <div class="layui-form-item">
+                <div class="layui-inline">
+                    <label class="layui-form-label">视频地址</label>
+                    <div class="layui-input-inline">
+                        <input type="text" id="fileUrl" name="Key" placeholder="请输入视频地址" autocomplete="off" class="layui-input">
+                    </div>
+                </div>
+                <div class="layui-inline">
+                    <button id="onclikButton" class="layui-btn layuiadmin-btn-comm layui-btn-sm" data-type="reload">
+                        <i class="layui-icon layui-icon-search layuiadmin-button-btn"></i>查询
+                    </button>
+                </div>
+            </div>
+        </div>
+        <div class="layui-card-body">
+            <table id="demo" lay-filter="demo"></table>
+            <script type="text/html" id="table-demo-list">
+                <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del"><i class="layui-icon layui-icon-delete"></i>删除</a>
+            </script>
+        </div>
+    </div>
+
+</div>
+<script src="/layuiadmin/layui/layui.js"></script>
+<script>
+    layui.config({
+        base: '/layuiadmin/' //静态资源所在路径
+    }).extend({
+        index:'lib/index',
+        common:'common',
+        dtree:'layui_ext/dtree/dtree',
+        ctyun: 'ctyun/index'
+    }).use(['index','table', 'form','common','dtree','ctyun','laytpl','element'], function(exports){
+        var $ = layui.$
+            ,table = layui.table
+            ,common = layui.common
+            ,admin = layui.admin
+            ,dtree = layui.dtree
+            ,element = layui.element
+            ,ctyun  = layui.ctyun
+            ,laytpl = layui.laytpl
+            ,form = layui.form;
+
+        var BucketName = layui.setter.BucketName;
+        var accessKeyId = layui.setter.accessKeyId;
+        var secretAccessKey = layui.setter.secretAccessKey;
+        var endPoint = layui.setter.endPoint;
+        var tcloudDomain = layui.setter.tcloudDomain;
+
+        //初始化oos
+        var client;
+        function config() {
+            client = new OOS.S3({
+                accessKeyId: accessKeyId,
+                secretAccessKey: secretAccessKey,
+                endpoint: endPoint,
+                signatureVersion: 'v4', // 可选v2 或v4
+                apiVersion: '2006-03-01',
+                s3ForcePathStyle: true,
+                tempFile:''
+            });
+        }
+        config();
+        var data = {}
+        function init(){
+            var params = {
+                Bucket: BucketName
+            };
+            client.listObjects(params, function(err, data) {
+                debugger
+                data = data.Contents
+                /*var getTpl = document.getElementById('demo2').innerHTML
+                    ,view = document.getElementById('view');
+                laytpl(getTpl).render(data, function(html){
+                    view.innerHTML = html;
+                });*/
+                //第一个实例
+                table.render({
+                    elem: '#demo'
+                    ,id: 'demo'
+                    ,data: data //数据接口
+                    ,page: true //开启分页
+                    ,cols: [[ //表头
+                        {type: 'numbers', fixed: 'left',title: '序号'}
+                        ,{field: 'Key', title: '视频地址',align: 'center', width:'70%',
+                            templet: function (d) {
+                                return '<a lay-event="previewVo" style="cursor: pointer;\n' +
+                                    'text-decoration: none;\n' +
+                                    '    border-bottom: 1px solid #01aaed;\n' +
+                                    '    color: #01aaed;">' +tcloudDomain+"/"+d.Key+'</a>';
+                            }
+                        }
+                        ,{field: 'LastModified', title: '上传时间',align: 'center',sort: true, width:'15%',templet: function(d){
+                                return common.DateFormat(d.LastModified,"yyyy-MM-dd HH:mm:ss");}}
+                        ,{title: '操作', width: '8%', align: 'center', fixed: 'right', toolbar: '#table-demo-list'}
+                    ]]
+                });
+                //为toolbar添加事件响应
+                table.on('tool(demo)', function(obj){ //注：tool是工具条事件名，test是table原始容器的属性 lay-filter="对应的值"
+                    /*var data = obj.data;*///获得当前行数据
+                    //区分事件
+                    switch(obj.event){
+                        case 'previewVo':
+                            previewVo(obj);
+                            break;
+                        case 'del':
+                            delVo(obj);
+                            break;
+                    };
+                });
+            })
+        }
+        init();
+        //视频预览
+        previewVo = function (obj) {
+            var addr = '<video src="'+tcloudDomain+'/'+obj.data.Key+'" controls="controls" autoplay="autoplay" width="790" height="550">您的浏览器不支持 video 标签。</video>';
+            layer.open({
+                type: 1
+                ,title: '视频预览'
+                ,maxmin: true
+                ,area: ['800px', '600px']
+                ,content: addr
+            });
+        }
+
+        //删除
+        delVo = function (obj) {
+            layer.confirm('确定删除此记录吗？', function(index){
+                layer.close(index);
+                var loadIndex =  parent.layer.load(1, {shade: [0.1, '#393D49']});
+                admin.req({
+                    url:layui.setter.basePath +'/society/societySchoolCourseNode/deleteTempFileName.jsn',
+                    data:{'tempFileName':obj.data.Key},
+                    method:"post",
+                    success:function (data) {//BucketName
+                        parent.layer.close(loadIndex);
+                        table.reload('demo',
+                            {page:
+                                    { curr: common.deleteJumpPage(obj) // 执行页面跳转方法
+                                    }
+                            }
+                        );
+                        layer.msg('删除成功', {
+                            icon: 1
+                        });
+                    },
+                });
+            });
+        }
+        //绑定点击事件
+        $('#onclikButton').on('click', function(){
+
+            var fileUrl = $('#fileUrl');
+            //执行重载
+            table.reload('demo', {
+                page: {
+                    curr: 1 //重新从第 1 页开始
+                }
+                ,where: {
+                    key: {
+                        Key: fileUrl.val()
+                    }
+                }
+            }, 'data');
+        });
+
+
+    });
+
+</script>
+</body>
+</html>
+

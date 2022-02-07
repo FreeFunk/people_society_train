@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>标题</title>
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=0">
+    <link rel="stylesheet" href="/layuiadmin/layui/css/layui.css" media="all">
+    <link rel="stylesheet" href="/layuiadmin/style/admin.css" media="all">
+</head>
+<body>
+<div class="layui-card" style="margin-bottom: -5px">
+    <div class="layui-form layui-card-header">
+        <div class="layui-form-item">
+            <div class="layui-row layui-col-md12">
+                <a href="SocietySchoolCourseCount.html">
+                    <div class="layui-col-xs6 layui-col-sm6 layui-col-md6" style="border-right: 1px solid #f0f0f0;text-align: center">
+                        <font class="font-title" style="font-weight:normal;color: #949494;">课程统计</font>
+                    </div>
+                </a>
+                <a href="SocietySchoolNodeCount.html">
+                    <div class="layui-col-xs6 layui-col-sm6 layui-col-md6" style="text-align: center" >
+                        <font class="font-title" >章节统计</font>
+                    </div>
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="layui-fluid">
+    <div class="layui-card">
+        <div class="layui-form layui-card-header layuiadmin-card-header-auto">
+            <div class="layui-form-item">
+                <div class="layui-inline">
+                    <label class="layui-form-label">课程名称</label>
+                    <div class="layui-input-inline">
+                        <input type="text" name="queryObj.courseName" placeholder="请输入课程名称" autocomplete="off" class="layui-input">
+                    </div>
+                </div>
+                <div class="layui-inline" id="monthDiv">
+                    <label class="layui-form-label" >查询</label>
+                    <div class="layui-input-inline">
+                        <input type="text" id="monthCount" name="queryObj.month" placeholder="请选择月份" autocomplete="off" class="layui-input">
+                    </div>
+                </div>
+                <div class="layui-inline" id="yearDiv" style="display: none">
+                    <label class="layui-form-label" >查询</label>
+                    <div class="layui-input-inline">
+                        <input type="text" id="yearCount" name="queryObj.year" placeholder="请选择年份" autocomplete="off" class="layui-input">
+                    </div>
+                </div>
+                <div class="layui-inline" style="margin: 0 0;    height: 58px;" >
+                    <input type="checkbox"  title="月份" name="checkOne" value="1" lay-skin="primary" lay-filter="oneCheck"  checked>
+                    <div class="layui-unselect layui-form-checkbox">
+                        <span>月份</span>
+                        <i class="layui-icon layui-icon-ok"></i>
+                    </div>
+                    <input type="checkbox"  title="年份" name="checkOne"  lay-skin="primary" value="2" lay-filter="oneCheck" >
+                    <div class="layui-unselect layui-form-checkbox">
+                        <span>年份</span>
+                        <i class="layui-icon layui-icon-ok"></i>
+                    </div>
+                </div>
+                <div class="layui-inline">
+                    <button class="layui-btn layuiadmin-btn-comm layui-btn-sm" data-type="reload" lay-submit lay-filter="SocietySchoolCourseCount-search">
+                        <i class="layui-icon layui-icon-search layuiadmin-button-btn"></i>
+                    </button>
+                </div>
+                <!--div class="layui-inline" >
+                    <button id="changeSelectState" class="layui-btn layui-btn-normal layuiadmin-btn-comm layui-btn-sm" >
+                        年份查询
+                    </button>
+                </div>-->
+            </div>
+        </div>
+        <div class="layui-card-body">
+
+            <table id="SocietySchoolCourseCount-list" lay-filter="SocietySchoolCourseCount-list"></table>
+            <script type="text/html" id="table-SocietySchoolCourseCount-list">
+                <a class="layui-btn layui-btn-normal layui-btn-xs" lay-event="printDetailed">打印结算清单</a>
+
+            </script>
+        </div>
+    </div>
+</div>
+<script src="/layuiadmin/layui/layui.js"></script>
+<script>
+    //全部课件
+    layui.config({
+        base: '/layuiadmin/' //静态资源所在路径
+    }).extend({
+        index:'lib/index',
+        common:'common'
+    }).use(['index','table', 'form','common','laydate'], function(exports){
+        var $ = layui.$
+            ,table = layui.table
+            ,common = layui.common
+            ,admin = layui.admin
+            ,laydate = layui.laydate
+            ,form = layui.form;
+
+        var month = common.DateFormat(new Date(),"yyyy-MM");
+        var year = common.DateFormat(new Date(),"yyyy-MM");
+        $('#monthCount').val(month);
+
+        form.on('checkbox(oneCheck)', function(data){
+            $("input[name='checkOne']").prop("checked", false);
+            $(this).prop("checked", true);
+            var num = $(this).val();
+            if (num=='1'){
+                $('#monthCount').val(month);
+                $('#yearDiv').css('display','none');
+                $('#yearCount').val('');
+                $('#monthDiv').css('display','');
+            }else {
+                $('#yearCount').val(year);
+                $('#yearDiv').css('display','');
+                $('#monthDiv').css('display','none');
+                $('#monthCount').val('');
+            }
+            form.render('checkbox');
+        });
+        form.render('checkbox');
+
+        $('#changeSelectState').click(function () {
+            var monthDivDis = $('#monthDiv').css('display');
+            if (monthDivDis=='none'){
+                $('#monthCount').val(month);
+                $('#yearDiv').css('display','none');
+                $('#yearCount').val('');
+                $('#monthDiv').css('display','');
+                $('#changeSelectState').text('年份查询');
+            }else {
+                $('#yearCount').val(year);
+                $('#yearDiv').css('display','');
+                $('#monthDiv').css('display','none');
+                $('#monthCount').val('');
+                $('#changeSelectState').text('月份查询');
+            }
+        });
+
+        //查询
+        form.on('submit(SocietySchoolCourseCount-search)', function(data){
+            var field= data.field;
+            var monthCount = $('#monthCount').val();
+            var yearCount = $('#yearCount').val();
+            if (monthCount!=''){
+                field['queryObj.month'] = monthCount;
+            }else if(yearCount!=''){
+                field['queryObj.year'] = yearCount;
+            }else {
+                field['queryObj.year'] = '';
+                field['queryObj.month'] = '';
+            }
+            //执行重载
+            table.reload('SocietySchoolCourseCount-list', {
+                where: field,page:{curr:1}
+            });
+        });
+
+        /*
+        * 定义表格
+        * */
+        defineTable = function () {
+            var headers = layui.admin.getTokenHeader();
+            table.render({
+                elem: '#SocietySchoolCourseCount-list' //指定原始表格的选择器（id选择器）
+                ,url:layui.setter.basePath +'/society/societySchoolCourse/countCourseInfo.jsn' //模拟接口
+                ,headers:headers
+                ,method: 'post'
+                ,parseData: function(res){ //res 即为原始返回的数据
+                    return {
+                        "code": res.success, //解析接口状态
+                        "msg": res.errMsg, //解析提示文本
+                        "count": res.totalCount, //解析数据长度
+                        "data": res.list //解析数据列表
+                    };
+                }
+                ,response: {
+                    statusCode: true //规定成功的状态码，默认：0
+                }
+                ,cols: [[//printDetailed
+                    {type: 'numbers', fixed: 'left'}
+                    ,{field: 'ownerCourseName',align: 'center', title: '课程名称'}
+                    ,{field: 'totalLessons',align: 'center', title: '课时总数'}
+                    ,{field: 'ownerSchoolName',align: 'center', title: '使用学校'}
+                    ,{field: 'schoolCompleteCount',align: 'center', title: '完成人数'}
+                    ,{title: '操作', align: 'center', fixed: 'right', toolbar: '#table-SocietySchoolCourseCount-list'}
+                ]]
+                ,autoSort: false
+                ,page: true
+                ,limit: 10
+                ,limits: [10, 20, 30,40]
+                ,text: {
+                    none: '暂无相关数据'
+                }
+            });
+            //为toolbar添加事件响应
+            table.on('tool(SocietySchoolCourseCount-list)', function(obj){ //注：tool是工具条事件名，test是table原始容器的属性 lay-filter="对应的值"
+                /*var data = obj.data;*///获得当前行数据
+                //区分事件
+                switch(obj.event){
+                    case 'printDetailed':
+                        printDetailed(obj);
+                };
+            });
+        }
+        defineTable();
+
+
+        /**
+         * 打印清单 信息
+         * 需要先填写开户银行 银行账号
+         * 还有规定的补贴标准
+         *
+         * @param obj
+         */
+        printDetailed = function(obj){
+            //
+            layer.open({
+                type: 2
+                ,title: '填写相关信息'
+                ,content: 'printDetailedInfo.html?ownerCourseId='+obj.data.ownerCourseId+'&ownerSchoolId='+obj.data.ownerSchoolId
+                ,maxmin: true
+                ,area: ['557px', '334px']
+                ,btn: ['确定', '取消']
+                ,success:function(layero,index){
+
+                }
+                ,yes: function(index, layero){
+                    //点击确认触发 iframe 内容中的按钮提交
+                    var submit = layero.find('iframe').contents().find("#printDetailedInfo-form-edit");
+                    submit.click();
+                }
+            });
+
+        }
+
+        //日期范围
+        laydate.render({
+            elem: '#monthCount'
+            ,type: 'month'
+            ,trigger: 'click'
+        });
+        laydate.render({
+            elem: '#yearCount'
+            ,type: 'year'
+            ,trigger: 'click'
+        });
+    });
+
+</script>
+</body>
+</html>
+

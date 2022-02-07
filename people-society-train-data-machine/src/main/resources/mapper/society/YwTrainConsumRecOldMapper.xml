@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.edgedo.society.mapper.YwTrainConsumRecOldMapper" >
+   
+   
+    <resultMap id="BaseResultMap" type="com.edgedo.society.entity.YwTrainConsumRecOld" >
+			<id column="ID" property="id"/>
+			<result column="STUDENT_NAME" property="studentName"/>
+			<result column="STUDENT_ID_CARD" property="studentIdCard"/>
+			<result column="STUDNET_PHONE_NUM" property="studnetPhoneNum"/>
+			<result column="TRAIN_END_TIME" property="trainEndTime"/>
+			<result column="TRAIN_LESSION_NUM" property="trainLessionNum"/>
+			<result column="IS_SIGN_AGREEMENT" property="isSignAgreement"/>
+			<result column="STUDENT_LICENCE_CODE" property="studentLicenceCode"/>
+			<result column="TRAIN_ALLOW_BILL" property="trainAllowBill"/>
+			<result column="TRAIN_MAJOR" property="trainMajor"/>
+			<result column="PERIOD" property="period"/>
+			<result column="WORK_TYPE" property="workType"/>
+			<result column="WORK_AGREE_START_TIME" property="workAgreeStartTime"/>
+			<result column="WORK_AGREE_END_TIME" property="workAgreeEndTime"/>
+			<result column="CERT_NUM" property="certNum"/>
+			<result column="CERT_REGIN_TIME" property="certReginTime"/>
+			<result column="ORGAN_CODE" property="organCode"/>
+			<result column="COMP_NAME" property="compName"/>
+			<result column="COMP_PHONE_NUM" property="compPhoneNum"/>
+			<result column="DATA_STATE" property="dataState"/>
+    </resultMap>
+   
+    <resultMap id="BaseResultViewMap" type="com.edgedo.society.queryvo.YwTrainConsumRecOldView" extends="BaseResultMap">
+    
+    </resultMap>
+  
+  
+  <!-- ******* 新增字段请修改这里  ******  -->
+  <sql id="Base_Column_List">
+	 ID, STUDENT_NAME, STUDENT_ID_CARD, STUDNET_PHONE_NUM, TRAIN_END_TIME, TRAIN_LESSION_NUM, IS_SIGN_AGREEMENT, STUDENT_LICENCE_CODE, TRAIN_ALLOW_BILL,
+	 PERIOD, WORK_TYPE, WORK_AGREE_START_TIME, WORK_AGREE_END_TIME, CERT_NUM, CERT_REGIN_TIME, ORGAN_CODE, COMP_NAME, COMP_PHONE_NUM, DATA_STATE, TRAIN_MAJOR
+  </sql>
+  
+  <!-- ******* 利用好这里的动态查询条件  ******  -->
+  <sql id="where">
+  	<where>
+		<if test='queryObj != null and  queryObj.id != null and @org.apache.commons.lang3.StringUtils@isNotEmpty(queryObj.id)'>
+		AND  ID = #{queryObj.id}
+		</if>
+		<if test='queryObj != null and  queryObj.studentName != null and @org.apache.commons.lang3.StringUtils@isNotEmpty(queryObj.studentName)'>
+		AND  STUDENT_NAME = #{queryObj.studentName}
+		</if>
+		<if test='queryObj != null and  queryObj.studentIdCard != null and @org.apache.commons.lang3.StringUtils@isNotEmpty(queryObj.studentIdCard)'>
+		AND  STUDENT_ID_CARD = #{queryObj.studentIdCard}
+		</if>
+		<if test='queryObj != null and  queryObj.studnetPhoneNum != null and @org.apache.commons.lang3.StringUtils@isNotEmpty(queryObj.studnetPhoneNum)'>
+		AND  STUDNET_PHONE_NUM = #{queryObj.studnetPhoneNum}
+		</if>
+		<if test='queryObj != null and  queryObj.trainEndTime != null'>
+			AND  TRAIN_END_TIME = #{queryObj.trainEndTime}
+		</if>
+		<if test='queryObj != null and  queryObj.trainLessionNum != null and @org.apache.commons.lang3.StringUtils@isNotEmpty(queryObj.trainLessionNum)'>
+			AND  TRAIN_LESSION_NUM = #{queryObj.trainLessionNum}
+		</if>
+		<if test='queryObj != null and  queryObj.isSignAgreement != null and @org.apache.commons.lang3.StringUtils@isNotEmpty(queryObj.isSignAgreement)'>
+		AND  IS_SIGN_AGREEMENT = #{queryObj.isSignAgreement}
+		</if>
+		<if test='queryObj != null and  queryObj.studentLicenceCode != null and @org.apache.commons.lang3.StringUtils@isNotEmpty(queryObj.studentLicenceCode)'>
+		AND  STUDENT_LICENCE_CODE = #{queryObj.studentLicenceCode}
+		</if>
+		<if test='queryObj != null and  queryObj.trainAllowBill != null and @org.apache.commons.lang3.StringUtils@isNotEmpty(queryObj.trainAllowBill)'>
+			AND  TRAIN_ALLOW_BILL = #{queryObj.trainAllowBill}
+		</if>
+		<if test='queryObj != null and  queryObj.period != null and @org.apache.commons.lang3.StringUtils@isNotEmpty(queryObj.period)'>
+		AND  PERIOD = #{queryObj.period}
+		</if>
+		<if test='queryObj != null and  queryObj.workType != null and @org.apache.commons.lang3.StringUtils@isNotEmpty(queryObj.workType)'>
+		AND  WORK_TYPE = #{queryObj.workType}
+		</if>
+		<if test='queryObj != null and  queryObj.workAgreeStartTime != null'>
+			AND  WORK_AGREE_START_TIME = #{queryObj.workAgreeStartTime}
+		</if>
+		<if test='queryObj != null and  queryObj.workAgreeEndTime != null'>
+			AND  WORK_AGREE_END_TIME = #{queryObj.workAgreeEndTime}
+		</if>
+		<if test='queryObj != null and  queryObj.certNum != null and @org.apache.commons.lang3.StringUtils@isNotEmpty(queryObj.certNum)'>
+		AND  CERT_NUM = #{queryObj.certNum}
+		</if>
+		<if test='queryObj != null and  queryObj.certReginTime != null'>
+			AND  CERT_REGIN_TIME = #{queryObj.certReginTime}
+		</if>
+		<if test='queryObj != null and  queryObj.organCode != null and @org.apache.commons.lang3.StringUtils@isNotEmpty(queryObj.organCode)'>
+		AND  ORGAN_CODE = #{queryObj.organCode}
+		</if>
+		<if test='queryObj != null and  queryObj.compName != null and @org.apache.commons.lang3.StringUtils@isNotEmpty(queryObj.compName)'>
+		AND  COMP_NAME = #{queryObj.compName}
+		</if>
+		<if test='queryObj != null and  queryObj.compPhoneNum != null and @org.apache.commons.lang3.StringUtils@isNotEmpty(queryObj.compPhoneNum)'>
+		AND  COMP_PHONE_NUM = #{queryObj.compPhoneNum}
+		</if>
+		<if test='queryObj != null and  queryObj.dataState != null and @org.apache.commons.lang3.StringUtils@isNotEmpty(queryObj.dataState)'>
+		AND  DATA_STATE = #{queryObj.dataState}
+		</if>
+  	</where>
+  	
+  </sql>
+  
+  <!-- ******* 排序判断  ******  
+  <sql id="orderBy">
+  	<if test="orderBy != null and orderBy!= '' ">
+  		order by  ${orderBy}
+  	</if>
+  </sql>-->
+  
+  
+  <!-- 分页条件查询  -->
+  <select id="listPage" parameterType="com.edgedo.society.queryvo.YwTrainConsumRecOldQuery" resultMap="BaseResultViewMap">
+  		select <include refid="Base_Column_List"/> from yw_train_consum_rec_old 
+  		<include refid="where"/>
+  </select>
+  
+   <!-- 不分页条件查询  -->
+  <select id="listByObj" parameterType="com.edgedo.society.queryvo.YwTrainConsumRecOldQuery" resultMap="BaseResultViewMap">
+  		select <include refid="Base_Column_List"/> from yw_train_consum_rec_old 
+  		<include refid="where"/>
+  </select>
+  
+  
+</mapper>

@@ -1,0 +1,286 @@
+package com.edgedo.society.service;
+		
+import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import com.edgedo.common.util.Guid;
+import com.edgedo.society.entity.SocietySchoolCourseNode;
+import com.edgedo.society.entity.SocietyStudent;
+import com.edgedo.society.entity.SocietyStudentAndNode;
+import com.edgedo.society.mapper.SocietySchoolCourseNodeMapper;
+import com.edgedo.society.mapper.SocietyStudentAndNodeMapper;
+import com.edgedo.society.mapper.SocietyStudentPractiseQuestionMapper;
+import com.edgedo.society.queryvo.*;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
+
+
+@Service
+@Transactional(propagation = Propagation.REQUIRED,rollbackFor=Exception.class)
+public class SocietyStudentAndNodeService {
+	
+	
+	@Autowired
+	private SocietyStudentAndNodeMapper societyStudentAndNodeMapper;
+	@Autowired
+	private SocietySchoolCourseNodeMapper nodeMapper;
+	@Autowired
+	private SocietySchoolCourseNodeService nodeService;
+	@Autowired
+	private SocietyStudentPractiseQuestionMapper studentPractiseQuestionMapper;
+
+	@Transactional(propagation = Propagation.REQUIRED,rollbackFor=Exception.class)
+	public List<SocietyStudentAndNodeView> listPage(SocietyStudentAndNodeQuery societyStudentAndNodeQuery){
+		//该学生所答的章节
+		List<SocietyStudentAndNodeView> stuAndnodelist = societyStudentAndNodeMapper.listByObj(societyStudentAndNodeQuery);
+		//该课程的全部章节
+		String courseId = societyStudentAndNodeQuery.getQueryObj().getOwnerCourseId();
+		String schoolId = societyStudentAndNodeQuery.getQueryObj().getOwnerSchoolId();
+		String courseAndStu  = societyStudentAndNodeQuery.getQueryObj().getOwnerStudentAndCourseId();
+		String studentId = societyStudentAndNodeQuery.getQueryObj().getStudentId();
+		List<SocietySchoolCourseNode> courseAllList =
+				nodeService.selectByCourseIdAndSchoolIdAll(schoolId,courseId);
+		List<SocietyStudentAndNodeView> studentAndNodeNewlist = new ArrayList();
+		//判断两个集合是否相同
+		if(stuAndnodelist.size() != courseAllList.size()){//不相同
+			SocietySchoolCourseNodeQuery societySchoolCourseNodeQuery = new SocietySchoolCourseNodeQuery();
+			societySchoolCourseNodeQuery.setLimit(societyStudentAndNodeQuery.getLimit());
+			societySchoolCourseNodeQuery.setPage(societyStudentAndNodeQuery.getPage());
+			societySchoolCourseNodeQuery.setStart(societyStudentAndNodeQuery.getStart());
+			societySchoolCourseNodeQuery.setSuccess(societyStudentAndNodeQuery.getSuccess());
+			societySchoolCourseNodeQuery.setTotalCount(societyStudentAndNodeQuery.getTotalCount());
+			societySchoolCourseNodeQuery.setEnd(societyStudentAndNodeQuery.getEnd());
+			societySchoolCourseNodeQuery.setTotalPage(societyStudentAndNodeQuery.getTotalPage());
+			societySchoolCourseNodeQuery.getQueryObj().setOwnerSchoolId(schoolId);
+			societySchoolCourseNodeQuery.getQueryObj().setOwnerCourseId(courseId);
+			societySchoolCourseNodeQuery.getQueryObj().setNodeName(societyStudentAndNodeQuery.getQueryObj().getNodeName());
+			societySchoolCourseNodeQuery.setOrderBy("ORDER_NUM ASC");
+			List<SocietySchoolCourseNodeView> list = nodeService.listPage(societySchoolCourseNodeQuery);
+			for(SocietySchoolCourseNodeView societySchoolCourseNodeView : list){//遍历公共的章节
+				//根据学生id 和 章节id 学校id 课程学生关联id查出学生是否学完章节
+				SocietyStudentAndNodeView societyStudentAndNodeView =
+						societyStudentAndNodeMapper.selectByNodeIdAndStuIdOne(studentId,courseAndStu,
+								courseId,societySchoolCourseNodeView.getId());
+				if(societyStudentAndNodeView == null){
+					SocietyStudentAndNodeView societyStudentAndNodeView1 = new SocietyStudentAndNodeView();
+					societyStudentAndNodeView1.setOwnerSchoolId(societySchoolCourseNodeView.getOwnerSchoolId());
+					societyStudentAndNodeView1.setOwnerSchoolName(societySchoolCourseNodeView.getOwnerSchoolName());
+					societyStudentAndNodeView1.setStudentId(studentId);
+					societyStudentAndNodeView1.setOwnerCourseId(societySchoolCourseNodeView.getOwnerCourseId());
+					societyStudentAndNodeView1.setOwnerCourseName(societySchoolCourseNodeView.getOwnerCourseName());
+					societyStudentAndNodeView1.setNodeId(societySchoolCourseNodeView.getId());
+					societyStudentAndNodeView1.setNodeName(societySchoolCourseNodeView.getNodeName());
+					societyStudentAndNodeView1.setNodeProgress(new BigDecimal(0));
+					societyStudentAndNodeView1.setStudyTimeLength(0);
+					societyStudentAndNodeView1.setLastLearnLocation(0);
+					societyStudentAndNodeView1.setLearnIsFinished("0");
+					societyStudentAndNodeView1.setNodeQuestionScore(0);
+					societyStudentAndNodeView1.setQuestionIsFinished("0");
+					societyStudentAndNodeView1.setQuestionIsPass("0");
+					studentAndNodeNewlist.add(societyStudentAndNodeView1);
+				}else {
+					studentAndNodeNewlist.add(societyStudentAndNodeView);
+				}
+			}
+			societyStudentAndNodeQuery.setLimit(societySchoolCourseNodeQuery.getLimit());
+			societyStudentAndNodeQuery.setPage(societySchoolCourseNodeQuery.getPage());
+			societyStudentAndNodeQuery.setStart(societySchoolCourseNodeQuery.getStart());
+			societyStudentAndNodeQuery.setSuccess(societySchoolCourseNodeQuery.getSuccess());
+			societyStudentAndNodeQuery.setTotalCount(societySchoolCourseNodeQuery.getTotalCount());
+			societyStudentAndNodeQuery.setEnd(societySchoolCourseNodeQuery.getEnd());
+			societyStudentAndNodeQuery.setTotalPage(societySchoolCourseNodeQuery.getTotalPage());
+		}else {
+			studentAndNodeNewlist = societyStudentAndNodeMapper.listPage(societyStudentAndNodeQuery);
+		}
+		for(SocietyStudentAndNodeView studentAndNodeView:studentAndNodeNewlist){
+			String studentAndNodeViewId = studentAndNodeView.getId();
+			String nodeId = studentAndNodeView.getNodeId();
+			SocietySchoolCourseNode node = nodeService.loadById(nodeId);
+			studentAndNodeView.setTotalQuestionNum(node.getQuestionNum());
+			//统计学员答对的正确个数
+			if(studentAndNodeViewId != null){
+				int countRightNum = studentPractiseQuestionMapper.countByStudentAndNodeId(studentAndNodeViewId);
+				studentAndNodeView.setRightNum(countRightNum);
+			}else {
+				studentAndNodeView.setRightNum(0);
+			}
+		}
+		societyStudentAndNodeQuery.setList(studentAndNodeNewlist);
+		return studentAndNodeNewlist;
+	}
+
+	public List<SocietyStudentAndNodeView> listByObj(SocietyStudentAndNodeQuery societyStudentAndNodeQuery){
+		List list = societyStudentAndNodeMapper.listByObj(societyStudentAndNodeQuery);
+		societyStudentAndNodeQuery.setList(list);
+		return list;
+	}
+
+	public List<SocietyStudentAndNodeView> selectByCourseNamelistPage(SocietyStudentAndNodeQuery societyStudentAndNodeQuery) {
+		List list = societyStudentAndNodeMapper.selectByCourseNamelistPage(societyStudentAndNodeQuery);
+		societyStudentAndNodeQuery.setList(list);
+		return list;
+	}
+	
+	/***
+	 * 新增方法
+	 * @return
+	 */
+	@Transactional(propagation = Propagation.REQUIRED,rollbackFor=Exception.class)
+	public String insert(SocietyStudentAndNode societyStudentAndNode) {
+		societyStudentAndNode.setId(Guid.guid());
+		societyStudentAndNodeMapper.insert(societyStudentAndNode);
+		return "";
+	}
+	
+	/***
+	 * 动态修改方法
+	 * @param
+	 * @return
+	 */
+	@Transactional(propagation = Propagation.REQUIRED,rollbackFor=Exception.class)
+	public String update(SocietyStudentAndNode societyStudentAndNode) {
+		societyStudentAndNodeMapper.updateById(societyStudentAndNode);
+		return "";
+	}
+	
+	/***
+	 * 全修改
+	 * @param
+	 * @return
+	 */
+	@Transactional(propagation = Propagation.REQUIRED,rollbackFor=Exception.class)
+	public String updateAll(SocietyStudentAndNode societyStudentAndNode) {
+		societyStudentAndNodeMapper.updateAllColumnById(societyStudentAndNode);
+		return "";
+	}
+	
+	
+	
+	/**
+	 * 单个删除
+	 * @param id
+	 */
+	@Transactional(propagation = Propagation.REQUIRED,rollbackFor=Exception.class)
+	public int delete(String id) {
+		
+		return societyStudentAndNodeMapper.deleteById(id);
+	}
+	
+	/**
+	 * 批量删除
+	 * @param ids
+	 */
+	@Transactional(propagation = Propagation.REQUIRED,rollbackFor=Exception.class)
+	public int deleteByIds(List<String> ids) {
+		
+		return societyStudentAndNodeMapper.deleteBatchIds(ids);
+	}
+	
+	
+	
+	/**
+	 * 加载单个
+	 * @param id
+	 */
+	public SocietyStudentAndNode loadById(String id) {
+		return societyStudentAndNodeMapper.selectById(id);
+	}
+
+//查出学生关联的小节id
+	public List<String> selectNodeIdList(SocietyStudentAndNodeQuery query) {
+		return societyStudentAndNodeMapper.selectNodeIdList( query);
+	}
+
+	public List<SocietyStudentAndNodeView> selectStudentCourse(SocietyStudentAndNodeQuery query) {
+		List<SocietyStudentAndNodeView> studentAndNodeNewlist =
+				societyStudentAndNodeMapper.selectStudentCourse( query);
+		for(SocietyStudentAndNodeView studentAndNodeView:studentAndNodeNewlist){
+			String studentAndNodeViewId = studentAndNodeView.getId();
+			//统计学员答对的正确个数
+			if(studentAndNodeViewId != null){
+				int countRightNum = studentPractiseQuestionMapper.countByStudentAndNodeId(studentAndNodeViewId);
+				studentAndNodeView.setRightNum(countRightNum);
+			}else {
+				studentAndNodeView.setRightNum(0);
+			}
+		}
+		return societyStudentAndNodeMapper.selectStudentCourse( query);
+	}
+
+	public void updateByDataState(List<String> list) {
+		societyStudentAndNodeMapper.updateByDataState(list);
+	}
+
+	public void deleteByStuId(String id) {
+		societyStudentAndNodeMapper.deleteByStuId(id);
+	}
+
+	public void updateByStuId(Map<String,String> map) {
+		societyStudentAndNodeMapper.updateByStuId(map);
+	}
+
+	public void updateByNodeIdAndNodeName(String nodeId, String nodeName) {
+		societyStudentAndNodeMapper.updateByNodeIdAndNodeName(nodeId,nodeName);
+	}
+
+	public Integer selectNodeTimeUse(SocietySchoolView societySchoolView) {
+		return societyStudentAndNodeMapper.selectNodeTimeUse(societySchoolView);
+	}
+
+
+	public SocietyStudentAndNodeView selectByStuIdAndNodeIdAndStuCourseId(String stuCourseId, String nodeId,
+																		  String studentId) {
+		return societyStudentAndNodeMapper.selectByStuIdAndNodeIdAndStuCourseId(studentId,nodeId,stuCourseId);
+	}
+
+
+	/**
+	 * @Author QiuTianZhu
+	 * @Description: 根据学生课程id  章节id  课程id 学生id 更新当前章节的记录
+	 * @Param:
+	 * @return:
+	 * @Date 2020/8/3 10:43
+	 **/
+	@Transactional(propagation = Propagation.REQUIRED,rollbackFor=Exception.class)
+	public void updateByStuNodeInfo(String stuCourseId, String nodeId,
+									String ownerCourseId, String studentId) {
+		SocietyStudentAndNodeView societyStudentAndNodeView =
+				societyStudentAndNodeMapper.selectByStuIdAndNodeIdAndStuCourseId(studentId,nodeId,stuCourseId);
+		//章节进度
+		societyStudentAndNodeView.setNodeProgress(new BigDecimal(0));
+		// 学习时长
+		societyStudentAndNodeView.setStudyTimeLength(0);
+		// 上一次学习位置
+		societyStudentAndNodeView.setLastLearnLocation(0);
+		// 最大学习位置
+		societyStudentAndNodeView.setMaxLearnLocation(0);
+		// 是否完成
+		societyStudentAndNodeView.setLearnIsFinished("0");
+		// 答题得分
+		societyStudentAndNodeView.setNodeQuestionScore(0);
+		// 答题是否通过
+		societyStudentAndNodeView.setQuestionIsFinished("0");
+		societyStudentAndNodeView.setQuestionIsPass("0");
+
+		// 审核状态  0 未通过 重学
+		societyStudentAndNodeView.setExamineState("0");
+		update(societyStudentAndNodeView);
+		// 完成时间
+		societyStudentAndNodeMapper.updateByFinishTime(societyStudentAndNodeView.getId());
+	}
+
+	@Transactional(propagation = Propagation.REQUIRED,rollbackFor=Exception.class)
+	public void updateByCourseIdAndCourseName(Map<String, String> map) {
+		societyStudentAndNodeMapper.updateByCourseIdAndCourseName(map);
+	}
+
+	@Transactional(propagation = Propagation.REQUIRED,rollbackFor=Exception.class)
+	public void updateByStuCoIdAndNodeId(String stuCourseId, String nodeId) {
+		societyStudentAndNodeMapper.updateByStuCoIdAndNodeId(stuCourseId,nodeId);
+	}
+}

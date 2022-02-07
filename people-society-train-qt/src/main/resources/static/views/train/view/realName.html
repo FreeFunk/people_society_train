@@ -1,0 +1,57 @@
+<section class="aui-flexView">
+    <header class="aui-navBar0 aui-navBar-fixed b-line">
+        <!--<a href="javascript:;" class="aui-navBar-item">
+            <i class="icon icon-return"></i>
+        </a>-->
+        <div class="aui-center">
+            <span class="aui-center-title">实名认证</span>
+        </div>
+        <span ng-click="changePage('/login')" class="aui-navBar-item">
+           登录
+        </span>
+    </header>
+
+    <section class="aui-scrollView" style="padding: 1rem">
+        <div class="aui-flexxx b-line">
+            <div class="aui-invoice-name">学员姓名</div>
+            <div class="xx_box"><input type="text" ng-value="studentInfo.studentName" disabled></div>
+        </div>
+
+        <div class="aui-flexxx b-line">
+            <div class="aui-invoice-name">身份证号</div>
+            <div class="xx_box"><input type="text" ng-value="studentInfo.studentIdCardNum" disabled></div>
+        </div>
+
+        <div class="blank5"></div>
+
+        <form action="" method="post" id="studentRealNameForm">
+
+            <div style="width: 90%; margin: auto" >
+                <div class="rz"  >
+                    <input type="hidden" id="idCardImage" ng-model="realNameObj.idCardImage" name="idCardImage"/>
+                    <img id="idCardImageShow" src="images/zhengmian.jpg" ng-click="updateLoadIdCard()">
+                    <input onChange="uploadImageFile(this,'idCardImage',false,1200,false)" type="file" id="uploadIdCardImage" accept="image/*" style="display: none"/>
+                </div>
+                <div class="ts">身份证正面上传(<span style="color: red;">如图例横向拍摄</span>)</div>
+            </div>
+
+            <div class="blank10"></div>
+
+            <div style="width: 90%; margin: auto">
+                <div class="rz" >
+                    <input type="hidden" id="faceImageUrl" ng-model="realNameObj.faceImageUrl" name="faceImageUrl" />
+                    <img id="faceImageUrlShow" style="width:215px;height: 255px;" src="images/renlian.png" ng-click="updateLoadFacePhoto()">
+                    <input onChange="uploadImageFile(this,'faceImageUrl',false,800,false)" type="file" id="uploadFaceImageUrl" accept="image/*" style="display: none" capture="user"/>
+                </div>
+                <div class="ts">人脸拍照</div>
+            </div>
+        </form>
+        <div style="color: red;width: 90%;margin: auto;margin-top: 10px;" ng-bind="realNameObj.failReason"></div>
+
+       <div class="blank10"></div>
+       <Div style="width: 90%; margin: auto">
+           <button class="aui-sign-login" ng-show="checkCount==10&&realNameState!='pass'" ng-click="studentRealName()">立即提交</button>
+       </Div>
+
+    </section>
+</section>

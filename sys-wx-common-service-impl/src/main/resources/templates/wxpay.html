@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>支付中心</title>
+    <meta name="renderer" content="webkit">
+    <meta http-equiv = "X-UA-Compatible" content = "IE=edge,chrome=1" />
+    <script type="text/javascript" src="http://res.wx.qq.com/open/js/jweixin-1.0.0.js"></script>
+
+</head>
+<body style="background:#f3f3f3">
+<div style="display: none">
+<span id="appId" th:text="${wxConfig.appId}" ></span>
+<span id="timestamp" th:text="${wxConfig.timestamp}" ></span>
+<span id="nonceStr" th:text="${wxConfig.nonceStr}" ></span>
+<span id="signature" th:text="${wxConfig.signature}" ></span>
+
+<span id="timeStamp2" th:text="${prepayResult.timeStamp}" ></span>
+<span id="nonceStr2" th:text="${prepayResult.nonceStr}" ></span>
+<span id="packageValue" th:text="${prepayResult.packageValue}" ></span>
+<span id="signType" th:text="${prepayResult.signType}" ></span>
+<span id="paySign" th:text="${prepayResult.paySign}" ></span>
+<span id="success_url" th:text="${prepayResult.success_url}" ></span>
+<span id="fail_url" th:text="${prepayResult.fail_url}" ></span>
+</div>
+</body>
+<script type="text/javascript">
+    var appId = document.getElementById("appId").innerText;
+    var timestamp = document.getElementById("timestamp").innerText;
+    var nonceStr = document.getElementById("nonceStr").innerText;
+    var signature = document.getElementById("signature").innerText;
+    wx.config({
+//            debug: true,
+        appId: appId , // 必填，公众号的唯一标识
+        timestamp:timestamp , // 必填，生成签名的时间戳
+        nonceStr: nonceStr, // 必填，生成签名的随机串
+        signature: signature,// 必填，签名，见附录1
+        jsApiList: ['chooseWXPay'] // 必填，需要使用的JS接口列表，所有JS接口列表见附录2
+    });
+    var timeStamp2 = document.getElementById("timeStamp2").innerText;
+    var nonceStr2 = document.getElementById("nonceStr2").innerText;
+    var packageValue = document.getElementById("packageValue").innerText;
+    var signType = document.getElementById("signType").innerText;
+    var paySign = document.getElementById("paySign").innerText;
+    var success_url = document.getElementById("success_url").innerText;
+    var fail_url = document.getElementById("fail_url").innerText;
+
+    wx.ready(function(){
+        wx.chooseWXPay({
+            timestamp: timeStamp2, // 支付签名时间戳，注意微信jssdk中的所有使用timestamp字段均为小写。但最新版的支付后台生成签名使用的timeStamp字段名需大写其中的S字符
+            nonceStr: nonceStr2, // 支付签名随机串，不长于 32 位
+            package: packageValue, // 统一支付接口返回的prepay_id参数值，提交格式如：prepay_id=***）
+            signType: signType, // 签名方式，默认为'SHA1'，使用新版支付需传入'MD5'
+            paySign: paySign, // 支付签名
+            success: function(res){
+                //成功跳转url
+                window.location.href = success_url;
+            },
+            cancel:function(res){
+                //失败跳转url
+                window.location.href = fail_url;
+            }
+        });
+    });
+</script>
+</html>
+

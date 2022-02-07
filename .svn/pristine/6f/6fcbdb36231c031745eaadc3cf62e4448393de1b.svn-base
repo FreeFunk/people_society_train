@@ -1,0 +1,55 @@
+
+<link href="images/loginweb/layer.css?v=1" rel="stylesheet" type="text/css"/>
+<link href="images/loginweb/layui.css?v=1" rel="stylesheet" type="text/css"/>
+<link href="images/loginweb/admin.css?v=1" rel="stylesheet" type="text/css"/>
+<link href="images/loginweb/login.css?v=1" rel="stylesheet" type="text/css"/>
+<img class="img1 littleimg" src="images/loginweb/gongjiao.png">
+<img class="img2 littleimg" src="images/loginweb/zuoye.png">
+<img class="img3 littleimg" src="images/loginweb/personrelation.png">
+<img class="img4 littleimg" src="images/loginweb/fangxiangpan.png">
+<img class="img5 littleimg" src="images/loginweb/backicon.png">
+<div class="layadmin-user-login layadmin-user-display-show" id="LAY-user-login" style="display: none;">
+
+	<div class="layadmin-user-login-main" style="top: 27%;">
+		<div class="layadmin-user-login-box layadmin-user-login-header">
+			<h2>基于人脸识别的从业人员安全培训平台</h2>
+		</div>
+
+		<div class="layadmin-user-login-box layadmin-user-login-body layui-form">
+	<form action="" id="studentLoginForm" >
+			<div class="layui-form-item">
+				<label class="layadmin-user-login-icon layui-icon layui-icon-username" for="LAY-user-login-username"></label>
+				<input type="text" id="LAY-user-login-username" name="studentPhoneNum" ng-model="studentPhoneNum" lay-verify="required" placeholder="用户名" class="layui-input">
+			</div>
+			<div class="layui-form-item">
+				<label class="layadmin-user-login-icon layui-icon layui-icon-password" for="LAY-user-login-password"></label>
+				<input type="password" name="password" id="LAY-user-login-password" ng-model="password" lay-verify="required" placeholder="密码" class="layui-input">
+			</div>
+			<div class="layui-form-item">
+				<input type="checkbox" name="remember_user" id="remember_user" lay-skin="primary" style="margin-bottom: 10px;" title="记住用户名和密码" /></label>
+				<a style="color: white" href="javascript:void(0)" ng-click="gotoRegisterPage()">立即注册</a>
+			</div>
+	</form>
+			<!--<div class="layui-form-item">
+              <label class="layadmin-user-login-icon layui-icon layui-icon-picture" for="LAY-user-login-password"></label>
+              <input id="imgCode" name="imgCode" class="layui-input" placeholder="验证码" lay-verify="required" maxlength="4" style="width:60%;float:left">
+              <img align="middle" id="imgCode_img" style="width:38%;float:right;height:38px;cursor:pointer" title="验证码，如看不清请点击刷新" src="/ptadmin/Login/getImageCode.jsn">
+            </div>
+            <div class="layui-form-item">
+              <label class="layadmin-user-login-icon layui-icon layui-icon-picture" for="LAY-user-login-password"></label>
+              <input id="imgCode2" name="imgCode2" class="layui-input" placeholder="验证码" lay-verify="required" maxlength="4" style="width:60%;float:left">
+              <img align="middle" id="imgCode_img2" style="width:38%;float:right;height:38px;cursor:pointer" title="验证码，如看不清请点击刷新" src="/ptadmin/Login/getImageCode2.jsn">
+            </div>-->
+			<div class="layui-form-item">
+				<button id="loginButton" ng-click="studentLogin()" class="layui-btn layui-btn-fluid" lay-submit lay-filter="LAY-user-login-submit">登 入</button>
+			</div>
+		</div>
+	</div>
+
+	<div class="layui-trans layadmin-user-login-footer">
+
+
+	</div>
+
+
+</div>

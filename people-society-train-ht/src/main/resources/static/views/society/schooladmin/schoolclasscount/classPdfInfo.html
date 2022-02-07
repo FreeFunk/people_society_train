@@ -1,0 +1,637 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>学员课程进度统计,学校管理员页面</title>
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=0">
+    <link rel="stylesheet" href="/layuiadmin/layui/css/layui.css" media="all">
+    <link rel="stylesheet" href="/layuiadmin/style/admin.css" media="all">
+    <style type="text/css">
+        .officialSeal{
+            height: 124px;
+            z-index: 9;
+            position: absolute;
+            opacity: 1.8;
+            transform: rotate(-45deg);
+            margin-left: 32%;
+            border: none;
+            margin-top: -34px;
+        }
+        .officialSealFourth{
+            opacity: 1.8;
+            transform: rotate(-45deg);
+            margin-left: 2%;
+            height: 133px;
+            border: none;
+            margin-top: -71px;
+        }
+        .layui-table td{
+            border:0.5px solid black;
+        }
+        body,td,th {color: black;}
+        .bodyDiv{
+            width: 60%;
+            text-align: center;
+            margin-left: 15%;
+            margin-bottom: 0.6%;
+            page-break-before:left;
+        }
+        .bodyTitle{
+            font-size: 40px;
+            font-family: monospace;
+            position: relative;
+            top: 24%;
+            font-weight: 700;
+        }
+        .bodyTitleStyInfoDiv{
+            font-size: 18px;
+            font-family: monospace;
+            position: relative;
+            top: 52%;
+            left: 27%;
+            font-weight: 700;
+        }
+        .bodyTitleDiv{
+            width: 19%;
+            font-size: 16px;
+            font-family: monospace;
+            position: relative;
+            top: 80%;
+            left: 70%;
+            font-weight: 700;
+        }
+        .bodyTitleStuInfo{
+            text-align: left;
+            margin-bottom: 2%;
+        }
+        .bodySecondTitle{
+            font-family: monospace;
+            font-size: 24px;
+            position: relative;
+            top: 5%;
+        }
+        .bodySecondTitleDiv{
+            text-align: left;
+            position: relative;
+            left: 3.5%;
+            top: 6%;
+        }
+        .bodyThirdTitleDiv{
+            position: relative;
+            left: 3.5%;
+            top: 5.4%;
+        }
+        .bodyThirTitle{
+            font-family: monospace;
+            font-size: 16px;
+            position: relative;
+            left: 8%;
+            top: 6%;
+            width: 85%;
+        }
+        .bodyThirTableDiv{
+            position: relative;
+            left: 8%;
+            top: 6.4%;
+            width: 85%;
+        }
+        .officialSealThird{
+            position: absolute;
+            z-index: 99;
+            opacity: 1.8;
+            transform: rotate(-45deg);
+            margin-left: 19%;
+            height: 97px;
+            border: none;
+            margin-top: 39px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="layui-fluid">
+    <div class="layui-inline " style="left: 91%;position: fixed">
+        <button type="button" class="layui-btn layuiadmin-btn-comm layui-btn-sm" onclick="exportData()">
+            <i class="layui-icon layui-icon-export layuiadmin-button-btn"></i>导出
+        </button>
+    </div>
+    <div class="layui-card bodyDiv" >
+
+        <div style="height: 1050px">
+            <div class="bodyTitle">培训档案</div>
+            <div class="bodyTitleStyInfoDiv">
+                <p class="bodyTitleStuInfo" id="schoolNameFirst"></p>
+                <p class="bodyTitleStuInfo" id="classCodeFirst"></p>
+            </div>
+            <div class="bodyTitleDiv">
+                <p class="bodyTitleStuInfo" id="createTimeFirst"></p>
+            </div>
+
+        </div>
+    </div>
+    <div class="layui-card bodyDiv" style="width: 60%;"  >
+
+        <div style="height: 700px;">
+            <div class="bodySecondTitle" id="secondTitle"></div>
+            <div class="bodySecondTitleDiv" style="width: 93%;">
+                <table class="layui-table" style="border:1px solid black;">
+                    <tr>
+                        <td style="width: 14%;">施训单位</td>
+                        <td colspan="4"><p id="secondschoolName"></p></td>
+                        <td colspan="2">班次号</td>
+                        <td><p id="secondClassCode"></p></td>
+                    </tr>
+                    <tr>
+                        <td>培训平台</td>
+                        <td colspan="8"><p id="secondStudetPhone"></p></td>
+                    </tr>
+                    <tr>
+                        <td>培训工种</td>
+                        <td colspan="2">课程名</td>
+                        <td>计划课时</td>
+                        <td>班级人数</td>
+                        <td colspan="2">培训开始时间</td>
+                        <td colspan="2">培训结束时间</td>
+                    </tr>
+                    <tr>
+                        <td><p id="secondMajor"></p></td>
+                        <td colspan="2"><p id="secondCourseName"></p></td>
+                        <td><p id="secondCourseLength"></p></td>
+                        <td><p id="secondClassPerson"></p></td>
+                        <td colspan="2"><p id="secondClassStartTime"></p></td>
+                        <td colspan="2"><p id="secondClassEndTime"></p></td>
+                    </tr>
+                    <tr>
+                        <td colspan="10" style="text-align: center">培训在线抽查记录</td>
+                    </tr>
+                    <tr>
+                        <td style="width: 11%;">抽查阶段</td>
+                        <td style="width: 10%;">抽查方式</td>
+                        <td style="width: 15%;">抽查时间</td>
+                        <td >实际参训人数</td>
+                        <td >学员身份核实</td>
+                        <td >教师身份核实</td>
+                        <td style="width: 13%;">班级完成进度</td>
+                        <td >检查人签字</td>
+                    </tr>
+                    <tr style="height: 71px;">
+                        <td ><p id="secondStudyPeo"></p></td>
+                        <td ><p id="secondQueryMode"></p></td>
+                        <td ><p id="secondCreateTime"></p></td>
+                        <td ><p id="secondClassActPerson"></p></td>
+                        <td >已核实</td>
+                        <td >已核实</td>
+                        <td ><p id="secondClassStudy"></p></td>
+                        <td ><img style="max-width: 142px;position: absolute" class="officialSealFourth" src="/layuiadmin/images/hege.png"></td>
+                    </tr>
+                    <tr style="height: 178px;">
+                        <td >抽查人员单位（部门）负责人签字</td>
+                        <td colspan="8"><p style="position: absolute;bottom: 6%;right: 22%;">年&nbsp;月&nbsp;日</p></td>
+                    </tr>
+                </table>
+
+            </div>
+        </div>
+    </div>
+    <div class="layui-card bodyDiv" >
+
+        <div style="height: 1050px">
+            <img style="max-width: 142px;" class="officialSealThird" src="/layuiadmin/images/hege.png">
+            <div class="bodyThirdTitleDiv" style="width: 93%;">
+                <table class="layui-table" id="thirdTable" style="border:1px solid black;">
+
+                </table>
+            </div>
+        </div>
+    </div>
+    <div  id="thirdTableTwoDiv" style="display: none" >
+
+        <div style="height: 1050px">
+            <div class="bodyThirdTitleDiv" style="width: 93%;">
+                <table class="layui-table" id="thirdTableTwo" style="border:1px solid black;">
+
+                </table>
+            </div>
+        </div>
+    </div>
+    <div  id="thirdTableThreeDiv" style="display: none" >
+
+        <div style="height: 1050px">
+            <div class="bodyThirdTitleDiv" style="width: 93%;">
+                <table class="layui-table" id="thirdTableThree" style="border:1px solid black;">
+
+                </table>
+            </div>
+        </div>
+    </div>
+    <div id="thirdTableFourDiv" style="display: none" >
+
+        <div style="height: 1050px">
+            <div class="bodyThirdTitleDiv" style="width: 93%;">
+                <table class="layui-table" id="thirdTableFour" style="border:1px solid black;">
+
+                </table>
+            </div>
+        </div>
+    </div>
+    <div class="layui-card bodyDiv" >
+
+        <div style="height: 1050px">
+            <div class="bodyThirTitle">
+                <img style="max-width: 142px;" class="officialSeal" src="/layuiadmin/images/hege.png">
+            </div>
+            <div class="bodyThirTableDiv">
+                <table class="layui-table" id="FourthTable" style="border:1px solid black;">
+
+                </table>
+            </div>
+        </div>
+    </div>
+    <div id="nodeListDivSecond"  style="display: none" >
+        <div style="height: 1050px">
+            <div class="bodyThirTableDiv">
+                <table class="layui-table" id="nodeListSecond" style="border:1px solid black;">
+
+                </table>
+            </div>
+        </div>
+    </div>
+    <div id="nodeListDivThird" style="display: none" >
+        <div style="height: 1050px">
+            <div class="bodyThirTableDiv">
+                <table class="layui-table" id="nodeListThird" style="border:1px solid black;">
+
+                </table>
+            </div>
+        </div>
+    </div>
+    <div id="nodeListDivFourth" style="display: none" >
+        <div style="height: 1050px">
+            <div class="bodyThirTableDiv">
+                <table class="layui-table" id="nodeListFourth" style="border:1px solid black;">
+
+                </table>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<script src="/layuiadmin/layui/layui.js"></script>
+<!--<script src="https://cdn.bootcdn.net/ajax/libs/exif-js/2.3.0/exif.js"></script>-->
+<script>
+    layui.config({
+        base: '/layuiadmin/' //静态资源所在路径
+    }).extend({
+        index:'lib/index',
+        common:'common',
+        $tool:'tool',
+        html2canvas: 'layui_ext/html2canvas/html2canvas',
+        jspdf: 'layui_ext/jspdf/jspdf.debug'
+    }).use(['index','common','excel','$tool','html2canvas','jspdf'], function(exports){
+        var $ = layui.$
+            ,common = layui.common
+            ,$tool = layui.$tool
+            ,html2canvas = layui.html2canvas
+            ,jspdf = layui.jspdf
+            ,admin = layui.admin;
+
+        var queryArgs = $tool.getUrlParams();//获取查询参数
+        var classId = queryArgs.id;
+        var className = queryArgs.className;
+        var num = 2;
+
+        //动态赋值
+        function init(){
+
+            var loadIndex =  layer.load(1, {shade: [0.1, '#393D49']});
+            admin.req({
+                url:layui.setter.basePath +'/society/societySchoolClass/classDetailedInfoShow.jsn',
+                data:{
+                    'classId':classId
+                },
+                method:"post",
+                success:function (data) {
+                    debugger
+                    console.log(data.data);
+                    //第一部分
+                    firstData(data.data.first);
+                    //第二部分
+                    secondData(data.data.second);
+                    //第三部分
+                    thirdData(data.data.third);
+                    //第四部分
+                    fourthData(data.data.fourth);
+
+                    layer.close(loadIndex);
+                }
+            });
+        }
+        init();
+
+
+        function firstData(data){
+            //schoolNameFirst classCodeFirst createTimeFirst
+            $('#schoolNameFirst').html('培训主体：'+data.ownerSchoolName);
+            $('#classCodeFirst').html('班次：'+data.classCode);
+            $('#createTimeFirst').html(data.createFileTime);
+        }
+
+        function secondData(data){
+            //secondStudetName secondTitle
+            $('#secondschoolName').html(data.ownerSchoolName);
+            //secondStudetSex
+            $('#secondClassCode').html(data.classCode);
+            //secondStudentFace
+            $('#secondStudetPhone').html(data.platformName);
+            //secondStudetPhone
+            $('#secondMajor').html(data.ownerMajorName);
+            //secondStudetIdCard
+            $('#secondCourseName').html(data.courseName);
+            //secondStudetCreateTime
+            $('#secondCourseLength').html(data.courseLength);
+            //secondStudetStudyNum
+            $('#secondClassPerson').html(data.classTotalPerson);
+            //secondClassName
+            $('#secondClassStartTime').html(data.classStartTimeStr);
+            //secondClassCode
+            $('#secondClassEndTime').html(data.classEndTimeStr);
+            //secondClassPeoTime
+            $('#secondStudyPeo').html(data.queryTime);
+            //secondStudyPeoTime
+            $('#secondQueryMode').html(data.queryMode);
+            //secondStudyMode
+            $('#secondCreateTime').html(data.createFileTime);
+            //secondCourseMode
+            $('#secondClassActPerson').html(data.actualPerson);
+            $('#secondClassStudy').html(data.classProgre);
+        }
+        function thirdData(data){
+            //thirdTable thirdTableTwo thirdTableThree thirdTableFour
+            var html = '<tr>\n' +
+                '<td >姓名</td>\n' +
+                '<td >性别</td>\n' +
+                '<td >身份证号</td>\n' +
+                '<td >人员类别</td>\n' +
+                '<td >学习情况</td>\n' +
+                '<td >证书类别</td>\n' +
+                '<td >联系电话</td>\n' +
+                '</tr>';
+            var thirdTableTwo = '';
+            var thirdTableThree = '';
+            var thirdTableFour = '';
+            $.each(data.stuClassList, function(i,val){
+                if(i<=20){
+                    html = html+'<tr>\n' +
+                        '<td >'+val.studentName+'</td>\n' +
+                        '<td >'+val.sex+'</td>\n' +
+                        '<td >'+val.studentIdCardNum+'</td>\n' +
+                        '<td >'+val.studentType+'</td>\n' +
+                        '<td >'+val.studyInfo+'</td>\n' +
+                        '<td >'+val.cefiType+'</td>\n' +
+                        '<td >'+val.studentPhone+'</td>\n' +
+                        '</tr>';
+                }else if(i>=21 & i<=41){
+                    thirdTableTwo = thirdTableTwo+'<tr>\n' +
+                        '<td >'+val.studentName+'</td>\n' +
+                        '<td >'+val.sex+'</td>\n' +
+                        '<td >'+val.studentIdCardNum+'</td>\n' +
+                        '<td >'+val.studentType+'</td>\n' +
+                        '<td >'+val.studyInfo+'</td>\n' +
+                        '<td >'+val.cefiType+'</td>\n' +
+                        '<td >'+val.studentPhone+'</td>\n' +
+                        '</tr>';
+                }else if(i>=42 & i<=62){
+                    thirdTableThree = thirdTableThree+'<tr>\n' +
+                        '<td >'+val.studentName+'</td>\n' +
+                        '<td >'+val.sex+'</td>\n' +
+                        '<td >'+val.studentIdCardNum+'</td>\n' +
+                        '<td >'+val.studentType+'</td>\n' +
+                        '<td >'+val.studyInfo+'</td>\n' +
+                        '<td >'+val.cefiType+'</td>\n' +
+                        '<td >'+val.studentPhone+'</td>\n' +
+                        '</tr>';
+                }else if(i>=63 & i<=83){
+                    thirdTableFour = thirdTableFour+'<tr>\n' +
+                        '<td >'+val.studentName+'</td>\n' +
+                        '<td >'+val.sex+'</td>\n' +
+                        '<td >'+val.studentIdCardNum+'</td>\n' +
+                        '<td >'+val.studentType+'</td>\n' +
+                        '<td >'+val.studyInfo+'</td>\n' +
+                        '<td >'+val.cefiType+'</td>\n' +
+                        '<td >'+val.studentPhone+'</td>\n' +
+                        '</tr>';
+                }
+
+            });
+            $('#thirdTable').html(html);
+            if(thirdTableTwo!=''){//layui-card bodyDiv
+                num = num+1;
+                $('#thirdTableTwoDiv').addClass("layui-card bodyDiv");
+                $('#thirdTableTwoDiv').css('display','block');
+                $('#thirdTableTwo').html(thirdTableTwo);
+            }
+            if(thirdTableThree!=''){
+                num = num+1;
+                $('#thirdTableThreeDiv').addClass("layui-card bodyDiv");
+                $('#thirdTableThreeDiv').css('display','block');
+                $('#thirdTableThree').html(thirdTableThree);
+
+            }
+            if(thirdTableFour!=''){
+                num = num+1;
+                $('#thirdTableFourDiv').addClass("layui-card bodyDiv");
+                $('#thirdTableFourDiv').css('display','block');
+                $('#thirdTableFour').html(thirdTableFour);
+            }
+        }
+        function fourthData(data){
+            //FourthTable
+            var html = '<tr>\n' +
+                '        <td>课程名称</td>\n' +
+                '        <td colspan="3">'+data.courseName+'</td>\n' +
+                '</tr>\n' +
+                ' <tr>\n' +
+                '         <td>序号</td>\n' +
+                '         <td>课程内容</td>\n' +
+                '         <td>课时</td>\n' +
+                '</tr>';
+            var htmlTableSecond = '';
+            var htmlTableThird = '';
+            var htmlTableFourth = '';
+            $.each(data.nodeList, function(i,val){
+
+                if(i<=20){
+                    html = html+'<tr>\n' +
+                        '   <td>'+Number(i+1)+'</td>\n' +
+                        '   <td>'+val.nodeName+'</td>\n' +
+                        '   <td>1</td>\n' +
+                        '</tr>';
+                }else if(i>=21 & i<=41){
+                    htmlTableSecond = htmlTableSecond+'<tr>\n' +
+                        '   <td style="width: 18.7%;">'+Number(i+1)+'</td>\n' +
+                        '   <td style="width: 49.8%;">'+val.nodeName+'</td>\n' +
+                        '   <td style="width: 18.7%;">1</td>\n' +
+                        '</tr>';
+                }else if(i>=42 & i<=62){
+                    htmlTableThird = htmlTableThird+'<tr>\n' +
+                        '   <td style="width: 18.7%;">'+Number(i+1)+'</td>\n' +
+                        '   <td style="width: 49.8%;">'+val.nodeName+'</td>\n' +
+                        '   <td style="width: 18.7%;">1</td>\n' +
+                        '</tr>';
+                }
+
+            });
+            $('#FourthTable').html(html);
+            if(htmlTableSecond!=''){
+                num = num+1;
+                $('#nodeListDivSecond').addClass("layui-card bodyDiv");
+                $('#nodeListDivSecond').css('display','block');
+                $('#nodeListSecond').html(htmlTableSecond);
+            }
+            if(htmlTableThird!=''){
+                num = num+1;
+                $('#nodeListDivThird').addClass("layui-card bodyDiv");
+                $('#nodeListDivThird').css('display','block');
+                $('#nodeListThird').html(htmlTableThird);
+
+            }
+            if(htmlTableFourth!=''){
+                num = num+1;
+                $('#nodeListDivFourth').addClass("layui-card bodyDiv");
+                $('#nodeListDivFourth').css('display','block');
+                $('#nodeListFourth').html(htmlTableFourth);
+            }
+        }
+        exportData = function () {
+            var loadIndex =  parent.layer.load(1, {shade: [0.1, '#393D49']});
+            window.pageYOffset = 0;
+            document.documentElement.scrollTop = 0;
+            document.body.scrollTop = 0;
+            var pdf = new jsPDF('', 'pt', 'a4');
+            var flag1 = false;
+            var pageData1;
+            var imgHeight1;
+            html2canvas(document.getElementsByClassName('layui-card bodyDiv')[0],{useCORS:true,allowTaint : false, taintTest: true,scale: 2}).then(function (canvas) {
+                var contentWidth = canvas.width;
+                var contentHeight = canvas.height;
+                imgHeight1 = 592.28/contentWidth * contentHeight;
+                pageData1 = canvas.toDataURL('image/jpeg', 1.0);
+                flag1 = true;
+            })
+            var flag2 = false;
+            var pageData2;
+            var imgHeight2;
+            html2canvas(document.getElementsByClassName('layui-card bodyDiv')[1],{useCORS:true,allowTaint : false, taintTest: true,scale: 2}).then(function (canvas) {
+                var contentWidth = canvas.width;
+                var contentHeight = canvas.height;
+                imgHeight2 = 592.28/contentWidth * contentHeight;
+                pageData2 = canvas.toDataURL('image/jpeg', 1.0);
+                flag2 = true;
+            })
+            var flag3 = false;
+            var pageData3;
+            var imgHeight3;
+            html2canvas(document.getElementsByClassName('layui-card bodyDiv')[2],{useCORS:true,allowTaint : false, taintTest: true,scale: 2}).then(function (canvas) {
+                var contentWidth = canvas.width;
+                var contentHeight = canvas.height;
+                imgHeight3 = 592.28/contentWidth * contentHeight;
+                pageData3 = canvas.toDataURL('image/jpeg', 1.0);
+                flag3 = true;
+            })
+            var flag4 = false;
+            var pageData4;
+            var imgHeight4;
+            html2canvas(document.getElementsByClassName('layui-card bodyDiv')[3],{useCORS:true,allowTaint : false, taintTest: true,scale: 2}).then(function (canvas) {
+                var contentWidth = canvas.width;
+                var contentHeight = canvas.height;
+                imgHeight4 = 592.28/contentWidth * contentHeight;
+                pageData4 = canvas.toDataURL('image/jpeg', 1.0);
+                flag4 = true;
+            })
+            var flag5 = false;
+            var pageData5;
+            var imgHeight5;
+            html2canvas(document.getElementsByClassName('layui-card bodyDiv')[4],{useCORS:true,allowTaint : false, taintTest: true,scale: 2}).then(function (canvas) {
+                var contentWidth = canvas.width;
+                var contentHeight = canvas.height;
+                imgHeight5 = 592.28/contentWidth * contentHeight;
+                pageData5 = canvas.toDataURL('image/jpeg', 1.0);
+                flag5 = true;
+            })
+            var flag6 = false;
+            var pageData6;
+            var imgHeight6;
+            html2canvas(document.getElementsByClassName('layui-card bodyDiv')[5],{useCORS:true,allowTaint : false, taintTest: true,scale: 2}).then(function (canvas) {
+                var contentWidth = canvas.width;
+                var contentHeight = canvas.height;
+                imgHeight6 = 592.28/contentWidth * contentHeight;
+                pageData6 = canvas.toDataURL('image/jpeg', 1.0);
+                flag6 = true;
+            })
+            var flag7 = false;
+            var pageData7;
+            var imgHeight7;
+            html2canvas(document.getElementsByClassName('layui-card bodyDiv')[6],{useCORS:true,allowTaint : false, taintTest: true,scale: 2}).then(function (canvas) {
+                var contentWidth = canvas.width;
+                var contentHeight = canvas.height;
+                imgHeight7 = 592.28/contentWidth * contentHeight;
+                pageData7 = canvas.toDataURL('image/jpeg', 1.0);
+                flag7 = true;
+            })
+            /*var flag8 = false;
+            var pageData8;
+            var imgHeight8;
+            html2canvas(document.getElementsByClassName('layui-card bodyDiv')[7],{useCORS:true,allowTaint : false, taintTest: true,scale: 2}).then(function (canvas) {
+                var contentWidth = canvas.width;
+                var contentHeight = canvas.height;
+                imgHeight8 = 592.28/contentWidth * contentHeight;
+                pageData8 = canvas.toDataURL('image/jpeg', 1.0);
+                flag8 = true;
+            })*/
+            /*var flag9 = false;
+            var pageData9;
+            var imgHeight9;
+            html2canvas(document.getElementsByClassName('layui-card bodyDiv')[8],{useCORS:true,allowTaint : false, taintTest: true,scale: 2}).then(function (canvas) {
+                var contentWidth = canvas.width;
+                var contentHeight = canvas.height;
+                imgHeight9 = 592.28/contentWidth * contentHeight;
+                pageData9 = canvas.toDataURL('image/jpeg', 1.0);
+                flag9 = true;
+            })*/
+
+            var downLoadPdf = setInterval(function () {
+                if(flag1 && flag2 && flag3 && flag4 && flag5 && flag6 && flag7 /*&& flag8*/){
+                    pdf.addImage(pageData1, 'JPEG', 0, 0, 595.28, imgHeight1 );
+                    pdf.addPage();
+                    pdf.addImage(pageData2, 'JPEG', 0, 0, 595.28, imgHeight2 );
+                    pdf.addPage();
+                    pdf.addImage(pageData3, 'JPEG', 0, 0, 595.28, imgHeight3);
+                    pdf.addPage();
+                    pdf.addImage(pageData4, 'JPEG', 0, 0, 595.28, imgHeight4 );
+                    pdf.addPage();
+                    pdf.addImage(pageData5, 'JPEG', 0, 0, 595.28, imgHeight5 );
+                    pdf.addPage();
+                    pdf.addImage(pageData6, 'JPEG', 0, 0, 595.28, imgHeight6 );
+                    pdf.addPage();
+                    pdf.addImage(pageData7, 'JPEG', 0, 0, 595.28, imgHeight7 );
+                    /* pdf.addPage();
+                     pdf.addImage(pageData8, 'JPEG', 0, 0, 595.28, imgHeight8 );*/
+                    parent.layer.close(loadIndex);
+                    pdf.save(new Date().toLocaleString()+className+'班级档案.pdf');
+                    clearInterval(downLoadPdf);
+
+                }
+            },300)
+
+        }
+
+
+    });
+
+</script>
+</body>
+</html>
+

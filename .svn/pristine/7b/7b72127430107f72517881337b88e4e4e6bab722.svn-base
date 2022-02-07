@@ -1,0 +1,38 @@
+<section class="aui-flexView">
+	<header class="aui-navBar0 aui-navBar-fixed b-line">
+		<a href="javascript:history.back(-1);" class="aui-navBar-item">
+			<i class="icon icon-return"></i>
+		</a>
+		<div class="aui-center">
+			<span class="aui-center-title">证书信息</span>
+		</div>
+	</header>
+
+	<section class="aui-scrollView">
+		<div class="certBackImage">
+			<img src="./images/timg_new.jpg"/>
+		</div>
+		<div class="certContainer">
+			<div class="certPadding">
+				<p class="certTitle">结课证书</p>
+				<p style="letter-spacing: 1px;margin-top: 10px;">
+					<label class="certStuName">{{certInfo.studentName}}</label>
+					同志在<label>{{certInfo.ownerSchoolName}}</label>
+					完成<label>{{certInfo.courseName}}</label>
+					课程，经考核，成绩合格，特发此证。
+				</p>
+				<p style="margin-top: 20px;">
+					<label>证书编号：</label>
+					<label style="float: right;">{{certInfo.certificateTime}}</label>
+				</p>
+				<img class="certImg" src="./images/pass_new.png?v=v1"/>
+				<p style="height: 40px;line-height: 40px;">
+					<label>{{certInfo.certificateCode}}</label>
+				</p>
+			</div>
+		</div>
+	</section>
+
+	<!-- 底部菜单栏 -->
+	<bottom-nav current-nav="currentNav" change-Menu="changeMenuBar(menu)"></bottom-nav>
+</section>

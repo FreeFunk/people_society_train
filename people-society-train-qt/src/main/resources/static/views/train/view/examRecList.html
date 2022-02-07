@@ -1,0 +1,37 @@
+<section class="aui-flexView">
+	<header class="aui-navBar0 aui-navBar-fixed b-line">
+		<a href="javascript:history.back(-1);" class="aui-navBar-item">
+            <i class="icon icon-return"></i>
+        </a>
+		<div class="aui-center">
+			<span class="aui-center-title">考试记录</span>
+		</div>
+	</header>
+
+	<section class="aui-scrollView">
+		<div id="exam_rec_panel_item" infinite-scroll-container class="aui-sit-list" ng-show="pageInfoObj.list.length>0">
+			<a href="javascript:void(0);" ng-click="gotoExamResultPage(rec.id)" style="padding: 10px;" class="aui-flex b-line" ng-repeat="rec in pageInfoObj.list track by rec.id">
+				<div class="aui-flex-box">
+					<h3>第<label style="color: red">{{$index+1}}</label>次考试记录</h3>
+					<div>
+						<label style="font-size: 10px;display: inline-block;width: 80%;">提交时间：{{rec.createTime}}</label>
+						<label style="color: red;">{{rec.getScore}}分</label>
+					</div>
+				</div>
+				<div>
+					<img ng-show="rec.isPass=='1'" style="width: 50px;position: absolute;margin-left: -130px;margin-top: -25px;transform: rotate(-30deg);" src="./images/pass.png"/>
+					<img ng-show="rec.isPass!='1'" style="width: 50px;position: absolute;margin-left: -130px;margin-top: -25px;transform: rotate(-30deg);" src="./images/notPass.png"/>
+				</div>
+			</a>
+			<div infinite-scroll-parent="exam_rec_panel_item" style="margin-bottom: 0px;" infinite-scroll="nextExamRecPage()" infinite-scroll-distance="0"></div>
+		</div>
+
+		<section class="aui-scrollView" ng-show="pageInfoObj.list.length==0">
+			<div class="wss">
+				<img src="images/nothing.png">
+				<p>您还未进行考试</p>
+			</div>
+		</section>
+
+	</section>
+</section>

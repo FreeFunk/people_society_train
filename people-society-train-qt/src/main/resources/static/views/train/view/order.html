@@ -1,0 +1,135 @@
+<section class="aui-flexView">
+    <header class="aui-navBar0 aui-navBar-fixed b-line">
+        <a href="javascript:history.back(-1);" class="aui-navBar-item">
+            <i class="icon icon-return"></i>
+        </a>
+        <div class="aui-center">
+            <span class="aui-center-title" >我的订单</span>
+        </div>
+        <a href="javascript:;" class="aui-navBar-item">
+<!--
+            <i class="icon icon-more"></i>
+            <span class="badge badge-hollow">9+</span>
+-->
+        </a>
+    </header>
+    <section class="aui-scrollView">
+        <div class="aui-tab" data-ydui-tab>
+            <ul class="tab-nav00">
+                <li ng-click="payStateTab('unPaid')" class="tab-nav-item00 {{payState=='unPaid'?'tab-active':''}}">
+                    <a href="javascript:;">未支付</a>
+                </li>
+                <li ng-click="payStateTab('paid')" class="tab-nav-item00 {{payState=='paid'?'tab-active':''}}">
+                    <a href="javascript:;">已支付</a>
+                </li>
+            </ul>
+            <div class="divHeight"></div>
+
+            <!-- 未支付订单 -->
+            <div class="tab-panel" ng-show="payState=='unPaid'">
+                <div class="tab-panel-item tab-active">
+                    <div class="tab-item">
+                        <a href="javascript:void(0);" class="aui-well-item aui-well-item-clear b-line">
+                            <div class="aui-well-item-bd">
+                                <h3>订单编号：1806221650087485</h3>
+                            </div>
+                            <span class="aui-well-item-fr">待付款</span>
+                        </a>
+                        <div class="aui-mail-product b-line">
+                            <a href="javascript:;" class="aui-mail-product-item">
+                                <div class="aui-mail-product-item-hd">
+                                    <img src="images/ad-001.png" alt="">
+                                </div>
+                                <div class="aui-mail-product-item-bd">
+                                    <p>微信小程序入门与实战 常用组件API开发技巧项目实战</p>
+                                </div>
+                                <div class="aui-mail-product-right">
+                                    <h4>￥4999.00</h4>
+                                    <span>x1</span>
+                                </div>
+                            </a>
+                        </div>
+                        <div class="aui-mail-product b-line">
+                            <a href="javascript:;" class="aui-mail-product-item">
+                                <div class="aui-mail-product-item-hd">
+                                    <img src="images/ad-001.png" alt="">
+                                </div>
+                                <div class="aui-mail-product-item-bd">
+                                    <p>微信小程序入门与实战 常用组件API开发技巧项目实战</p>
+                                </div>
+                                <div class="aui-mail-product-right">
+                                    <h4>￥4999.00</h4>
+                                    <span>x1</span>
+                                </div>
+                            </a>
+                        </div>
+                        <a href="javascript:;" class="aui-mail-payment">
+                            <p>
+                                共<em>2</em>
+                                件商品 总价: <i>￥6899.00</i>
+                            </p>
+                        </a>
+                        <div class="aui-mail-button">
+                            <a href="javascript:;">立即付款</a>
+                            <a href="javascript:;" class="aui-df-color ClickMe">取消订单</a>
+                        </div>
+                    </div>
+
+
+
+                </div>
+
+
+            </div>
+
+            <!-- 已支付订单 -->
+            <div class="tab-panel" ng-show="payState=='paid'">
+                <div class="tab-panel-item tab-active">
+                    <div class="tab-item">
+                        <a href="javascript:void(0);" class="aui-well-item aui-well-item-clear b-line">
+                            <div class="aui-well-item-bd">
+                                <h3>订单编号：1806221650087485</h3>
+                            </div>
+                            <span class="aui-well-item-fr">已完成</span>
+                        </a>
+                        <div class="aui-mail-product b-line">
+                            <a href="javascript:;" class="aui-mail-product-item">
+                                <div class="aui-mail-product-item-hd">
+                                    <img src="images/ad-001.png" alt="">
+                                </div>
+                                <div class="aui-mail-product-item-bd">
+                                    <p>微信小程序入门与实战 常用组件API开发技巧项目实战</p>
+                                </div>
+                                <div class="aui-mail-product-right">
+                                    <h4>￥4999.00</h4>
+                                    <span>x1</span>
+                                </div>
+                            </a>
+                        </div>
+                        <div class="aui-mail-product b-line">
+                            <a href="javascript:;" class="aui-mail-product-item">
+                                <div class="aui-mail-product-item-hd">
+                                    <img src="images/ad-001.png" alt="">
+                                </div>
+                                <div class="aui-mail-product-item-bd">
+                                    <p>微信小程序入门与实战 常用组件API开发技巧项目实战</p>
+                                </div>
+                                <div class="aui-mail-product-right">
+                                    <h4>￥4999.00</h4>
+                                    <span>x1</span>
+                                </div>
+                            </a>
+                        </div>
+                        <a href="javascript:;" class="aui-mail-payment">
+                            <p>
+                                共<em>2</em>
+                                件商品 总价: <i>￥6899.00</i>
+                            </p>
+                        </a>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+</section>

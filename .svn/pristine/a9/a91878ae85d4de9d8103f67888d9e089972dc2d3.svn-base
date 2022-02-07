@@ -1,0 +1,53 @@
+<section class="aui-flexView">
+    <header class="aui-navBar aui-navBar-fixed">
+		<a href="javascript:;" class="aui-navBar-item">
+			
+		</a>
+		<div class="aui-center">
+			<span class="aui-center-title">{{globalSchObj.schoolName}}</span>
+		</div>
+		<a href="javascript:void(0);" ng-click="gotoSearchPage()" class="aui-navBar-item" >
+			<i class="icon icon-search0"></i>
+		</a>
+	</header>
+    
+    <section class="aui-scrollView">
+        
+        <div class="aui-flex b-line">
+			<div class="aui-flex-box">
+				<h1>我的课程<!--<a href="###" class="fr qb" style="padding-top:6px"><i class="iconfont icon-2"></i> 全部</a>--></h1>
+			</div>
+		</div>
+        <div id="course_tab_panel_item" infinite-scroll-container class="aui-sit-list">
+			<a href="javascript:void(0);" ng-click="gotoCourDetail(stuCourse)" class="aui-flex b-line" ng-repeat="stuCourse in pageInfoObj.list track by stuCourse.id">
+				<div class="aui-git-img">
+					<img ng-src="{{stuCourse.courseImage}}" alt="">
+				</div>
+				<div class="aui-flex-box">
+					<h4>{{stuCourse.courseName}}</h4>
+					<div class="money" ng-show="stuCourse.payState != '1'">
+						<em class="jinqian" style="color: red">￥{{stuCourse.coursePrice}}</em><i> ￥{{stuCourse.courseOrgPrice}}</i>
+					</div>
+					<div>
+                        <div class="aui-right-seep fl">
+							<div class="aui-seep-text">已学：{{stuCourse.courseProgress}}%<em style="float: right;margin-right: 0px;">剩余:<em style="margin-right: 0px;" ng-bind="stuCourse.totalLessons-stuCourse.finishNodeNum"></em>节</em></div>
+                                <div class="aui-seep-res">
+                                    <div class="aui-seep-info" style="width:{{stuCourse.courseProgress}}%"></div>
+                                </div>
+                        </div>
+                           <div class="fr more"><i class="iconfont icon-bofang"></i></div>
+					</div>
+				</div>
+			</a>
+
+		</div>
+
+		<div infinite-scroll-parent="course_tab_panel_item" style="margin-bottom: 0px;" infinite-scroll="nextCoursePage()" infinite-scroll-distance="0"></div>
+        
+    <div class="blank10"></div>
+    </section>
+
+	<!-- 底部菜单栏 -->
+	<bottom-nav current-nav="currentNav" change-Menu="changeMenuBar(menu)"></bottom-nav>
+
+</section>

@@ -1,0 +1,10 @@
+//配置好菜单后删除文件
+    //班级培训统计 layui-icon layui-icon-chart
+views/society/schooladmin/schoolclassadmininfo/SocietySchoolClassTrainCountList.html
+//学习进度统计 layui-icon layui-icon-chart
+views/society/schooladmin/schoolclassadmininfo/SocietySchoolClassAdminStudentTrainCountList.html
+//到课率统计 layui-icon layui-icon-chart
+views/society/schooladmin/schoolclassadmininfo/SocietyStudentAndCourseListForSchool.html
+//课后习题统计 layui-icon layui-icon-chart
+views/society/schooladmin/schoolclassadmininfo/SocietySchoolClassTaskCountList.html
+SocietyClassAdminExamineNodeInfo

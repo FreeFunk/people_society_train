@@ -1,0 +1,68 @@
+package com.edgedo.society.queryvo;
+
+import com.edgedo.society.entity.SocietySchoolClassAndStudent;
+
+import java.math.BigDecimal;
+import java.util.List;
+
+public class SocietySchoolClassAndStudentView extends SocietySchoolClassAndStudent {
+    private Integer studentLeranProgressStart;
+    private Integer studentLeranProgressEnd;
+    private String courseAndStudentId;
+
+    private String courseName;
+
+    private BigDecimal courseProgress;
+    private String courseId;
+
+    public String getCourseId() {
+        return courseId;
+    }
+
+    public void setCourseId(String courseId) {
+        this.courseId = courseId;
+    }
+
+    public String getCourseName() {
+        return courseName;
+    }
+
+    public void setCourseName(String courseName) {
+        this.courseName = courseName;
+    }
+
+    public BigDecimal getCourseProgress() {
+        return courseProgress;
+    }
+
+    public void setCourseProgress(BigDecimal courseProgress) {
+        this.courseProgress = courseProgress;
+    }
+
+    public String getCourseAndStudentId() {
+        return courseAndStudentId;
+    }
+
+    public void setCourseAndStudentId(String courseAndStudentId) {
+        this.courseAndStudentId = courseAndStudentId;
+    }
+
+    public Integer getStudentLeranProgressStart() {
+        return studentLeranProgressStart;
+    }
+
+    public Integer getStudentLeranProgressEnd() {
+        return studentLeranProgressEnd;
+    }
+
+    public void setStudentLeranProgressStart(Integer studentLeranProgressStart) {
+        this.studentLeranProgressStart = studentLeranProgressStart;
+    }
+
+    public void setStudentLeranProgressEnd(Integer studentLeranProgressEnd) {
+        this.studentLeranProgressEnd = studentLeranProgressEnd;
+    }
+
+
+
+}

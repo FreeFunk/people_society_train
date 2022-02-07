@@ -1,0 +1,67 @@
+<section class="aui-flexView">
+    <header class="aui-navBar0 aui-navBar-fixed">
+		<a href="javascript:;" class="aui-navBar-item0">
+			
+		</a>
+		<div class="aui-center0" style="width: 96%;">
+			<div class="aui-search-box">
+                <a href="javascript:void(0)"><i class="icon icon-search"></i></a>
+				<input type="text" ng-click="gotoSearchPage()" placeholder="请输入内容">
+			</div>
+		</div>
+		<!--<a href="javascript:;" class="aui-navBar-item0" >
+			<i class="iconfont icon-gouwuchekong" style="color: #393939"></i>
+		</a>-->
+	</header>
+    
+    
+    <section class="aui-scrollView">
+        <div class="m-scrolltab">
+             <Div class="scrolltab-nav">
+                    <a href="javascript:void(0);" ng-click="listAllCourseClsByMajor(major.id)" class="scrolltab-item {{majorId==major.id?'crt':''}}" ng-repeat="major in majorList track by major.id">
+                        <div class="scrolltab-title" ng-bind="major.majorName"></div>
+                    </a>
+                 <Div class="blank20"></Div>
+            </Div>
+          
+            <Div class="scrolltab-content">
+                <div class="scrolltab-content-item">
+                    <!--<div class="banner b_red">
+                           <h4>前端工程师</h4>
+                           <p>零基础小白入门首选</p>
+                    </div>
+                    <div class="banner b_blue">
+                           <h4>前端工程师</h4>
+                           <p>零基础小白入门首选</p>
+                    </div>
+                    <div class="banner b_green">
+                           <h4>前端工程师</h4>
+                           <p>零基础小白入门首选</p>
+                    </div>
+                     <div class="banner b_green2">
+                           <h4>前端工程师</h4>
+                           <p>零基础小白入门首选</p>
+                    </div>-->
+
+                    <div class="aui-palace aui-palace-one0">
+                        <a href="javascript:void(0);" ng-click="gotoSearchPageByMajorCls(courseCls.id)" class="aui-palace-grid" ng-repeat="courseCls in courseClsList track by courseCls.id">
+                            <div class="aui-palace-grid-icon {{courseCls.gridIcon}}">
+                                  <i class="iconfont font30 {{courseCls.courseClsIcon}}"></i>
+                            </div>
+                            <div class="aui-palace-grid-text">
+                                <div class="kcmc" ng-bind="courseCls.courseClsName"></div>
+                            </div>
+                        </a>
+                    </div>
+                </div>
+                <Div class="blank20"></Div>
+            </Div>
+            
+        </div>
+        
+         
+    </section>
+
+    <!-- 底部菜单栏 -->
+    <bottom-nav current-nav="currentNav" change-Menu="changeMenuBar(menu)"></bottom-nav>
+</section>

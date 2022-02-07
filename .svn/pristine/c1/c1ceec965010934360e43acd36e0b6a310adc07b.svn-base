@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.edgedo.society.mapper.SocietyTestPaperQuestionOptionMapper" >
+   
+   
+    <resultMap id="BaseResultMap" type="com.edgedo.society.entity.SocietyTestPaperQuestionOption" >
+			<id column="ID" property="id"/>
+			<result column="CREATE_TIME" property="createTime"/>
+			<result column="CREATE_USER_ID" property="createUserId"/>
+			<result column="CREATE_USER_NAME" property="createUserName"/>
+			<result column="OWNER_SCHOOL_ID" property="ownerSchoolId"/>
+			<result column="OWNER_SCHOOL_NAME" property="ownerSchoolName"/>
+			<result column="OWNER_COURSE_ID" property="ownerCourseId"/>
+			<result column="OWNER_COURSE_NAME" property="ownerCourseName"/>
+			<result column="OWNER_TEST_PAPER_ID" property="ownerTestPaperId"/>
+			<result column="OWNER_TEST_PAPER_NAME" property="ownerTestPaperName"/>
+			<result column="OWNER_TEST_PAPER_QUESTION_ID" property="ownerTestPaperQuestionId"/>
+			<result column="OPTION_NAME" property="optionName"/>
+			<result column="OPTION_TITLE" property="optionTitle"/>
+			<result column="IS_RIGHT" property="isRight"/>
+			<result column="ORDER_NUM" property="orderNum"/>
+			<result column="DATA_STATE" property="dataState"/>
+    </resultMap>
+   
+    <resultMap id="BaseResultViewMap" type="com.edgedo.society.queryvo.SocietyTestPaperQuestionOptionView" extends="BaseResultMap">
+    
+    </resultMap>
+  
+  
+  <!-- ******* 新增字段请修改这里  ******  -->
+  <sql id="Base_Column_List">
+	 ID, CREATE_TIME, CREATE_USER_ID, CREATE_USER_NAME, OWNER_SCHOOL_ID, OWNER_SCHOOL_NAME, OWNER_COURSE_ID, OWNER_COURSE_NAME, OWNER_TEST_PAPER_ID, OWNER_TEST_PAPER_NAME, OWNER_TEST_PAPER_QUESTION_ID, OPTION_NAME, OPTION_TITLE, IS_RIGHT, ORDER_NUM, DATA_STATE
+  </sql>
+  
+  <!-- ******* 利用好这里的动态查询条件  ******  -->
+  <sql id="where">
+  	<where>
+		<if test='queryObj != null and  queryObj.id != null and @org.apache.commons.lang3.StringUtils@isNotEmpty(queryObj.id)'>
+		AND  ID = #{queryObj.id}
+		</if>
+		<if test='queryObj != null and  queryObj.createTime != null'>
+			AND  CREATE_TIME = #{queryObj.createTime}
+		</if>
+		<if test='queryObj != null and  queryObj.createUserId != null and @org.apache.commons.lang3.StringUtils@isNotEmpty(queryObj.createUserId)'>
+		AND  CREATE_USER_ID = #{queryObj.createUserId}
+		</if>
+		<if test='queryObj != null and  queryObj.createUserName != null and @org.apache.commons.lang3.StringUtils@isNotEmpty(queryObj.createUserName)'>
+		AND  CREATE_USER_NAME = #{queryObj.createUserName}
+		</if>
+		<if test='queryObj != null and  queryObj.ownerSchoolId != null and @org.apache.commons.lang3.StringUtils@isNotEmpty(queryObj.ownerSchoolId)'>
+		AND  OWNER_SCHOOL_ID = #{queryObj.ownerSchoolId}
+		</if>
+		<if test='queryObj != null and  queryObj.ownerSchoolName != null and @org.apache.commons.lang3.StringUtils@isNotEmpty(queryObj.ownerSchoolName)'>
+		AND  OWNER_SCHOOL_NAME = #{queryObj.ownerSchoolName}
+		</if>
+		<if test='queryObj != null and  queryObj.ownerCourseId != null and @org.apache.commons.lang3.StringUtils@isNotEmpty(queryObj.ownerCourseId)'>
+		AND  OWNER_COURSE_ID = #{queryObj.ownerCourseId}
+		</if>
+		<if test='queryObj != null and  queryObj.ownerCourseName != null and @org.apache.commons.lang3.StringUtils@isNotEmpty(queryObj.ownerCourseName)'>
+		AND  OWNER_COURSE_NAME = #{queryObj.ownerCourseName}
+		</if>
+		<if test='queryObj != null and  queryObj.ownerTestPaperId != null and @org.apache.commons.lang3.StringUtils@isNotEmpty(queryObj.ownerTestPaperId)'>
+		AND  OWNER_TEST_PAPER_ID = #{queryObj.ownerTestPaperId}
+		</if>
+		<if test='queryObj != null and  queryObj.ownerTestPaperName != null and @org.apache.commons.lang3.StringUtils@isNotEmpty(queryObj.ownerTestPaperName)'>
+		AND  OWNER_TEST_PAPER_NAME = #{queryObj.ownerTestPaperName}
+		</if>
+		<if test='queryObj != null and  queryObj.ownerTestPaperQuestionId != null and @org.apache.commons.lang3.StringUtils@isNotEmpty(queryObj.ownerTestPaperQuestionId)'>
+		AND  OWNER_TEST_PAPER_QUESTION_ID = #{queryObj.ownerTestPaperQuestionId}
+		</if>
+		<if test='queryObj != null and  queryObj.optionName != null and @org.apache.commons.lang3.StringUtils@isNotEmpty(queryObj.optionName)'>
+		AND  OPTION_NAME = #{queryObj.optionName}
+		</if>
+		<if test='queryObj != null and  queryObj.optionTitle != null and @org.apache.commons.lang3.StringUtils@isNotEmpty(queryObj.optionTitle)'>
+		AND  OPTION_TITLE = #{queryObj.optionTitle}
+		</if>
+		<if test='queryObj != null and  queryObj.isRight != null and @org.apache.commons.lang3.StringUtils@isNotEmpty(queryObj.isRight)'>
+		AND  IS_RIGHT = #{queryObj.isRight}
+		</if>
+		<if test='queryObj != null and  queryObj.dataState != null and @org.apache.commons.lang3.StringUtils@isNotEmpty(queryObj.dataState)'>
+		AND  DATA_STATE = #{queryObj.dataState}
+		</if>
+  	</where>
+  	
+  </sql>
+  
+  <!-- ******* 排序判断  ******  
+  <sql id="orderBy">
+  	<if test="orderBy != null and orderBy!= '' ">
+  		order by  ${orderBy}
+  	</if>
+  </sql>-->
+  
+  
+  <!-- 分页条件查询  -->
+  <select id="listPage" parameterType="com.edgedo.society.queryvo.SocietyTestPaperQuestionOptionQuery" resultMap="BaseResultViewMap">
+  		select <include refid="Base_Column_List"/> from society_test_paper_question_option 
+  		<include refid="where"/>
+  </select>
+  
+   <!-- 不分页条件查询  -->
+  <select id="listByObj" parameterType="com.edgedo.society.queryvo.SocietyTestPaperQuestionOptionQuery" resultMap="BaseResultViewMap">
+  		select <include refid="Base_Column_List"/> from society_test_paper_question_option 
+  		<include refid="where"/>
+  </select>
+<!--	公共选项表查出list-->
+	<select id="selectBySchoolIdAndCourseIdAndPaperIdAndQuestId" parameterType="map" resultMap="BaseResultViewMap">
+		select <include refid="Base_Column_List"/> from society_test_paper_question_option
+		where OWNER_SCHOOL_ID = #{ownerSchoolId} AND  OWNER_COURSE_ID = #{ownerCourseId}
+		AND  OWNER_TEST_PAPER_ID = #{ownerTestPaperId}
+		AND  OWNER_TEST_PAPER_QUESTION_ID = #{questionId} and DATA_STATE='1' order by ORDER_NUM asc
+	</select>
+
+	<!-- 根据习题id查询选项值 -->
+	<select id="selectOptionNameByQuestionId" parameterType="string" resultType="string">
+		select OPTION_NAME from society_test_paper_question_option
+		where OWNER_TEST_PAPER_QUESTION_ID=#{questionId}
+		order by ORDER_NUM asc
+	</select>
+	<!--根据题目id查询所有的选择项-->
+	<select id="selectOptionByQuestionId" parameterType="string" resultMap="BaseResultViewMap">
+		select <include refid="Base_Column_List"/> from society_test_paper_question_option
+		where OWNER_TEST_PAPER_QUESTION_ID=#{questionId}
+		order by ORDER_NUM asc
+	</select>
+
+
+</mapper>

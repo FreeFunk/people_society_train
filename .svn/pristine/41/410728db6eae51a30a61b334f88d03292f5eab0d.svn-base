@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>课程管理</title>
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=0">
+    <link rel="stylesheet" href="/layuiadmin/layui/css/layui.css" media="all">
+    <link rel="stylesheet" href="/layuiadmin/style/admin.css" media="all">
+    <link rel="stylesheet" href="/layuiadmin/modules/layui_ext/dtree/dtree.css">
+    <link rel="stylesheet" href="/layuiadmin/modules/layui_ext/dtree/font/dtreefont.css">
+    <style type="text/css">
+        .layui-table-cell {
+            padding: 0 5px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="layui-fluid">
+    <div class="layui-row layui-col-space5">
+        <div  id="toolbarDiv">
+            <ul id="courseDtree" class="dtree" data-id="0"></ul>
+        </div>
+    </div>
+    <div class="layui-form-item layui-hide">
+        <input type="button" lay-submit lay-filter="SocietySchoolUpdateCopyCourseNodeList-form-edit" id="SocietySchoolUpdateCopyCourseNodeList-form-edit" value="确认编辑">
+    </div>
+</div>
+<script src="/layuiadmin/layui/layui.js"></script>
+<script>
+    layui.config({
+        base: '/layuiadmin/' //静态资源所在路径
+    }).extend({
+        index:'lib/index',
+        $tool:'tool',
+        common:'common',
+        dtree:'layui_ext/dtree/dtree'
+    }).use(['index','table', 'form','common','dtree','$tool'], function(exports){
+        var $ = layui.$
+            ,table = layui.table
+            ,common = layui.common
+            ,admin = layui.admin
+            ,dtree = layui.dtree
+            ,$tool = layui.$tool
+            ,form = layui.form;
+
+        var courseId = getQueryVariable("courseId");
+        var majorId = getQueryVariable("majorId");
+        var schoolId = getQueryVariable("schoolId");
+        var courseClsId = getQueryVariable("courseClsId");
+        var courseNamePinYin = getQueryVariable("courseNamePinYin");
+
+        // 查询所有的专业初始化树
+        var headers = layui.admin.getTokenHeader();
+        var courseDtree = dtree.render({
+            elem: "#courseDtree",
+            scroll:"#toolbarDiv", // 绑定div元素
+            initLevel: "1",
+            type:"all"  ,// 改为全量加载，即取消自动加载
+            headers:headers,
+            checkbarType: "only",
+            checkbarData: "choose",
+            checkbar: true,
+            url:layui.setter.basePath +'/society/societySchoolCourse/listForDtreeCourseId.jsn', //模拟接口
+        });
+
+        // 绑定图标的点击事件
+        dtree.on("changeTree(courseDtree)",function(obj){
+            if(obj.show){
+                var courseId = obj.param.nodeId;
+                //查询专业下面的所有的课程分类
+                admin.req({
+                    url:layui.setter.basePath +'/society/societySchoolCourseNode/listByCourseIdAndSchoolId.jsn',
+                    data:{
+                        'courseId':courseId,
+                        'schoolId':schoolId
+                    },
+                    method:"post",
+                    success:function (data) {
+                        // 调用内置函数，第二个参数为json数组，如果你不想访问默认的url，你可以自己使用ajax访问你的url，然后将data数据传入进来即可。
+                        courseDtree.getChild($(obj.dom).parent("div"), data.data);
+                    },
+                });
+            }
+        });
+
+
+        //监听修改保存
+        form.on('submit(SocietySchoolUpdateCopyCourseNodeList-form-edit)', function(data){
+            //可以获取点击的课程id 和 当前要复制到的课程
+            var nodeIdList = '';
+            var courseIdOld = '';
+            var list = courseDtree.getCheckbarNodesParam("courseDtree");
+            var index = parent.layer.getFrameIndex(window.name);//先得到当前iframe层的索引
+            if (list.length==0){
+                return layer.msg('请选择章节');
+            }else {
+                if (list[0].parentId=='ROOT'){
+                    return layer.msg('请选择章节,不要选择课程');
+                }else {
+                    nodeIdList = list[0].nodeId;
+                    admin.req({
+                        url:layui.setter.basePath +'/society/societySchoolCourseNode/copyCourseAndNodeSelectUrl.jsn',
+                        traditional: true,
+                        async:false,
+                        data:{
+                            'schoolId':schoolId,
+                            'nodeId':nodeIdList
+                        },
+                        method:"post",
+                        success:function (data) {
+                            $("#timeLength",window.parent.document).val(data.data.nodeTimeLength);
+                            $("#fileNameId",window.parent.document).html(data.data.fileUrl);
+                            $("#fileUrl",window.parent.document).val(data.data.fileUrl);
+                            $("#upload-video",window.parent.document).attr('disabled',"true");//禁用上传视频按钮
+                            $('#SocietySchoolCourseNode-form-edit',window.parent.document).removeAttr("disabled");
+                            parent.layer.close(index); //再执行关闭
+                        }
+                    });
+                }
+            }
+        });
+
+
+    });
+
+</script>
+</body>
+</html>
+

@@ -1,0 +1,2 @@
+# Referenced at D:\work\workspacetransit\people_society_train\android\trainapp\app\build\intermediates\merged_manifests\debug\AndroidManifest.xml:30
+-keep class android.support.multidex.MultiDexApplication { <init>(); }

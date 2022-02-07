@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.edgedo.society.mapper.SocietyNodeExamineRecordMapper" >
+   
+   
+    <resultMap id="BaseResultMap" type="com.edgedo.society.entity.SocietyNodeExamineRecord" >
+			<id column="ID" property="id"/>
+			<result column="CREATE_TIME" property="createTime"/>
+			<result column="CREATE_USER_ID" property="createUserId"/>
+			<result column="CREATE_USER_NAME" property="createUserName"/>
+			<result column="ORG_COURSE_FINISHED_TIME" property="orgCourseFinishedTime"/>
+			<result column="ORG_NODE_FINISHED_TIME" property="orgNodeFinishedTime"/>
+			<result column="LAST_NODE_STUDY_LOCATION" property="lastNodeStudyLocation"/>
+			<result column="NOW_NODE_STUDY_ID" property="nowNodeStudyId"/>
+			<result column="REASON" property="reason"/>
+			<result column="DATA_STATE" property="dataState"/>
+			<result column="OWNER_STUDENT_AND_COURSE_ID" property="ownerStudentAndCourseId"/>
+			<result column="OWNER_STUDENT_AND_NODE_ID" property="ownerStudentAndNodeId"/>
+			<result column="ORG_NODE_STUDY_ID" property="orgNodeStudyId"/>
+    </resultMap>
+   
+    <resultMap id="BaseResultViewMap" type="com.edgedo.society.queryvo.SocietyNodeExamineRecordView" extends="BaseResultMap">
+    
+    </resultMap>
+  
+  
+  <!-- ******* 新增字段请修改这里  ******  -->
+  <sql id="Base_Column_List">
+	 ID, CREATE_TIME, CREATE_USER_ID, CREATE_USER_NAME, ORG_COURSE_FINISHED_TIME,
+	 ORG_NODE_FINISHED_TIME, LAST_NODE_STUDY_LOCATION, NOW_NODE_STUDY_ID, REASON, DATA_STATE,
+	 OWNER_STUDENT_AND_COURSE_ID,OWNER_STUDENT_AND_NODE_ID,ORG_NODE_STUDY_ID
+  </sql>
+  
+  <!-- ******* 利用好这里的动态查询条件  ******  -->
+  <sql id="where">
+  	<where>
+		DATA_STATE='1'
+		<if test='queryObj != null and  queryObj.id != null and @org.apache.commons.lang3.StringUtils@isNotEmpty(queryObj.id)'>
+		AND  ID = #{queryObj.id}
+		</if>
+		<if test='queryObj != null and  queryObj.createTime != null'>
+			AND  CREATE_TIME = #{queryObj.createTime}
+		</if>
+		<if test='queryObj != null and  queryObj.createUserId != null and @org.apache.commons.lang3.StringUtils@isNotEmpty(queryObj.createUserId)'>
+		AND  CREATE_USER_ID = #{queryObj.createUserId}
+		</if>
+		<if test='queryObj != null and  queryObj.createUserName != null and @org.apache.commons.lang3.StringUtils@isNotEmpty(queryObj.createUserName)'>
+		AND  CREATE_USER_NAME = #{queryObj.createUserName}
+		</if>
+		<if test='queryObj != null and  queryObj.orgCourseFinishedTime != null'>
+			AND  ORG_COURSE_FINISHED_TIME = #{queryObj.orgCourseFinishedTime}
+		</if>
+		<if test='queryObj != null and  queryObj.orgNodeFinishedTime != null'>
+			AND  ORG_NODE_FINISHED_TIME = #{queryObj.orgNodeFinishedTime}
+		</if>
+		<if test='queryObj != null and  queryObj.lastNodeStudyLocation != null and @org.apache.commons.lang3.StringUtils@isNotEmpty(queryObj.lastNodeStudyLocation)'>
+			AND  LAST_NODE_STUDY_LOCATION = #{queryObj.lastNodeStudyLocation}
+		</if>
+		<if test='queryObj != null and  queryObj.nowNodeStudyId != null and @org.apache.commons.lang3.StringUtils@isNotEmpty(queryObj.nowNodeStudyId)'>
+		AND  NOW_NODE_STUDY_ID = #{queryObj.nowNodeStudyId}
+		</if>
+		<if test='queryObj != null and  queryObj.reason != null and @org.apache.commons.lang3.StringUtils@isNotEmpty(queryObj.reason)'>
+		AND  REASON = #{queryObj.reason}
+		</if>
+		<if test='queryObj != null and  queryObj.dataState != null and @org.apache.commons.lang3.StringUtils@isNotEmpty(queryObj.dataState)'>
+		AND  DATA_STATE = #{queryObj.dataState}
+		</if>
+  	</where>
+  	
+  </sql>
+  
+  <!-- ******* 排序判断  ******  
+  <sql id="orderBy">
+  	<if test="orderBy != null and orderBy!= '' ">
+  		order by  ${orderBy}
+  	</if>
+  </sql>-->
+  
+  
+  <!-- 分页条件查询  -->
+  <select id="listPage" parameterType="com.edgedo.society.queryvo.SocietyNodeExamineRecordQuery" resultMap="BaseResultViewMap">
+  		select <include refid="Base_Column_List"/> from society_node_examine_record 
+  		<include refid="where"/>
+  </select>
+  
+   <!-- 不分页条件查询  -->
+  <select id="listByObj" parameterType="com.edgedo.society.queryvo.SocietyNodeExamineRecordQuery" resultMap="BaseResultViewMap">
+  		select <include refid="Base_Column_List"/> from society_node_examine_record 
+  		<include refid="where"/>
+  </select>
+
+	<select id="selectByNodeId" parameterType="string" resultType="string">
+		select REASON reason from society_node_examine_record
+		where DATA_STATE='1' and OWNER_STUDENT_AND_NODE_ID=#{stuNodeId} order by CREATE_TIME desc limit 1
+	</select>
+  
+</mapper>

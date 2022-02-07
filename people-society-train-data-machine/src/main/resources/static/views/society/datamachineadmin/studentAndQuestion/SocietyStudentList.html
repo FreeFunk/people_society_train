@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>标题</title>
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=0">
+    <link rel="stylesheet" href="/layuiadmin/layui/css/layui.css" media="all">
+    <link rel="stylesheet" href="/layuiadmin/style/admin.css" media="all">
+    <style type="text/css">
+        .layui-table-cell {
+            padding: 0 5px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="layui-fluid">
+    <div class="layui-card">
+        <div class="layui-form layui-card-header layuiadmin-card-header-auto">
+            <div class="layui-form-item">
+                <div class="layui-inline">
+                    <label class="layui-form-label">学员姓名</label>
+                    <div class="layui-input-inline">
+                        <input type="text" name="queryObj.studentName" placeholder="请输入学员姓名" autocomplete="off" class="layui-input">
+                    </div>
+                </div>
+                <div class="layui-inline">
+                    <label class="layui-form-label">手机号</label>
+                    <div class="layui-input-inline">
+                        <input type="text" name="queryObj.studentPhoneNum" placeholder="请输入手机号" autocomplete="off" class="layui-input">
+                    </div>
+                </div>
+                <div class="layui-inline">
+                    <button class="layui-btn layuiadmin-btn-comm layui-btn-sm" data-type="reload" lay-submit lay-filter="SocietyStudent-search">
+                        <i class="layui-icon layui-icon-search layuiadmin-button-btn"></i>查询
+                    </button>
+                </div>
+            </div>
+        </div>
+        <div class="layui-card-body">
+            <table id="SocietyStudent-list" lay-filter="SocietyStudent-list"></table>
+            <script type="text/html" id="table-SocietyStudent-list">
+                <a class="layui-btn layui-btn-normal layui-btn-xs" lay-event="studentNameOnlick">习题情况</a>
+<!--                <a class="layui-btn layui-btn-normal layui-btn-xs" lay-event="edit"><i class="layui-icon layui-icon-edit"></i>编辑</a>-->
+<!--                <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del"><i class="layui-icon layui-icon-delete"></i>删除</a>-->
+            </script>
+        </div>
+    </div>
+</div>
+<script src="/layuiadmin/layui/layui.js"></script>
+<script>
+        layui.config({
+            base: '/layuiadmin/' //静态资源所在路径
+        }).extend({
+            index:'lib/index',
+            common:'common',
+            $tool:'tool'
+        }).use(['index','table', 'form','common','upload','excel','$tool'], function(exports){
+            var $ = layui.$
+                ,table = layui.table
+                ,common = layui.common
+                ,admin = layui.admin
+                ,$tool = layui.$tool
+                ,upload = layui.upload
+                ,excel = layui.excel
+                ,form = layui.form;
+
+            //查询
+            form.on('submit(SocietyStudent-search)', function(data){
+                var field = data.field;
+
+                //执行重载
+                table.reload('SocietyStudent-list', {
+                    where: field,page:{curr:1}
+                });
+            });
+
+            /*
+            * 定义表格
+            * */
+            defineTable = function () {
+                var headers = layui.admin.getTokenHeader();
+                table.render({
+                    elem: '#SocietyStudent-list' //指定原始表格的选择器（id选择器）
+                    ,url:layui.setter.basePath +'/society/societyStudent/schoolStudentListpage.jsn' //模拟接口
+                    ,headers:headers
+                    ,method: 'post'
+                    ,parseData: function(res){ //res 即为原始返回的数据
+                        return {
+                            "code": res.success, //解析接口状态
+                            "msg": res.errMsg, //解析提示文本
+                            "count": res.totalCount, //解析数据长度
+                            "data": res.list //解析数据列表
+                        };
+                    }
+                    ,response: {
+                        statusCode: true //规定成功的状态码，默认：0
+                    }
+                    ,cols: [[
+                        {type: 'checkbox', fixed: 'left'}
+                    ,{field: 'id',align: 'center', width: 200, title: '主键',sort: true,hide:true}
+                    ,{field: 'createTime',align: 'center', width: '10%', title: '创建时间',templet: function(d){
+                    return common.DateFormat(d.createTime,"yyyy-MM-dd");},sort: true,hide:true}
+            ,{field: 'studentName',align: 'center', width: '15%', title: '学员姓名'
+            }
+            ,{field: 'studentSex',align: 'center', width: '15%', title: '学员性别'}
+            ,{field: 'studentAge',align: 'center', width: '15%', title: '学员年龄'}
+            ,{field: 'studentPhoneNum',align: 'center', width: '10%', title: '手机号'}
+            ,{field: 'studentIdCardNum',align: 'center', width: '20%', title: '身份证号'}
+            ,{field: 'isRealNameAuth',align: 'center', width: '15%', title: '是否实名',templet:function(d){
+                    if(d.isRealNameAuth == '1'){
+                        return "是";
+                    }else{
+                        return "否";
+                    }
+            }}
+             ,{title: '操作', align: 'center', fixed: 'right', toolbar: '#table-SocietyStudent-list'}
+            ]]
+            ,autoSort: false
+                    ,page: true
+                    ,limit: 50
+                    ,limits: [10, 20, 30,40,50]
+                    ,text: {
+                    none: '暂无相关数据'
+                }
+            });
+
+                //为toolbar添加事件响应
+                table.on('tool(SocietyStudent-list)', function(obj){ //注：tool是工具条事件名，test是table原始容器的属性 lay-filter="对应的值"
+                    /*var data = obj.data;*///获得当前行数据
+                    //区分事件
+                    switch(obj.event){
+                        case 'del':
+                            deleteVo(obj);
+                            break;
+                        case 'edit':
+                            editVo(obj);
+                            break;
+                        case 'resetPwd':
+                            resetPwd(obj);
+                            break;
+                        case 'studentNameOnlick':
+                            studentNameOnlick(obj);
+                            break;
+                    };
+                });
+
+                //监听排序事件
+                table.on('sort(SocietyStudent-list)', function(obj){ //注：sort是工具条事件名，LAY-app-province-list是table原始容器的属性 lay-filter="对应的值"
+                    var sort = obj.field;
+                    //默认排序
+                    switch(obj.field){
+                        case 'id':
+                            sort ="ID";
+                            break;
+                        case 'createTime':
+                            sort ="CREATE_TIME";
+                            break;
+                        case 'createUserId':
+                            sort ="CREATE_USER_ID";
+                            break;
+                        case 'createUserName':
+                            sort ="CREATE_USER_NAME";
+                            break;
+                        case 'provinceId':
+                            sort ="PROVINCE_ID";
+                            break;
+                        case 'provinceName':
+                            sort ="PROVINCE_NAME";
+                            break;
+                        case 'cityId':
+                            sort ="CITY_ID";
+                            break;
+                        case 'cityName':
+                            sort ="CITY_NAME";
+                            break;
+                        case 'xianquId':
+                            sort ="XIANQU_ID";
+                            break;
+                        case 'xianquName':
+                            sort ="XIANQU_NAME";
+                            break;
+                        case 'ownerSchoolId':
+                            sort ="OWNER_SCHOOL_ID";
+                            break;
+                        case 'ownerSchoolName':
+                            sort ="OWNER_SCHOOL_NAME";
+                            break;
+                        case 'studentName':
+                            sort ="STUDENT_NAME";
+                            break;
+                        case 'studentSex':
+                            sort ="STUDENT_SEX";
+                            break;
+                        case 'studentAge':
+                            sort ="STUDENT_AGE";
+                            break;
+                        case 'studentPhoneNum':
+                            sort ="STUDENT_PHONE_NUM";
+                            break;
+                        case 'studentIdCardNum':
+                            sort ="STUDENT_ID_CARD_NUM";
+                            break;
+                        case 'isRealNameAuth':
+                            sort ="IS_REAL_NAME_AUTH";
+                            break;
+                        case 'dataState':
+                            sort ="DATA_STATE";
+                            break;
+                    };
+                    if(obj.type==null){
+                        return;
+                    }
+                    //有些时候，你可能需要根据当前排序的字段，重新向服务端发送请求，从而实现服务端排序，如：
+                    table.reload('SocietyStudent-list', {
+                        initSort: obj//记录初始排序，如果不设的话，将无法标记表头的排序状态。
+                        ,where: { //请求参数（注意：这里面的参数可任意定义，并非下面固定的格式）
+                            orderBy: sort+" "+obj.type //排序字段
+                        }
+                    });
+                });
+            }
+            defineTable();
+
+            /**
+             * 跳转打开课程 班级 章节关联
+             * @param obj
+             */
+            studentNameOnlick = function (obj) {
+                //跳转页面
+                newOpen("views/society/datamachineadmin/studentAndQuestion/SocietySchoolClassInCourseInNodeList.html", obj.data,obj.data.studentName+"答题详情");
+            }
+
+            function newOpen(url,params,str) {
+                var pStr = '';
+                for(var p in params){
+                    if(pStr.indexOf("?")==-1){
+                        pStr += "?"+p+"="+encodeURI(params[p]);
+                    }else {
+                        pStr += "&"+p+"="+encodeURI(params[p]);
+                    }
+                }
+                top.layui.index.openTabsPage(url+pStr,str);
+            }
+        });
+
+</script>
+</body>
+</html>
+

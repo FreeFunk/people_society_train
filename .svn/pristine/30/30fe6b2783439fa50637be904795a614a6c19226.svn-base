@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>标题</title>
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=0">
+    <link rel="stylesheet" href="/layuiadmin/layui/css/layui.css" media="all">
+    <link rel="stylesheet" href="/layuiadmin/style/admin.css" media="all">
+    <script type="text/javascript" src="../../../../layuiadmin/js/pinyin/pinyin_dict_notone.js"></script>
+    <script type="text/javascript" src="../../../../layuiadmin/js/pinyin/pinyinUtil.js"></script>
+    <script type="text/javascript" src="../../../../layuiadmin/js/oos-sdk-6.0.min.js"></script>
+    <script type="text/javascript" src="../../../../layuiadmin/js/mimeutil.js"></script>
+</head>
+<body>
+
+<div class="layui-fluid">
+    <div class="layui-card">
+<!--
+        <div class="layui-card-header">
+            <font id="title" ></font>
+            <a href="javascript:history.back()" style="    margin-top: 10px;
+    position: absolute;
+    right: 15px;" class="layui-btn layui-btn-normal layui-btn-xs">
+                <i style="position:initial;line-height: inherit" class="layui-icon layui-icon-return"></i>返回</a>
+        </div>-->
+        <!--<div class="layui-card-header">
+            <div id="courseListTitle" style="font-weight: bold;text-align: center;color: #96969b;font-size: 27px;">
+
+            </div>
+        </div>-->
+        <div class="layui-card-body">
+
+            <div class="layui-row layui-col-space5">
+                <div class="layui-col-xs6">
+                    <div id="month" class="layui-card-header" style="font-weight: bold;text-align: center;color: #96969b;font-size: 23px;">
+
+                    </div>
+                    <div class="layui-form layui-card-header layuiadmin-card-header-auto">
+                        <div class="layui-form-item" >
+                            <div class="layui-inline" style="display: block;">
+                                <label class="layui-form-label">查询月份</label>
+                                <div class="layui-input-inline">
+                                    <input type="text" id="monthCount" name="queryObj.month" placeholder="请选择" autocomplete="off" class="layui-input">
+                                </div>
+                            </div>
+                            <div class="layui-inline">
+                                <button class="layui-btn layuiadmin-btn-comm layui-btn-sm" data-type="reload" lay-submit lay-filter="MonthSchoolCourseStudyList-search">
+                                    <i class="layui-icon layui-icon-search layuiadmin-button-btn"></i>查询
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    <table id="MonthSchoolCourseStudyList-list" lay-filter="MonthSchoolCourseStudyList-list"></table>
+                </div>
+                <!--<div class="layui-col-xs6">
+                    <div class="layui-card-header" style="font-weight: bold;text-align: center;color: #96969b;font-size: 23px;">
+                        学校课程人数统计
+                    </div>
+                    <div class="layui-form layui-card-header layuiadmin-card-header-auto">
+                        <div class="layui-form-item" >
+                            <div class="layui-inline" style="display: block;">
+                                <label class="layui-form-label">学校名称</label>
+                                <div class="layui-input-inline">
+                                    <input type="text" name="queryObj.schoolName" placeholder="请选择学校名称" autocomplete="off" class="layui-input">
+                                </div>
+                            </div>
+                            <div class="layui-inline">
+                                <button class="layui-btn layuiadmin-btn-comm layui-btn-sm" data-type="reload" lay-submit lay-filter="SchoolCourseStudyList-search">
+                                    <i class="layui-icon layui-icon-search layuiadmin-button-btn"></i>查询
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    <table id="SchoolCourseStudyList-list" lay-filter="SchoolCourseStudyList-list"></table>
+                </div>-->
+                <!--<div class="layui-col-md4">
+                    <div class="layui-card-header" style="font-weight: bold;text-align: center;color: #96969b;font-size: 23px;">
+                        课程学习人数
+                    </div>
+                    <div class="layui-form layui-card-header layuiadmin-card-header-auto">
+                        <div class="layui-form-item" style="margin-bottom: 13.3%;" >
+
+                        </div>
+                    </div>
+                    <table id="CourseStudyList-list" lay-filter="CourseStudyList-list"></table>
+                </div>-->
+            </div>
+        </div>
+    </div>
+</div>
+<script src="/layuiadmin/layui/layui.js"></script>
+<script>
+    layui.config({
+        base: '/layuiadmin/' //静态资源所在路径
+    }).extend({
+        index:'lib/index',
+        common:'common',
+        $tool:'tool',
+        ctyun: 'ctyun/index'
+    }).use(['index','table', 'form','common','$tool','laydate'], function(exports){
+        var $ = layui.$
+            ,table = layui.table
+            ,common = layui.common
+            ,admin = layui.admin
+            ,laydate = layui.laydate
+            ,$tool = layui.$tool
+            ,form = layui.form;
+        //获取参数
+        var urlParams = $tool.getUrlParams();
+        //课程ID
+        var courseId = urlParams.id;
+        //课程名称
+        var courseName = urlParams.courseName;
+        // $("#title")[0].innerText = courseName+"课程统计";
+
+        //日期
+        var time = common.DateFormat(new Date(),"MM");
+        $('#month').html(time+"月学校课程人数统计");
+
+        var month = common.DateFormat(new Date(),"yyyy-MM");
+        $('#monthCount').val(month);
+
+
+        //查询
+        form.on('submit(MonthSchoolCourseStudyList-search)', function(data){
+            var field = data.field;
+            var time = $('#monthCount').val();
+            var timeStr = time.split("-");
+            $('#month').html(timeStr[1]+"月学校课程人数统计");
+
+            //执行重载
+            table.reload('MonthSchoolCourseStudyList-list', {
+                where: field,page:{curr:1}
+            });
+        });
+
+        /*
+        * 每月 学校课程学习的人数
+        * */
+        MonthSchoolCourseStudyListTable = function () {
+            var headers = layui.admin.getTokenHeader();
+            table.render({
+                elem: '#MonthSchoolCourseStudyList-list' //指定原始表格的选择器（id选择器）
+                ,url:layui.setter.basePath +'/society/societySchoolCourse/courseAllCount.jsn' //模拟接口
+                ,headers:headers
+                // ,where:{'queryObj.ownerCourseId':courseId}
+                ,method: 'post'
+                ,parseData: function(res){ //res 即为原始返回的数据
+                    return {
+                        "code": res.success, //解析接口状态
+                        "msg": res.errMsg, //解析提示文本
+                        "count": res.totalCount, //解析数据长度
+                        "data": res.list //解析数据列表
+                    };
+                }
+                ,response: {
+                    statusCode: true //规定成功的状态码，默认：0
+                }
+                ,cols: [[
+                    {type: 'numbers', fixed: 'left'}
+                    ,{field: 'schoolName',align: 'center', width: '30%', title: '学校名称'}
+                    ,{field: 'schoolCompleteCount',align: 'center', width: '35%', title: '完成人次'}
+                    ,{field: 'ownerCourseName',align: 'center', width: '28%', title: '课程名称'}
+
+                ]]
+                ,autoSort: false
+                ,page: true
+                ,limit: 10
+                ,limits: [10, 20, 30,40,50]
+                ,text: {
+                    none: '暂无相关数据'
+                }
+            });
+        }
+        MonthSchoolCourseStudyListTable();
+
+
+        //查询
+        form.on('submit(SchoolCourseStudyList-search)', function(data){
+            var field = data.field;
+
+            //执行重载
+            table.reload('SchoolCourseStudyList-list', {
+                where: field,page:{curr:1}
+            });
+        });
+        /*
+       * 学校 课程学习的人数
+       * */
+        SchoolCourseStudyListTable = function () {
+            var headers = layui.admin.getTokenHeader();
+            table.render({
+                elem: '#SchoolCourseStudyList-list' //指定原始表格的选择器（id选择器）
+                ,url:layui.setter.basePath +'/society/societySchool/SchoolCourseStudyListTablelistpage.jsn' //模拟接口
+                ,headers:headers
+                ,where:{'queryObj.ownerCourseId':courseId}
+                ,method: 'post'
+                ,parseData: function(res){ //res 即为原始返回的数据
+                    return {
+                        "code": res.success, //解析接口状态
+                        "msg": res.errMsg, //解析提示文本
+                        "count": res.totalCount, //解析数据长度
+                        "data": res.list //解析数据列表
+                    };
+                }
+                ,response: {
+                    statusCode: true //规定成功的状态码，默认：0
+                }
+                ,cols: [[
+                    {type: 'numbers', fixed: 'left'}
+                    ,{field: 'schoolName',align: 'center', width: '30%', title: '学校名称'}
+                    ,{field: 'schoolUseCourseCount',align: 'center', width: '35%', title: '学习总人数'}
+                    ,{field: 'schoolCompleteCount',align: 'center', width: '28%', title: '完成总人数'}
+
+                ]]
+                ,autoSort: false
+                ,page: true
+                ,limit: 10
+                ,limits: [10, 20, 30,40,50]
+                ,text: {
+                    none: '暂无相关数据'
+                }
+            });
+        }
+        // SchoolCourseStudyListTable();
+
+        /*
+       * 课程学习的人数
+       * */
+        CourseStudyListTable = function () {
+            admin.req({
+                url:layui.setter.basePath +'/society/societyStudentAndCourse/CourseStudyListTablelistpage.jsn',
+                data:{
+                    'courseId':courseId
+                },
+                method:"post",
+                success:function (data) {
+                    var num =data.data;
+                    var str = "课程完成总人数："+num;
+                    $('#courseListTitle').html(str);
+                }
+            });
+        }
+        // CourseStudyListTable();
+
+
+        laydate.render({
+            elem: '#monthCount'
+            ,type: 'month'
+            ,trigger: 'click'
+        });
+
+    });
+
+</script>
+</body>
+</html>
+

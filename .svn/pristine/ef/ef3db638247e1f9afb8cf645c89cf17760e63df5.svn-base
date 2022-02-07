@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>课程管理</title>
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=0">
+    <link rel="stylesheet" href="/layuiadmin/layui/css/layui.css" media="all">
+    <link rel="stylesheet" href="/layuiadmin/style/admin.css" media="all">
+    <link rel="stylesheet" href="/layuiadmin/modules/layui_ext/dtree/dtree.css">
+    <link rel="stylesheet" href="/layuiadmin/modules/layui_ext/dtree/font/dtreefont.css">
+    <style type="text/css">
+        .layui-table-cell {
+            padding: 0 5px;
+        }
+    </style>
+</head>
+<body>
+<div class="layui-card" style="margin-bottom: -5px">
+    <div class="layui-form layui-card-header">
+        <div class="layui-form-item">
+            <div class="layui-row layui-col-md12">
+                <a href="SocietySchoolCourseUseGlobleList.html">
+                    <div id="monthCount"  class="layui-col-xs6 layui-col-sm6 layui-col-md6" style="border-right: 1px solid #f0f0f0;text-align: center">
+                        <font class="font-title" style="font-weight:normal;color: #949494;">公共课程</font>
+                    </div>
+                </a>
+                <a href="SocietyNodeResourcesList.html">
+                    <div id="yearCount" class="layui-col-xs6 layui-col-sm6 layui-col-md6" style="text-align: center" >
+                        <font class="font-title" >公共章节</font>
+                    </div>
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="layui-fluid">
+    <div class="layui-card">
+        <div class="layui-form layui-card-header layuiadmin-card-header-auto">
+            <div class="layui-form-item">
+                <div class="layui-inline" style="width: 28%">
+                    <label class="layui-form-label" style="width: 28%">公共课程名称</label>
+                    <div class="layui-input-inline">
+                        <input type="text" name="queryObj.courseName" placeholder="请输入公共课程名称" autocomplete="off" class="layui-input">
+                    </div>
+                </div>
+                <!--<div class="layui-inline">
+                    <label class="layui-form-label">搜索条件2</label>
+                    <div class="layui-input-inline">
+                        <input type="text" name="queryObj.name" placeholder="请输入" autocomplete="off" class="layui-input">
+                    </div>
+                </div>-->
+                <div class="layui-inline">
+                    <button class="layui-btn layuiadmin-btn-comm layui-btn-sm" data-type="reload" lay-submit lay-filter="SocietySchoolCourse-search">
+                        <i class="layui-icon layui-icon-search layuiadmin-button-btn"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+        <div class="layui-card-body">
+            <!--<div style="padding-bottom: 10px;">-->
+            <!--&lt;!&ndash;                <button class="layui-btn layuiadmin-btn-comm  layui-btn-sm" data-type="batchdel">删除</button>&ndash;&gt;-->
+            <!--<button class="layui-btn layuiadmin-btn-comm  layui-btn-sm" data-type="add">添加</button>-->
+            <!--</div>-->
+            <table id="SocietySchoolCourse-list" lay-filter="SocietySchoolCourse-list"></table>
+            <script type="text/html" id="table-SocietySchoolCourse-list">
+                <a class="layui-btn layui-btn-normal layui-btn-xs" lay-event="courseInfo">详情</a>
+                {{# if(d.showFlg == 0){ }}
+                <a class="layui-btn layui-btn-disabled layui-btn-xs" lay-event="">加入我的课程</a>
+                {{# } }}
+                {{# if(d.showFlg == 1){ }}
+                <a class="layui-btn layui-btn-normal layui-btn-xs" lay-event="join">加入我的课程</a>
+                {{# } }}
+            </script>
+        </div>
+    </div>
+</div>
+</div>
+<script src="/layuiadmin/layui/layui.js"></script>
+<script>
+    layui.config({
+        base: '/layuiadmin/' //静态资源所在路径
+    }).extend({
+        index:'lib/index',
+        $tool:'tool',
+        common:'common',
+        dtree:'layui_ext/dtree/dtree'
+    }).use(['index','table', 'form','common','dtree','$tool','laytpl'], function(exports){
+        var $ = layui.$
+            ,table = layui.table
+            ,common = layui.common
+            ,admin = layui.admin
+            ,dtree = layui.dtree
+            ,$tool = layui.$tool
+            ,laytpl =laytpl
+            ,form = layui.form;
+
+        // 查询所有的专业初始化树
+        var headers = layui.admin.getTokenHeader();
+        var searchObject = null;
+        //查询
+        form.on('submit(SocietySchoolCourse-search)', function(data){
+            var field = data.field;
+            searchObject = field;
+            //执行重载
+            table.reload('SocietySchoolCourse-list', {
+                where: field,page:{curr:1}
+            });
+        });
+
+        /*
+        * 定义表格
+        * */
+        defineTable = function () {
+            var headers = layui.admin.getTokenHeader();
+            table.render({
+                elem: '#SocietySchoolCourse-list' //指定原始表格的选择器（id选择器）
+                ,url:layui.setter.basePath +'/society/societySchoolCourseUseGloble/getAllOpenCourse.jsn' //模拟接口
+                ,headers:headers
+                ,method: 'post'
+                ,parseData: function(res){ //res 即为原始返回的数据
+                    return {
+                        "code": res.success, //解析接口状态
+                        "msg": res.errMsg, //解析提示文本
+                        "count": res.totalCount, //解析数据长度
+                        "data": res.list //解析数据列表
+                    };
+                }
+                ,response: {
+                    statusCode: true //规定成功的状态码，默认：0
+                }
+                ,cols: [[
+                    {type: 'numbers', fixed: 'left'}
+                    ,{field: 'id',align: 'center', width: 200, title: '主键',sort: true,hide:true}
+                    ,{field: 'ownerSchoolName',align: 'center', width: '20%', title: '所属学校',sort: false}
+                    ,{field: 'ownerMajorName',align: 'center', width: '20%', title: '所属专业名',sort: false}
+                    ,{field: 'courseClsName',align: 'center', width: 200, title: '所属课程分类名',hide: true}
+                    ,{field: 'courseName',align: 'center', width: '20%', title: '课程名称'}
+                    ,{field: 'courseTimeLength',align: 'center', width:  '15%', title: '课程时长',
+                        templet : function (d) {
+                            return formatSeconds(d.courseTimeLength);
+                        }
+                    }
+                    ,{field: 'totalLessons',align: 'center', width:  '8%', title: '课时数'}
+                    ,{title: '操作', align: 'center', fixed: 'right', toolbar: '#table-SocietySchoolCourse-list'}
+                ]]
+                ,autoSort: false
+                ,page: true
+                ,limit: 50
+                ,limits: [10, 20, 30,40,50]
+                ,text: {
+                    none: '暂无相关数据'
+                }
+            });
+
+            //为toolbar添加事件响应
+            table.on('tool(SocietySchoolCourse-list)', function(obj){ //注：tool是工具条事件名，test是table原始容器的属性 lay-filter="对应的值"
+                /*var data = obj.data;*///获得当前行数据
+                //区分事件
+                switch(obj.event){
+                    case 'join':
+                        joinToMyCourse(obj);
+                        break;
+                    case 'courseInfo':
+                        courseInfo(obj);
+                        break;
+                };
+            });
+        }
+        defineTable();
+
+        //加入我的课程
+        let joinToMyCourse = (obj)=>{
+            let courseId = obj.data.id;
+            admin.req({
+                url:layui.setter.basePath +'/society/societySchoolCourse/joinToMyCourse.jsn',
+                data:{'ids':courseId},
+                method:"post",
+                success:function (data) {
+                    table.reload('SocietySchoolCourse-list', {
+                        where: searchObject,page:{curr:1}
+                    });
+                    layer.msg('操作成功,已加入我的课程', {
+                        icon: 1
+                    });
+                },
+            });
+
+        }
+
+
+        courseInfo = function (obj) {
+            var index = layer.open({
+                type: 2
+                ,title: obj.data.courseName+'课程章节信息'
+                ,content: 'SocietyCourseNodeInfo.html?courseId='+obj.data.id
+                ,maxmin: true
+                ,area: ['1100px', '600px']
+                ,btn: ['关闭']
+                ,success:function(layero,index){
+
+                }
+            });
+            layer.full(index);
+        }
+
+        function formatSeconds(value) {
+            var theTime = parseInt(value);// 需要转换的时间秒
+            var theTime1 = 0;// 分
+            var theTime2 = 0;// 小时
+            var theTime3 = 0;// 天
+            if(theTime > 60) {
+                theTime1 = parseInt(theTime/60);
+                theTime = parseInt(theTime%60);
+                if(theTime1 > 60) {
+                    theTime2 = parseInt(theTime1/60);
+                    theTime1 = parseInt(theTime1%60);
+                    if(theTime2 > 24){
+                        //大于24小时
+                        theTime3 = parseInt(theTime2/24);
+                        theTime2 = parseInt(theTime2%24);
+                    }
+                }
+            }
+            var result = '';
+            if(theTime > 0){
+                result = ""+parseInt(theTime)+"秒";
+            }
+            if(theTime1 > 0) {
+                result = ""+parseInt(theTime1)+"分钟"+result;
+            }
+            if(theTime2 > 0) {
+                result = ""+parseInt(theTime2)+"小时"+result;
+            }
+            if(theTime3 > 0) {
+                result = ""+parseInt(theTime3)+"天"+result;
+            }
+            return result;
+        }
+    });
+
+</script>
+</body>
+</html>
+

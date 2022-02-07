@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>基于人脸识别的从业人员安全培训平台和手机培训宝</title>
+  <meta name="renderer" content="webkit">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=0">
+  <link rel="stylesheet" href="../../layuiadmin/layui/css/layui.css" media="all">
+  <link rel="stylesheet" href="../../layuiadmin/style/admin.css" media="all">
+  <link rel="stylesheet" href="../../layuiadmin/style/login.css" media="all">
+  <script type="text/javascript" src="http://cdn.bootcss.com/jquery/2.1.4/jquery.min.js"></script>
+  <script type="text/javascript" src="https://cdn.bootcss.com/jquery-cookie/1.4.1/jquery.cookie.js"></script>
+  <script>
+      $(document).ready(function(){
+          var rem = $.cookie('remember_user');
+          if(rem){
+              $("#remember_user").prop("checked",true);
+              $("#LAY-user-login-username").val($.cookie("username"));
+              $("#LAY-user-login-password").val($.cookie("password"));
+          }
+      });
+  </script>
+  <style type="text/css">
+    body{
+      background-image: url(/layuiadmin/layui/images/loginimgs/loginback.png);
+      background-repeat: no-repeat;
+      background-size: 100% 100%;
+      position: relative;
+
+    }
+    .img1 {
+      position: absolute;
+      left: 12%;
+      top: 68%;
+      width: 103px;
+    }
+    .img2 {
+      position: absolute;
+      left: 47%;
+      top: 46%;
+      width: 123px;
+    }
+
+    .img3 {
+      position: absolute;
+      left: 39%;
+      top: 10%;
+      width: 173px;
+    }
+
+    .img4 {
+      position: absolute;
+      left: 8%;
+      top: 23%;
+      width: 136px;
+    }
+
+    .img5 {
+      position: absolute;
+      left: 40%;
+      top: 70%;
+      width: 145px;
+    }
+    .layadmin-user-login-main {
+      position: absolute;
+      right: 177px;
+      margin: 0;
+    }
+    .layadmin-user-login-header h2{
+      color: #ffffff;
+    }
+    .layadmin-user-login-header p{
+      color: #ffffff;
+    }
+
+
+  </style>
+</head>
+<body>
+<img class="img1 littleimg" src="/layuiadmin/layui/images/loginimgs/gongjiao.png">
+<img class="img2 littleimg" src="/layuiadmin/layui/images/loginimgs/zuoye.png">
+<img class="img3 littleimg" src="/layuiadmin/layui/images/loginimgs/personrelation.png">
+<img class="img4 littleimg" src="/layuiadmin/layui/images/loginimgs/fangxiangpan.png">
+<img class="img5 littleimg" src="/layuiadmin/layui/images/loginimgs/backicon.png">
+
+  <div class="layadmin-user-login layadmin-user-display-show" id="LAY-user-login" style="display: none;">
+
+    <div class="layadmin-user-login-main" style="top: 27%;">
+      <div class="layadmin-user-login-box layadmin-user-login-header">
+        <h2>基于人脸识别的从业人员安全培训平台和手机培训宝</h2>
+      </div>
+      <div class="layadmin-user-login-box layadmin-user-login-body layui-form">
+        <div class="layui-form-item">
+          <label class="layadmin-user-login-icon layui-icon layui-icon-username" for="LAY-user-login-username"></label>
+          <input type="text" name="userCode" id="LAY-user-login-username" lay-verify="required" placeholder="用户名" class="layui-input">
+        </div>
+        <div class="layui-form-item">
+          <label class="layadmin-user-login-icon layui-icon layui-icon-password" for="LAY-user-login-password"></label>
+          <input type="password" name="password" id="LAY-user-login-password" lay-verify="required" placeholder="密码" class="layui-input">
+        </div>
+        <div class="layui-form-item">
+          <input type="checkbox" name="remember_user" id="remember_user" lay-skin="primary" style="margin-bottom: 10px;" title="记住用户名和密码" /></label>
+        </div>
+
+        <!--<div class="layui-form-item">
+          <label class="layadmin-user-login-icon layui-icon layui-icon-picture" for="LAY-user-login-password"></label>
+          <input id="imgCode" name="imgCode" class="layui-input" placeholder="验证码" lay-verify="required" maxlength="4" style="width:60%;float:left">
+          <img align="middle" id="imgCode_img" style="width:38%;float:right;height:38px;cursor:pointer" title="验证码，如看不清请点击刷新" src="/ptadmin/Login/getImageCode.jsn">
+        </div>
+        <div class="layui-form-item">
+          <label class="layadmin-user-login-icon layui-icon layui-icon-picture" for="LAY-user-login-password"></label>
+          <input id="imgCode2" name="imgCode2" class="layui-input" placeholder="验证码" lay-verify="required" maxlength="4" style="width:60%;float:left">
+          <img align="middle" id="imgCode_img2" style="width:38%;float:right;height:38px;cursor:pointer" title="验证码，如看不清请点击刷新" src="/ptadmin/Login/getImageCode2.jsn">
+        </div>-->
+        <div class="layui-form-item">
+          <button id="loginButton" class="layui-btn layui-btn-fluid" lay-submit lay-filter="LAY-user-login-submit">登 入</button>
+        </div>
+      </div>
+    </div>
+    
+    <div class="layui-trans layadmin-user-login-footer">
+      
+      <p>v1.0</p>
+
+    </div>
+
+    
+  </div>
+
+  <script src="../../layuiadmin/layui/layui.js"></script>
+
+  <script>
+  layui.config({
+    base: '../../layuiadmin/' //静态资源所在路径
+  }).extend({
+    index: 'lib/index' //主入口模块
+  }).use(['index', 'user'], function(){
+    var $ = layui.$
+    ,setter = layui.setter
+    ,admin = layui.admin
+    ,form = layui.form
+    ,router = layui.router()
+    ,search = router.search;
+    layui.data(setter.tableName, {
+        key: setter.request.tokenName
+        ,remove: true
+    });
+    form.render();
+
+      //保存到cookie
+      function save_cookies(){
+          if($("#remember_user").prop("checked")){
+              var username = $("#LAY-user-login-username").val();
+              var password = $("#LAY-user-login-password").val();
+
+              $.cookie("remember_user","true",{expires:7});
+              $.cookie("username",username,{expires:7 });
+              $.cookie("password",password,{expires:7 });
+          }else{
+              $.cookie("remember_user","false",{expires:-1});
+              $.cookie("username","",{ expires:-1 });
+              $.cookie("password","",{ expires:-1 });
+          }
+      };
+
+
+      //提交
+    form.on('submit(LAY-user-login-submit)', function(obj){
+        save_cookies();
+      //请求登入接口
+      admin.req({
+        url: layui.setter.basePath + '/admin/sysUser/login.jsn'
+        ,data: obj.field
+         ,success:function (data) {
+            if(!data.success){
+                /*refreshRandomCheckCode();
+                refreshRandomCheckCode2();*/
+            }
+         }
+        ,done: function(res){
+            var accessToken = res.data;
+            layui.data(setter.tableName, {
+              key: setter.request.tokenName
+              ,value: accessToken
+            });
+            //登入成功的提示与跳转
+            layer.msg('登入成功', {
+                offset: '15px'
+                ,icon: 1
+                ,time: 1000
+            }, function(){
+                location.href = '../index.html'; //后台主页
+            });
+        }
+      });
+
+    });
+
+      document.onkeydown=keyDownSearch;
+
+      function keyDownSearch(e) {
+          // 兼容FF和IE和Opera
+          var theEvent = e || window.event;
+          var code = theEvent.keyCode || theEvent.which || theEvent.charCode;
+          if (code == 13) {
+              document.getElementById("loginButton").click();
+          }
+          return true;
+      }
+
+      //绑定验证码事件
+     /* $("#imgCode_img").click(function() {
+          refreshRandomCheckCode();
+      });
+      function refreshRandomCheckCode() {
+       $("#imgCode_img").attr("src", layui.setter.basePath+"/ptadmin/Login/getImageCode.jsn?d"+new Date().getTime());
+  }
+
+      //绑定验证码事件
+      $("#imgCode_img2").click(function() {
+          refreshRandomCheckCode2();
+      });
+      function refreshRandomCheckCode2() {
+          $("#imgCode_img2").attr("src", layui.setter.basePath+"/ptadmin/Login/getImageCode2.jsn?d"+new Date().getTime());
+      }*/
+  });
+  </script>
+</body>
+</html>

@@ -1,0 +1,68 @@
+<section class="aui-flexView">
+
+	<section class="aui-scrollView">
+
+		 <header class="aui-navBar0 aui-navBar-fixed b-line" style="background-color: #1786F7">
+                <a href="javascript:history.back(-1);" class="aui-navBar-item">
+                    <i class="icon icon-return"></i>
+                </a>
+                <div class="aui-center">
+                    <span class="aui-center-title">个人信息</span>
+                </div>
+                <a href="javascript:;" class="aui-navBar-item">
+
+                </a>
+            </header>
+		
+		    <div>          
+               <div class="aui-flexxx b-line">
+                   <div class="aui-invoice-name">头像</div>
+                   <div class="xx_box" >
+                       <img ng-click="updateLoadFacePhoto()" id="headPhotoShow" ng-src="{{curStudent.headPhoto}}" onerror="this.src='images/user-img.jpg'">
+                       <input onChange="uploadImageFile(this,'headPhoto',false,500,true)" type="file" id="uploadHeadPhoto" accept="image/*" style="display: none"/>
+                       <form id="studentForm" method="post" action="">
+                           <input type="hidden" name="headPhoto" id="headPhoto"/>
+                       </form>
+                   </div>
+                </div>
+                <div class="aui-flexxx b-line">
+                    <div class="aui-invoice-name">学员姓名</div>
+                    <div class="xx_box"><input type="text" ng-model="curStudent.studentName" disabled></div>
+                </div>
+                <div class="aui-flexxx b-line">
+                    <div class="aui-invoice-name">身份证号</div>
+                    <div class="xx_box"><input type="text" ng-model="curStudent.studentIdCardNum" disabled></div>
+                </div>
+                <div class="aui-flexxx b-line">
+                    <div class="aui-invoice-name">是否实名认证</div>
+                    <div class="xx_box">
+                        <ul class="Switch">
+                            <li>
+                                <input type="checkbox" id="date" ng-checked="curStudent.isRealNameAuth" disabled/>
+                                <label for="date"><em style="height: 28px;line-height: 28px;text-align: center">{{isRealName}}</em></label>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+                <!--<div class="aui-flexxx b-line">
+                    <form id="studentForm" method="post" action="">
+                        <input type="hidden" name="headPhoto" id="headPhoto"/>
+                        <input type="hidden" name="classId" id="classId"/>
+                        <div class="aui-invoice-name">昵称</div>
+                        <div class="xx_box">
+                            <input type="text" id="nickName" name="nickName" ng-model="curStudent.nickName" placeholder="请设置昵称">
+                        </div>
+                    </form>
+                </div>-->
+
+
+                <div class="aui-flexxx">
+                  <a href="javascript:void(0)" ng-click="updateStuInfo()" class="btn mt20" style="width: 100%">保存信息</a>
+                </div>
+		    </div>
+		
+       
+	</section>
+
+    
+</section>

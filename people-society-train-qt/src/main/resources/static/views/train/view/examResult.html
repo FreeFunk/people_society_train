@@ -1,0 +1,38 @@
+<section class="aui-flexView">
+	<section class="aui-scrollView">
+		<div class="paperHead">
+			<p>《{{stuTestPaper.ownerCourseName}}》试卷</p>
+			<p>本次考试得分</p>
+			<p>{{stuTestPaper.getScore}}分</p>
+		</div>
+		<div class="blank15"></div>
+		<div>
+			<p style="text-align: center">总分({{stuTestPaper.totalScore}}分)</p>
+			<div class="blank5"></div>
+			<div>
+				<div class="quesTypeLeft"><p>选择题</p></div>
+				<div class="quesTypeRight"><p>判断题</p></div>
+			</div>
+			<div>
+				<div class="quesTypeLeft"><p>共{{stuTestPaper.optionScore}}分</p></div>
+				<div class="quesTypeRight"><p>共{{stuTestPaper.judgeScore}}分</p></div>
+			</div>
+			<div>
+				<img class="passIcon" ng-show="stuTestPaper.isPass!='1'" src="./images/notPass.png"/>
+				<img class="passIcon" ng-show="stuTestPaper.isPass=='1'" src="./images/pass.png"/>
+			</div>
+		</div>
+		<div class="paperContainer">
+			<div class="blank10"></div>
+			<div class="paperBtn" ng-click="gotoExamDetail()">答题详情</div>
+			<div class="paperTip" ng-show="stuTestPaper.isPass==1">
+				<p>恭喜您已经通过《{{stuTestPaper.ownerCourseName}}》课程考核，前往查看
+					<a style="color: #5D99E5;" href="javascript:void(-1)" ng-click="gotoCertInfoPage(stuTestPaper.ownerCourseId)">证书</a>
+				</p>
+			</div>
+		</div>
+	</section>
+
+	<!-- 底部菜单栏 -->
+	<bottom-nav current-nav="currentNav" change-Menu="changeMenuBar(menu)"></bottom-nav>
+</section>

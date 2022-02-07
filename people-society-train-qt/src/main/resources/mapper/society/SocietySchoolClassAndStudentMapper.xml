@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.edgedo.society.mapper.SocietySchoolClassAndStudentMapper" >
+   
+   
+    <resultMap id="BaseResultMap" type="com.edgedo.society.entity.SocietySchoolClassAndStudent" >
+			<result column="ID" property="id"/>
+			<result column="CREATE_TIME" property="createTime"/>
+			<result column="OWNER_SCHOOL_ID" property="ownerSchoolId"/>
+			<result column="OWNER_SCHOOL_NAME" property="ownerSchoolName"/>
+			<result column="OWNER_MAJOR_ID" property="ownerMajorId"/>
+			<result column="OWNER_MAJOR_NAME" property="ownerMajorName"/>
+			<result column="CLASS_ID" property="classId"/>
+			<result column="CLASS_NAME" property="className"/>
+			<result column="STUDENT_ID" property="studentId"/>
+			<result column="STUDENT_NAME" property="studentName"/>
+			<result column="STUDENT_ID_CARD_NUM" property="studentIdCardNum"/>
+			<result column="STUDENT_LERAN_PROGRESS" property="studentLeranProgress"/>
+			<result column="TOTAL_NODE_NUM" property="totalNodeNum"/>
+			<result column="FINISHED_NODE_NUM" property="finishedNodeNum"/>
+			<result column="LEARN_IS_FINISHED" property="learnIsFinished"/>
+			<result column="STUDY_START_TIME" property="studyStartTime"/>
+			<result column="STUDY_END_TIME" property="studyEndTime"/>
+			<result column="DATA_STATE" property="dataState"/>
+    </resultMap>
+   
+    <resultMap id="BaseResultViewMap" type="com.edgedo.society.queryvo.SocietySchoolClassAndStudentView" extends="BaseResultMap">
+    
+    </resultMap>
+  
+  
+  <!-- ******* 新增字段请修改这里  ******  -->
+  <sql id="Base_Column_List">
+	 ID,CREATE_TIME,OWNER_SCHOOL_ID, CLASS_ID, STUDENT_ID, STUDENT_LERAN_PROGRESS, TOTAL_NODE_NUM, FINISHED_NODE_NUM,CLASS_NAME,
+	 OWNER_SCHOOL_NAME,CLASS_NAME,OWNER_MAJOR_ID,OWNER_MAJOR_NAME,STUDENT_NAME,STUDENT_ID_CARD_NUM,LEARN_IS_FINISHED,STUDY_START_TIME,STUDY_END_TIME,
+	 DATA_STATE
+  </sql>
+  
+  <!-- ******* 利用好这里的动态查询条件  ******  -->
+  <sql id="where">
+  	<where>
+		<if test='queryObj != null and  queryObj.ownerSchoolId != null and @org.apache.commons.lang3.StringUtils@isNotEmpty(queryObj.ownerSchoolId)'>
+		AND  OWNER_SCHOOL_ID = #{queryObj.ownerSchoolId}
+		</if>
+		<if test='queryObj != null and  queryObj.classId != null and @org.apache.commons.lang3.StringUtils@isNotEmpty(queryObj.classId)'>
+		AND  CLASS_ID = #{queryObj.classId}
+		</if>
+		<if test='queryObj != null and  queryObj.studentId != null and @org.apache.commons.lang3.StringUtils@isNotEmpty(queryObj.studentId)'>
+		AND  STUDENT_ID = #{queryObj.studentId}
+		</if>
+		<if test='queryObj != null and  queryObj.totalNodeNum != null and @org.apache.commons.lang3.StringUtils@isNotEmpty(queryObj.totalNodeNum)'>
+			AND  TOTAL_NODE_NUM = #{queryObj.totalNodeNum}
+		</if>
+		<if test='queryObj != null and  queryObj.finishedNodeNum != null and @org.apache.commons.lang3.StringUtils@isNotEmpty(queryObj.finishedNodeNum)'>
+			AND  FINISHED_NODE_NUM = #{queryObj.finishedNodeNum}
+		</if>
+  	</where>
+  	
+  </sql>
+  
+  <!-- ******* 排序判断  ******  
+  <sql id="orderBy">
+  	<if test="orderBy != null and orderBy!= '' ">
+  		order by  ${orderBy}
+  	</if>
+  </sql>-->
+  
+  
+  <!-- 分页条件查询  -->
+  <select id="listPage" parameterType="com.edgedo.society.queryvo.SocietySchoolClassAndStudentQuery" resultMap="BaseResultViewMap">
+  		select <include refid="Base_Column_List"/> from society_school_class_and_student 
+  		<include refid="where"/>
+  </select>
+  
+   <!-- 不分页条件查询  -->
+  <select id="listByObj" parameterType="com.edgedo.society.queryvo.SocietySchoolClassAndStudentQuery" resultMap="BaseResultViewMap">
+  		select <include refid="Base_Column_List"/> from society_school_class_and_student 
+  		<include refid="where"/>
+  </select>
+
+	<!-- 根据学员和学校查询班级信息 -->
+	<select id="selectClassByStuId" parameterType="map" resultMap="BaseResultViewMap">
+		select <include refid="Base_Column_List"/> from society_school_class_and_student
+		where DATA_STATE='1'
+		and OWNER_SCHOOL_ID=#{ownerSchoolId}
+		and STUDENT_ID=#{studentId}
+		order by CREATE_TIME desc limit 1
+	</select>
+
+	<!--根据班级ID统计班级的人数-->
+	<select id="countStudentByClassId" parameterType="string" resultType="int">
+		select count(1) from society_school_class_and_student
+		where DATA_STATE='1'
+		and CLASS_ID=#{classId}
+	</select>
+
+	<select id="countByStuAndClassId" parameterType="map" resultType="int">
+		select count(1) from society_school_class_and_student
+		where DATA_STATE='1'
+		and CLASS_ID=#{classId}
+		and STUDENT_ID = #{studentId}
+	</select>
+
+
+</mapper>

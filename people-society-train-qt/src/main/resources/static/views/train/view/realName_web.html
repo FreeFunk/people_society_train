@@ -1,0 +1,44 @@
+<div class="w1200">
+    <div style="float: right;line-height: 50px;color: #2487ff;text-decoration: underline;cursor: pointer;" ng-click="changePage('/loginWeb')">登录</div>
+    <h4>实名认证</h4>
+
+    <Div>
+        <form id="studentRealNameForm">
+            <div class="aui-flexxx b-line">
+                <div class="aui-invoice-name">学员姓名</div>
+                <div class="xx_box"><input type="text" ng-value="studentInfo.studentName" disabled></div>
+            </div>
+
+            <div class="aui-flexxx b-line">
+                <div class="aui-invoice-name">身份证号</div>
+                <div class="xx_box"><input type="text" ng-value="studentInfo.studentIdCardNum" disabled></div>
+            </div>
+
+            <Div class="bgys">
+                <input type="hidden" id="idCardImage" ng-model="realNameObj.idCardImage" name="idCardImage"/>
+                <img id="idCardImageShow" style="width:215px;height: 230px;" src="images/zhengmian.jpg" ng-click="updateLoadIdCard()">
+                <input onChange="uploadImageFile(this,'idCardImage',false,1200,false)" type="file" id="uploadIdCardImage" accept="image/*" style="display: none"/>
+            </Div>
+            <h3>身份证正面上传(如图例横向拍摄)</h3>
+            <Div class="bgys">
+                <input type="hidden" id="faceImageUrl" ng-model="realNameObj.faceImageUrl" name="faceImageUrl" />
+                <img id="faceImageUrlShow" style="width:215px;height: 180px;" src="images/renlian.png" >
+            </Div>
+        </form>
+        <h3>人脸拍照</h3>
+        <div class="blank10"></div>
+        <div style="color: red;width: 90%;margin: auto;margin-top: 10px;" ng-bind="realNameObj.failReason"></div>
+        <Div style="width:200px; margin: auto">
+            <button class="aui-sign-login" ng-show="checkCount==10&&realNameState!='pass'" ng-click="studentRealName()">立即提交</button>
+        </Div>
+    </Div>
+
+</div>
+
+<!--  人脸拍照 -->
+<div  style="display: none;">
+    <canvas id="face_preview_canvas"
+            style="display:none;margin: auto;" width="520" height="400"></canvas>
+    <video id="face_camare_vedio"
+           style="width: 520px;height: 400px;background-color: #333333;" autoplay></video>
+</div>

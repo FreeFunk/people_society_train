@@ -1,0 +1,56 @@
+package com.edgedo.society.queryvo;
+
+import com.baomidou.mybatisplus.annotations.TableField;
+import com.edgedo.society.entity.SocietySchoolCourseNode;
+import com.edgedo.society.entity.SocietyStudentAndCourse;
+import com.edgedo.society.entity.SocietyStudentAndNode;
+
+import java.util.List;
+import java.util.Map;
+
+public class SocietyStudentAndCourseView extends SocietyStudentAndCourse {
+
+    /**
+     * 属性描述:课程简介
+     */
+    java.lang.String courseDesc;
+    //课程中的章节
+    List<SocietySchoolCourseNodeView> courseNodes = null;
+    //学员的学习记录
+    List<SocietyStudentAndNodeView> stuNodes = null;
+
+    //课程的考试状态
+    private String paperState;
+
+    public String getPaperState() {
+        return paperState;
+    }
+
+    public void setPaperState(String paperState) {
+        this.paperState = paperState;
+    }
+
+    public String getCourseDesc() {
+        return courseDesc;
+    }
+
+    public void setCourseDesc(String courseDesc) {
+        this.courseDesc = courseDesc;
+    }
+
+    public List<SocietySchoolCourseNodeView> getCourseNodes() {
+        return courseNodes;
+    }
+
+    public void setCourseNodes(List<SocietySchoolCourseNodeView> courseNodes) {
+        this.courseNodes = courseNodes;
+    }
+
+    public List<SocietyStudentAndNodeView> getStuNodes() {
+        return stuNodes;
+    }
+
+    public void setStuNodes(List<SocietyStudentAndNodeView> stuNodes) {
+        this.stuNodes = stuNodes;
+    }
+}

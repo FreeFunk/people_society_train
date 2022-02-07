@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>标题</title>
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=0">
+    <link rel="stylesheet" href="/layuiadmin/layui/css/layui.css" media="all">
+    <link rel="stylesheet" href="/layuiadmin/style/admin.css" media="all">
+    <style>
+        .canfloat
+        {
+            position: fixed;
+            top: 10px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="layui-form">
+    <div class="layui-fluid">
+        <div class="layui-card">
+            <div class="layui-card-header">
+                <font style="font-size: 22px;font-weight: 600;" id="studentNameTitle">答题记录</font>
+                <!--<button style="float: right" type="button" class="layui-btn layuiadmin-btn-comm layui-btn-sm" onclick="exportData()">
+                    <i class="layui-icon layui-icon-export layuiadmin-button-btn"></i>导出
+                </button>-->
+            </div>
+            <div class="layui-card-body">
+                <div style="font-size: 17px;position: absolute">本次成绩：<span id="num"></span></div>
+                <div style="font-size: 17px;position: absolute;left: 19%;color: green;">正确：<span id="rightNum"></span></div>
+                <div style="font-size: 17px;position: absolute;left: 45%;color: red;">错误：<span id="wrongNum"></span></div>
+                <div style="font-size: 17px;position: absolute;left: 71%;color: #1e9fff;">未答：<span id="noQuestionNum"></span></div>
+                <table style="font-size: 16px;text-align: left;margin-top: 5%;" id="SocietyStudentPractiseQuestion-list" lay-filter="SocietyStudentPractiseQuestion-list"></table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="/layuiadmin/layui/layui.js"></script>
+<script>
+    layui.config({
+        base: '/layuiadmin/' //静态资源所在路径
+    }).extend({
+        index:'lib/index',
+        common:'common',
+        $tool:'tool'
+    }).use(['index','table', 'form','common','$tool'], function(exports){
+        var $ = layui.$
+            ,table = layui.table
+            ,common = layui.common
+            ,$tool = layui.$tool
+            ,admin = layui.admin
+            ,form = layui.form;
+        $(function () {
+            $(window).scroll(function () {
+                var ref_min = $("#expor")[0];
+                if (!ref_min) return;
+                var scroll_top = $(window).scrollTop();
+                var ref_height_min = ref_min.offsetTop + $("#expor")[0].offsetHeight;
+                if (scroll_top > ref_height_min) {
+                    $("#expor").addClass("canfloat");
+                } else {
+                    $("#expor").removeClass("canfloat");
+                }
+            });
+        });
+
+        var queryArgs = $tool.getUrlParams();//获取查询参数
+        var nodeId = queryArgs.nodeId;
+        var studentAndcourseId = queryArgs.ownerStudentAndCourseId;
+        var ownerCourseId = queryArgs.ownerCourseId;
+        var studentAndnodeId = queryArgs.id;
+        //$("#studentNameTitle")[0].innerText = ownerCourseName+">"+nodeName+">"+studentName;
+        var questionAll;
+
+        init();
+        function init(){
+            var loading = layer.load(2,{
+                shade: [0.3, '#393D49'],
+                time: 100*1000
+            });
+            admin.req({
+                url:layui.setter.basePath +'/society/societyStudentPractiseQuestion/taskAndStudyListNew.jsn',
+                data:{
+                    'queryObj.ownerNodeId': nodeId,
+                    'queryObj.ownerStuCourseId':studentAndcourseId,
+                    'queryObj.ownerCourseId':ownerCourseId,
+                    'queryObj.ownerStudentAndNodeId':studentAndnodeId
+                },
+                method:"post",
+                success:function (data) {
+                    layer.close(loading);
+                    var rightNum = data.data.rightNum;
+                    var wrongNum = data.data.errNum;
+                    var num = data.data.nullNum;
+                    var noQuestionNum = data.data.sorceNum;
+                    $("#num").html(noQuestionNum);
+                    $("#rightNum").html(rightNum);
+                    $("#wrongNum").html(wrongNum);
+                    $("#noQuestionNum").html(num);
+                    var question = data.data.questionList;
+                    questionAll = data.data.questionList;
+                    var html ="";
+
+                    html +="<table  width=\"100%\" border=\"1\" cellspacing=\"0\" cellpadding=\"0\">\n";
+                    $.each(question,function(key,value){
+                        //1.题目
+                        var name = Number(key+1)+"、"+value.questionName;
+                        if (value.studentAnswer=="1"){
+                            html+="<tr>\n"
+                                + "<th><i style='color: green;font-weight: inherit;' class=\"layui-icon layui-icon-ok\"></i>"+name+ "</th>\n"
+                                +"<tr style='margin-top: 1%;display: grid;margin-bottom: 2%;margin-left: 3%;'>"+"<th>";
+                        }else {
+                            html+="<tr>\n"
+                                + "<th><i style='color: red;font-weight: inherit;' class=\"layui-icon layui-icon-close\"></i>"+name+ "</th>\n"
+                                +"<tr style='margin-top: 1%;display: grid;margin-bottom: 2%;margin-left: 3%;'>"+"<th>";
+                        }
+                        //2.选项
+                        $.each(value.optionList,function(n,valueOption) {
+                            var option = '';
+                            if(valueOption.optionName=='√' || valueOption.optionName=='×'){
+                                option = valueOption.optionTitle;
+                            }else {
+                                option = valueOption.optionTitle+"、"+valueOption.optionName;
+                            }
+                            //学生答案标识 valueOption.optionTitle==value.optionTitle
+                            if(valueOption.isSelect=='1'){
+                                html+= "<span style='color: green;margin-right: 5%;' >"+option+"</span>";
+                            }else {
+                                html+= "<span style='color: black;margin-right: 5%;' >"+option+"</span>";
+                            }
+                        });
+                        html+="</th>"+"</tr>\n"+"</tr>\n";
+                        $("#SocietyStudentPractiseQuestion-list").html(html);
+
+                    });
+                },
+            });
+        }
+
+    });
+
+</script>
+</body>
+</html>
+

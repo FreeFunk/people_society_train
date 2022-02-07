@@ -1,0 +1,959 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="ALL" />
+  </component>
+  <component name="ChangeListManager">
+    <list default="true" id="38dccec8-54d2-4523-93ac-9e451c77cfce" name="Default" comment="修改pom">
+      <change afterPath="$PROJECT_DIR$/.idea/inspectionProfiles/Project_Default.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/people-society-train-data-machine/people-society-train-data-machine.iml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/people-society-train-dataenum/people-society-train-dataenum.iml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/people-society-train-ht-juxian/people-society-train-ht-juxian.iml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/people-society-train-ht-nite/people-society-train-ht-nite.iml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/people-society-train-ht-nite/src/main/java/com/edgedo/timetask/demo/task.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/people-society-train-ht/people-society-train-ht.iml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/people-society-train-qt/people-society-train-qt.iml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/sys-wx-client-starter" afterDir="true" />
+      <change afterPath="$PROJECT_DIR$/sys-wx-common-service-impl" afterDir="true" />
+      <change afterPath="$PROJECT_DIR$/sys-wx-common-service-impl/sys-wx-common-service-impl.iml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/compiler.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/compiler.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/encodings.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/encodings.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__mysql_mysql_connector_java_5_1_39.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/libraries/Maven__mysql_mysql_connector_java_5_1_39.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__org_freemarker_freemarker_2_3_23.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/libraries/Maven__org_freemarker_freemarker_2_3_23.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/modules.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/modules.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/people_society_train.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/people_society_train.iml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/people-society-train-data-machine/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/people-society-train-data-machine/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/people-society-train-data-machine/src/main/resources/mapper/society/SocietyStudentStudyProcessFaceMapper.xml" beforeDir="false" afterPath="$PROJECT_DIR$/people-society-train-data-machine/src/main/resources/mapper/society/SocietyStudentStudyProcessFaceMapper.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/people-society-train-data-machine/src/main/resources/static/layuiadmin/config.js" beforeDir="false" afterPath="$PROJECT_DIR$/people-society-train-data-machine/src/main/resources/static/layuiadmin/config.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/people-society-train-ht-juxian/src/main/resources/config/application.yml" beforeDir="false" afterPath="$PROJECT_DIR$/people-society-train-ht-juxian/src/main/resources/config/application.yml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/people-society-train-ht-nite/src/main/java/com/edgedo/timetask/demo/countStudentCertificate.java" beforeDir="false" afterPath="$PROJECT_DIR$/people-society-train-ht-nite/src/main/java/com/edgedo/timetask/demo/countStudentCertificate.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/people-society-train-ht/src/main/java/com/edgedo/timetask/demo/task.java" beforeDir="false" afterPath="$PROJECT_DIR$/people-society-train-ht/src/main/java/com/edgedo/timetask/demo/task.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/people-society-train-ht/src/main/java/com/edgedo/timetask/demo/test.java" beforeDir="false" afterPath="$PROJECT_DIR$/people-society-train-ht/src/main/java/com/edgedo/timetask/demo/test.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/people-society-train-ht/src/main/resources/mapper/society/SocietySchoolCourseNodeMapper.xml" beforeDir="false" afterPath="$PROJECT_DIR$/people-society-train-ht/src/main/resources/mapper/society/SocietySchoolCourseNodeMapper.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/people-society-train-ht/src/main/resources/static/login.html" beforeDir="false" afterPath="$PROJECT_DIR$/people-society-train-ht/src/main/resources/static/login.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/people-society-train-qt/src/main/java/com/edgedo/society/controller/SocietyStudentAndCourseController.java" beforeDir="false" afterPath="$PROJECT_DIR$/people-society-train-qt/src/main/java/com/edgedo/society/controller/SocietyStudentAndCourseController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/people-society-train-qt/src/test/java/com/edgedo/society/service/SocietyStudentServiceTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/people-society-train-qt/src/test/java/com/edgedo/society/service/SocietyStudentServiceTest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/sys-wx-client-starter/sys-wx-client-starter.iml" beforeDir="false" afterPath="$PROJECT_DIR$/sys-wx-client-starter/sys-wx-client-starter.iml" afterDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="CodeInsightWorkspaceSettings">
+    <option name="optimizeImportsOnTheFly" value="true" />
+  </component>
+  <component name="CompilerWorkspaceConfiguration">
+    <option name="MAKE_PROJECT_ON_SAVE" value="true" />
+  </component>
+  <component name="CoverageViewManager">
+    <option name="myElementSize" value="112" />
+  </component>
+  <component name="DatabaseView">
+    <option name="SHOW_INTERMEDIATE" value="true" />
+    <option name="GROUP_DATA_SOURCES" value="true" />
+    <option name="GROUP_SCHEMA" value="true" />
+    <option name="GROUP_CONTENTS" value="false" />
+    <option name="SORT_POSITIONED" value="false" />
+    <option name="SHOW_EMPTY_GROUPS" value="false" />
+    <option name="AUTO_SCROLL_FROM_SOURCE" value="false" />
+    <option name="HIDDEN_KINDS">
+      <set />
+    </option>
+    <expand />
+    <select />
+  </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="Class" />
+        <option value="HTML File" />
+      </list>
+    </option>
+  </component>
+  <component name="MavenImportPreferences">
+    <option name="generalSettings">
+      <MavenGeneralSettings>
+        <option name="localRepository" value="D:\GitHub-Maven\repository" />
+        <option name="mavenHome" value="D:\GitHub-Maven\apache-maven-3.2.5" />
+        <option name="userSettingsFile" value="D:\GitHub-Maven\apache-maven-3.2.5\conf\settings.xml" />
+      </MavenGeneralSettings>
+    </option>
+  </component>
+  <component name="ProjectId" id="1bOSOshvEdGoRzeBO3wxN4npYA4" />
+  <component name="ProjectLevelVcsManager" settingsEditedManually="true">
+    <ConfirmationsSetting value="2" id="Add" />
+  </component>
+  <component name="ProjectViewState">
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent">
+    <property name="DefaultHtmlFileTemplate" value="HTML File" />
+    <property name="FileHistory.org.jetbrains.idea.svn.history.SvnHistoryProvider_flatOrder0" value="0" />
+    <property name="FileHistory.org.jetbrains.idea.svn.history.SvnHistoryProvider_flatOrder1" value="1" />
+    <property name="FileHistory.org.jetbrains.idea.svn.history.SvnHistoryProvider_flatOrder2" value="2" />
+    <property name="FileHistory.org.jetbrains.idea.svn.history.SvnHistoryProvider_flatOrder3" value="3" />
+    <property name="FileHistory.org.jetbrains.idea.svn.history.SvnHistoryProvider_flatOrder4" value="4" />
+    <property name="FileHistory.org.jetbrains.idea.svn.history.SvnHistoryProvider_flatOrder5" value="5" />
+    <property name="FileHistory.org.jetbrains.idea.svn.history.SvnHistoryProvider_flatWidth0" value="206" />
+    <property name="FileHistory.org.jetbrains.idea.svn.history.SvnHistoryProvider_flatWidth1" value="205" />
+    <property name="FileHistory.org.jetbrains.idea.svn.history.SvnHistoryProvider_flatWidth2" value="205" />
+    <property name="FileHistory.org.jetbrains.idea.svn.history.SvnHistoryProvider_flatWidth3" value="206" />
+    <property name="FileHistory.org.jetbrains.idea.svn.history.SvnHistoryProvider_flatWidth4" value="205" />
+    <property name="FileHistory.org.jetbrains.idea.svn.history.SvnHistoryProvider_flatWidth5" value="47" />
+    <property name="FileHistory.org.jetbrains.idea.svn.history.SvnHistoryProvider_treeOrder0" value="0" />
+    <property name="FileHistory.org.jetbrains.idea.svn.history.SvnHistoryProvider_treeOrder1" value="1" />
+    <property name="FileHistory.org.jetbrains.idea.svn.history.SvnHistoryProvider_treeOrder2" value="2" />
+    <property name="FileHistory.org.jetbrains.idea.svn.history.SvnHistoryProvider_treeOrder3" value="3" />
+    <property name="FileHistory.org.jetbrains.idea.svn.history.SvnHistoryProvider_treeOrder4" value="4" />
+    <property name="FileHistory.org.jetbrains.idea.svn.history.SvnHistoryProvider_treeOrder5" value="5" />
+    <property name="FileHistory.org.jetbrains.idea.svn.history.SvnHistoryProvider_treeWidth0" value="206" />
+    <property name="FileHistory.org.jetbrains.idea.svn.history.SvnHistoryProvider_treeWidth1" value="205" />
+    <property name="FileHistory.org.jetbrains.idea.svn.history.SvnHistoryProvider_treeWidth2" value="205" />
+    <property name="FileHistory.org.jetbrains.idea.svn.history.SvnHistoryProvider_treeWidth3" value="206" />
+    <property name="FileHistory.org.jetbrains.idea.svn.history.SvnHistoryProvider_treeWidth4" value="205" />
+    <property name="FileHistory.org.jetbrains.idea.svn.history.SvnHistoryProvider_treeWidth5" value="47" />
+    <property name="RequestMappingsPanelOrder0" value="0" />
+    <property name="RequestMappingsPanelOrder1" value="1" />
+    <property name="RequestMappingsPanelWidth0" value="75" />
+    <property name="RequestMappingsPanelWidth1" value="75" />
+    <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
+    <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
+    <property name="WebServerToolWindowFactoryState" value="false" />
+    <property name="aspect.path.notification.shown" value="true" />
+    <property name="last_opened_file_path" value="D:/D/safetywork" />
+    <property name="node.js.detected.package.eslint" value="true" />
+    <property name="node.js.detected.package.tslint" value="true" />
+    <property name="node.js.path.for.package.eslint" value="project" />
+    <property name="node.js.path.for.package.tslint" value="project" />
+    <property name="node.js.selected.package.eslint" value="(autodetect)" />
+    <property name="node.js.selected.package.tslint" value="(autodetect)" />
+    <property name="project.structure.last.edited" value="Project" />
+    <property name="project.structure.proportion" value="0.15" />
+    <property name="project.structure.side.proportion" value="0.33103448" />
+    <property name="restartRequiresConfirmation" value="false" />
+    <property name="settings.editor.selected.configurable" value="org.jetbrains.plugins.github.ui.GithubSettingsConfigurable" />
+  </component>
+  <component name="ReactorSettings">
+    <option name="notificationShown" value="true" />
+  </component>
+  <component name="RecentsManager">
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="F:\hangling_work\people_society_train\people-society-train-ht\src\main\resources\static\views\society\schooladmin\schoolclassadmininfo" />
+      <recent name="F:\hangling_work\people_society_train\people-society-train-ht\src\main\resources\static\views\society\schooladmin\taskCount" />
+      <recent name="F:\hangling_work\people_society_train\people-society-train-ht\src\main\resources\static\views\society\ptadmin\schoolinfo" />
+      <recent name="F:\hangling_work\people_society_train\people-society-train-ht\src\main\resources\static\views\society\ptadmin\societywxmessage" />
+      <recent name="F:\hangling_work\people_society_train\people-society-train-ht\src\main\resources\static\views\society\schooladmin\societywxmessage" />
+    </key>
+    <key name="CopyClassDialog.RECENTS_KEY">
+      <recent name="com.edgedo.timetask.demo" />
+      <recent name="com.edgedo.society.controller" />
+      <recent name="test.code" />
+    </key>
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="F:\hangling_work\people_society_train\people-society-train-ht\src\main\resources\static\layuiadmin" />
+    </key>
+  </component>
+  <component name="RunAnythingCache">
+    <option name="myCommands">
+      <command value="mvn install:install-file -Dfile=E:\tyiyun-sdk-oss-6.5.0.jar -DgroupId=com.tyiyun.oos -DartifactId=tyiyun-sdk-oss -Dversion=6.5.0 -Dpackaging=Jar" />
+    </option>
+  </component>
+  <component name="RunManager" selected="Application.PeopleSocietyTrainHtCodeGenIn">
+    <configuration default="true" type="Applet" factoryName="Applet">
+      <option name="HTML_USED" value="false" />
+      <option name="WIDTH" value="400" />
+      <option name="HEIGHT" value="300" />
+      <option name="POLICY_FILE" value="$APPLICATION_HOME_DIR$/bin/appletviewer.policy" />
+      <module />
+    </configuration>
+    <configuration name="PeopleSocietyTrainHtCodeGenIn" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
+      <option name="MAIN_CLASS_NAME" value="test.code.PeopleSocietyTrainHtCodeGenIn" />
+      <module name="tdp-codegen" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="test.code.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration default="true" type="Application" factoryName="Application">
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="code" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
+      <option name="MAIN_CLASS_NAME" value="com.edgedo.society.code" />
+      <module name="people-society-train-ht" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="com.edgedo.society.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="sum" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
+      <option name="MAIN_CLASS_NAME" value="com.edgedo.timetask.sum" />
+      <module name="people-society-train-ht" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="com.edgedo.timetask.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration default="true" type="JUnit" factoryName="JUnit">
+      <option name="TEST_OBJECT" value="class" />
+      <option name="WORKING_DIRECTORY" value="$MODULE_DIR$" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="PeopleSocietyTrainDataMachineApplication" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot">
+      <module name="people-society-train-data-machine" />
+      <option name="SPRING_BOOT_MAIN_CLASS" value="com.edgedo.PeopleSocietyTrainDataMachineApplication" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="PeopleSocietyTrainHtApplication" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot">
+      <module name="people-society-train-ht" />
+      <option name="SPRING_BOOT_MAIN_CLASS" value="com.edgedo.PeopleSocietyTrainHtApplication" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="PeopleSocietyTrainHtJuXianApplication" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot">
+      <module name="people-society-train-ht-juxian" />
+      <option name="SPRING_BOOT_MAIN_CLASS" value="com.edgedo.PeopleSocietyTrainHtJuXianApplication" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="PeopleSocietyTrainHtNiTeApplication" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot">
+      <module name="people-society-train-ht-nite" />
+      <option name="SPRING_BOOT_MAIN_CLASS" value="com.edgedo.PeopleSocietyTrainHtNiTeApplication" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="PeopleSocietyTrainQtApplication" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot">
+      <module name="people-society-train-qt" />
+      <option name="SPRING_BOOT_MAIN_CLASS" value="com.edgedo.PeopleSocietyTrainQtApplication" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="SysWxCommonApplication" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot">
+      <module name="sys-wx-common-service-impl" />
+      <option name="SPRING_BOOT_MAIN_CLASS" value="com.edgedo.SysWxCommonApplication" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration default="true" type="TestNG">
+      <option name="TEST_OBJECT" value="CLASS" />
+      <option name="WORKING_DIRECTORY" value="$MODULE_DIR$" />
+      <properties />
+      <listeners />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration default="true" type="#org.jetbrains.idea.devkit.run.PluginConfigurationType">
+      <module name="" />
+      <option name="VM_PARAMETERS" value="-Xmx512m -Xms256m -XX:MaxPermSize=250m -ea" />
+      <option name="PROGRAM_PARAMETERS" />
+      <predefined_log_file enabled="true" id="idea.log" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <list>
+      <item itemvalue="Application.PeopleSocietyTrainHtCodeGenIn" />
+      <item itemvalue="Application.code" />
+      <item itemvalue="Application.sum" />
+      <item itemvalue="Spring Boot.PeopleSocietyTrainDataMachineApplication" />
+      <item itemvalue="Spring Boot.PeopleSocietyTrainHtApplication" />
+      <item itemvalue="Spring Boot.PeopleSocietyTrainHtJuXianApplication" />
+      <item itemvalue="Spring Boot.PeopleSocietyTrainHtNiTeApplication" />
+      <item itemvalue="Spring Boot.PeopleSocietyTrainQtApplication" />
+      <item itemvalue="Spring Boot.SysWxCommonApplication" />
+    </list>
+    <recent_temporary>
+      <list>
+        <item itemvalue="Application.PeopleSocietyTrainHtCodeGenIn" />
+        <item itemvalue="Application.sum" />
+        <item itemvalue="Application.code" />
+      </list>
+    </recent_temporary>
+  </component>
+  <component name="ServiceViewManager">
+    <option name="viewStates">
+      <list>
+        <serviceView>
+          <treeState>
+            <expand />
+            <select />
+          </treeState>
+        </serviceView>
+      </list>
+    </option>
+  </component>
+  <component name="SpellCheckerSettings" BundledDictionaries="0" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" Dictionaries="0" CorrectionsLimit="5" DefaultDictionary="application-level" UseSingleDictionary="true" />
+  <component name="SvnConfiguration" cleanupOnStartRun="true">
+    <configuration>C:\Users\Administrator\AppData\Roaming\Subversion</configuration>
+    <supportedVersion>125</supportedVersion>
+  </component>
+  <component name="SvnFileUrlMappingImpl">
+    <option name="myMappingRoots">
+      <list>
+        <SvnCopyRootSimple>
+          <option name="myVcsRoot" value="F:\hangling_work\people_society_train" />
+          <option name="myCopyRoot" value="F:\hangling_work\people_society_train" />
+        </SvnCopyRootSimple>
+      </list>
+    </option>
+    <option name="myMoreRealMappingRoots">
+      <list>
+        <SvnCopyRootSimple>
+          <option name="myVcsRoot" value="F:\hangling_work\people_society_train" />
+          <option name="myCopyRoot" value="F:\hangling_work\people_society_train" />
+        </SvnCopyRootSimple>
+      </list>
+    </option>
+  </component>
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="38dccec8-54d2-4523-93ac-9e451c77cfce" name="Default" comment="" />
+      <created>1588382123640</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1588382123640</updated>
+      <workItem from="1588382125363" duration="1822000" />
+      <workItem from="1588474500008" duration="6007000" />
+      <workItem from="1588501621460" duration="4864000" />
+      <workItem from="1588508188253" duration="6262000" />
+      <workItem from="1588515094421" duration="99000" />
+      <workItem from="1588515273180" duration="1401000" />
+      <workItem from="1588552798023" duration="11003000" />
+      <workItem from="1588569249122" duration="13322000" />
+      <workItem from="1588583158562" duration="5041000" />
+      <workItem from="1588602430914" duration="7637000" />
+      <workItem from="1588642313051" duration="9585000" />
+      <workItem from="1588657118535" duration="12404000" />
+      <workItem from="1588677636825" duration="170000" />
+      <workItem from="1588680588452" duration="1209000" />
+      <workItem from="1588686300937" duration="6226000" />
+      <workItem from="1588726732243" duration="11061000" />
+      <workItem from="1588743628872" duration="17995000" />
+      <workItem from="1588769886199" duration="2509000" />
+      <workItem from="1588772619035" duration="4293000" />
+      <workItem from="1588812125847" duration="10325000" />
+      <workItem from="1588830163114" duration="10992000" />
+      <workItem from="1588898986561" duration="3243000" />
+      <workItem from="1588902315165" duration="7048000" />
+      <workItem from="1588916364484" duration="6229000" />
+      <workItem from="1588923187909" duration="9856000" />
+      <workItem from="1588987166013" duration="1548000" />
+      <workItem from="1588988771237" duration="4647000" />
+      <workItem from="1589003648629" duration="5961000" />
+      <workItem from="1589074485218" duration="8469000" />
+      <workItem from="1589087140204" duration="2900000" />
+      <workItem from="1589096402075" duration="4919000" />
+      <workItem from="1589158112219" duration="1648000" />
+      <workItem from="1589161705196" duration="4102000" />
+      <workItem from="1589192870443" duration="2794000" />
+      <workItem from="1589208281587" duration="3609000" />
+      <workItem from="1589244266691" duration="10698000" />
+      <workItem from="1589260268699" duration="14257000" />
+      <workItem from="1589288789863" duration="1584000" />
+      <workItem from="1589331443259" duration="9000" />
+      <workItem from="1589331568326" duration="8464000" />
+      <workItem from="1589346363958" duration="7293000" />
+      <workItem from="1589417714534" duration="8522000" />
+      <workItem from="1589438383885" duration="9996000" />
+      <workItem from="1589505896068" duration="4067000" />
+      <workItem from="1589526356898" duration="4919000" />
+      <workItem from="1589531569883" duration="4944000" />
+      <workItem from="1589592744052" duration="3246000" />
+      <workItem from="1589764029957" duration="1092000" />
+      <workItem from="1589785748158" duration="6521000" />
+      <workItem from="1589805905415" duration="157000" />
+      <workItem from="1589851403392" duration="1248000" />
+      <workItem from="1589853340087" duration="6523000" />
+      <workItem from="1589868984059" duration="5244000" />
+      <workItem from="1589937001343" duration="11219000" />
+      <workItem from="1589948394311" duration="52000" />
+      <workItem from="1589948610736" duration="413000" />
+      <workItem from="1589952791479" duration="15959000" />
+      <workItem from="1590024584436" duration="12000" />
+      <workItem from="1590024646846" duration="7122000" />
+      <workItem from="1590042851337" duration="7293000" />
+      <workItem from="1590071640700" duration="766000" />
+      <workItem from="1590072474822" duration="84000" />
+      <workItem from="1590110683726" duration="2147000" />
+      <workItem from="1590126732699" duration="1543000" />
+      <workItem from="1590204057598" duration="1194000" />
+      <workItem from="1590389600055" duration="10135000" />
+      <workItem from="1590455009961" duration="5146000" />
+      <workItem from="1590464559304" duration="691000" />
+      <workItem from="1590471704079" duration="2767000" />
+      <workItem from="1590479120459" duration="3772000" />
+      <workItem from="1590503494666" duration="129000" />
+      <workItem from="1590542898164" duration="6182000" />
+      <workItem from="1590566750541" duration="2133000" />
+      <workItem from="1590630061928" duration="8259000" />
+      <workItem from="1590672592284" duration="251000" />
+      <workItem from="1590916272577" duration="957000" />
+      <workItem from="1590998401015" duration="736000" />
+      <workItem from="1590999158009" duration="2006000" />
+      <workItem from="1591016896370" duration="91000" />
+      <workItem from="1591059017136" duration="11627000" />
+      <workItem from="1591076371786" duration="16577000" />
+      <workItem from="1591093138040" duration="49000" />
+      <workItem from="1591099038774" duration="3322000" />
+      <workItem from="1591233260677" duration="10007000" />
+      <workItem from="1591247504012" duration="4847000" />
+      <workItem from="1591274634161" duration="956000" />
+      <workItem from="1591323131279" duration="2784000" />
+      <workItem from="1591335286141" duration="59000" />
+      <workItem from="1591580600433" duration="8876000" />
+      <workItem from="1591593102778" duration="13964000" />
+      <workItem from="1591672030528" duration="657000" />
+      <workItem from="1591681413541" duration="13232000" />
+      <workItem from="1591710658687" duration="7982000" />
+      <workItem from="1591755934412" duration="4274000" />
+      <workItem from="1591766176445" duration="14816000" />
+      <workItem from="1591838881122" duration="8637000" />
+      <workItem from="1591851599325" duration="22848000" />
+      <workItem from="1591881532608" duration="2556000" />
+      <workItem from="1591924763894" duration="3107000" />
+      <workItem from="1591944756885" duration="4118000" />
+      <workItem from="1591975265473" duration="139000" />
+      <workItem from="1592364948804" duration="484000" />
+      <workItem from="1592370803179" duration="11979000" />
+      <workItem from="1592442888902" duration="10269000" />
+      <workItem from="1592458402168" duration="5068000" />
+      <workItem from="1592471233558" duration="625000" />
+      <workItem from="1592529860683" duration="4237000" />
+      <workItem from="1592555186497" duration="2008000" />
+      <workItem from="1592876013974" duration="161000" />
+      <workItem from="1592893586061" duration="645000" />
+      <workItem from="1592966886149" duration="2815000" />
+      <workItem from="1593310504054" duration="7257000" />
+      <workItem from="1593324007190" duration="11790000" />
+      <workItem from="1593390726105" duration="23033000" />
+      <workItem from="1593476833472" duration="554000" />
+      <workItem from="1593477436095" duration="20000" />
+      <workItem from="1593477515105" duration="10775000" />
+      <workItem from="1593496890655" duration="12650000" />
+      <workItem from="1593563357306" duration="8866000" />
+      <workItem from="1593572623419" duration="19772000" />
+      <workItem from="1593649354333" duration="30725000" />
+      <workItem from="1593686145119" duration="11451000" />
+      <workItem from="1593702966897" duration="2155000" />
+      <workItem from="1593736335572" duration="23188000" />
+      <workItem from="1593762747190" duration="5639000" />
+      <workItem from="1593772388762" duration="11499000" />
+      <workItem from="1593785855594" duration="2672000" />
+      <workItem from="1593822693636" duration="27182000" />
+      <workItem from="1593995458787" duration="662000" />
+      <workItem from="1593996546029" duration="10439000" />
+      <workItem from="1594013952746" duration="13507000" />
+      <workItem from="1594036185578" duration="3560000" />
+      <workItem from="1594082228558" duration="25624000" />
+      <workItem from="1594120801251" duration="10819000" />
+      <workItem from="1594168703656" duration="23359000" />
+      <workItem from="1594193482063" duration="149000" />
+      <workItem from="1594193747145" duration="7022000" />
+      <workItem from="1594203953287" duration="16360000" />
+      <workItem from="1594222487490" duration="641000" />
+      <workItem from="1594255032383" duration="27020000" />
+      <workItem from="1594293094499" duration="2608000" />
+      <workItem from="1594296447950" duration="1294000" />
+      <workItem from="1594341376001" duration="25406000" />
+      <workItem from="1594428282238" duration="8000000" />
+      <workItem from="1594628119249" duration="589000" />
+      <workItem from="1595138917488" duration="690000" />
+      <workItem from="1595855076728" duration="2570000" />
+      <workItem from="1596621985952" duration="11273000" />
+      <workItem from="1597929482615" duration="784000" />
+      <workItem from="1597930919769" duration="6500000" />
+      <workItem from="1598690333019" duration="6383000" />
+      <workItem from="1598757034454" duration="1054000" />
+      <workItem from="1599049594299" duration="2250000" />
+      <workItem from="1599052176273" duration="229000" />
+      <workItem from="1599391602239" duration="751000" />
+      <workItem from="1601822973313" duration="738000" />
+      <workItem from="1610538166960" duration="647000" />
+      <workItem from="1614397284090" duration="376000" />
+      <workItem from="1614399248536" duration="1297000" />
+      <workItem from="1616148988581" duration="35000" />
+      <workItem from="1616149046094" duration="617000" />
+      <workItem from="1620442223764" duration="1161000" />
+      <workItem from="1620735410176" duration="2777000" />
+      <workItem from="1620783587877" duration="554000" />
+    </task>
+    <task id="LOCAL-00134" summary="修改pom">
+      <created>1594015341407</created>
+      <option name="number" value="00134" />
+      <option name="presentableId" value="LOCAL-00134" />
+      <option name="project" value="LOCAL" />
+      <updated>1594015341407</updated>
+    </task>
+    <task id="LOCAL-00135" summary="修改pom">
+      <created>1594019084572</created>
+      <option name="number" value="00135" />
+      <option name="presentableId" value="LOCAL-00135" />
+      <option name="project" value="LOCAL" />
+      <updated>1594019084572</updated>
+    </task>
+    <task id="LOCAL-00136" summary="修改pom">
+      <created>1594023801837</created>
+      <option name="number" value="00136" />
+      <option name="presentableId" value="LOCAL-00136" />
+      <option name="project" value="LOCAL" />
+      <updated>1594023801837</updated>
+    </task>
+    <task id="LOCAL-00137" summary="修改pom">
+      <created>1594026047401</created>
+      <option name="number" value="00137" />
+      <option name="presentableId" value="LOCAL-00137" />
+      <option name="project" value="LOCAL" />
+      <updated>1594026047402</updated>
+    </task>
+    <task id="LOCAL-00138" summary="修改pom">
+      <created>1594027333403</created>
+      <option name="number" value="00138" />
+      <option name="presentableId" value="LOCAL-00138" />
+      <option name="project" value="LOCAL" />
+      <updated>1594027333403</updated>
+    </task>
+    <task id="LOCAL-00139" summary="修改pom">
+      <created>1594039112206</created>
+      <option name="number" value="00139" />
+      <option name="presentableId" value="LOCAL-00139" />
+      <option name="project" value="LOCAL" />
+      <updated>1594039112208</updated>
+    </task>
+    <task id="LOCAL-00140" summary="修改pom">
+      <created>1594040210332</created>
+      <option name="number" value="00140" />
+      <option name="presentableId" value="LOCAL-00140" />
+      <option name="project" value="LOCAL" />
+      <updated>1594040210332</updated>
+    </task>
+    <task id="LOCAL-00141" summary="修改pom">
+      <created>1594040492356</created>
+      <option name="number" value="00141" />
+      <option name="presentableId" value="LOCAL-00141" />
+      <option name="project" value="LOCAL" />
+      <updated>1594040492356</updated>
+    </task>
+    <task id="LOCAL-00142" summary="修改pom">
+      <created>1594089626242</created>
+      <option name="number" value="00142" />
+      <option name="presentableId" value="LOCAL-00142" />
+      <option name="project" value="LOCAL" />
+      <updated>1594089626242</updated>
+    </task>
+    <task id="LOCAL-00143" summary="修改pom">
+      <created>1594091334046</created>
+      <option name="number" value="00143" />
+      <option name="presentableId" value="LOCAL-00143" />
+      <option name="project" value="LOCAL" />
+      <updated>1594091334046</updated>
+    </task>
+    <task id="LOCAL-00144" summary="修改pom">
+      <created>1594102508096</created>
+      <option name="number" value="00144" />
+      <option name="presentableId" value="LOCAL-00144" />
+      <option name="project" value="LOCAL" />
+      <updated>1594102508096</updated>
+    </task>
+    <task id="LOCAL-00145" summary="修改pom">
+      <created>1594105247114</created>
+      <option name="number" value="00145" />
+      <option name="presentableId" value="LOCAL-00145" />
+      <option name="project" value="LOCAL" />
+      <updated>1594105247114</updated>
+    </task>
+    <task id="LOCAL-00146" summary="修改pom">
+      <created>1594114087183</created>
+      <option name="number" value="00146" />
+      <option name="presentableId" value="LOCAL-00146" />
+      <option name="project" value="LOCAL" />
+      <updated>1594114087183</updated>
+    </task>
+    <task id="LOCAL-00147" summary="修改pom">
+      <created>1594126677810</created>
+      <option name="number" value="00147" />
+      <option name="presentableId" value="LOCAL-00147" />
+      <option name="project" value="LOCAL" />
+      <updated>1594126677810</updated>
+    </task>
+    <task id="LOCAL-00148" summary="修改pom">
+      <created>1594129293257</created>
+      <option name="number" value="00148" />
+      <option name="presentableId" value="LOCAL-00148" />
+      <option name="project" value="LOCAL" />
+      <updated>1594129293257</updated>
+    </task>
+    <task id="LOCAL-00149" summary="修改pom">
+      <created>1594131646234</created>
+      <option name="number" value="00149" />
+      <option name="presentableId" value="LOCAL-00149" />
+      <option name="project" value="LOCAL" />
+      <updated>1594131646234</updated>
+    </task>
+    <task id="LOCAL-00150" summary="修改pom">
+      <created>1594175065314</created>
+      <option name="number" value="00150" />
+      <option name="presentableId" value="LOCAL-00150" />
+      <option name="project" value="LOCAL" />
+      <updated>1594175065314</updated>
+    </task>
+    <task id="LOCAL-00151" summary="修改pom">
+      <created>1594175549843</created>
+      <option name="number" value="00151" />
+      <option name="presentableId" value="LOCAL-00151" />
+      <option name="project" value="LOCAL" />
+      <updated>1594175549843</updated>
+    </task>
+    <task id="LOCAL-00152" summary="修改pom">
+      <created>1594187091723</created>
+      <option name="number" value="00152" />
+      <option name="presentableId" value="LOCAL-00152" />
+      <option name="project" value="LOCAL" />
+      <updated>1594187091723</updated>
+    </task>
+    <task id="LOCAL-00153" summary="修改pom">
+      <created>1594190192536</created>
+      <option name="number" value="00153" />
+      <option name="presentableId" value="LOCAL-00153" />
+      <option name="project" value="LOCAL" />
+      <updated>1594190192537</updated>
+    </task>
+    <task id="LOCAL-00154" summary="修改pom">
+      <created>1594196607663</created>
+      <option name="number" value="00154" />
+      <option name="presentableId" value="LOCAL-00154" />
+      <option name="project" value="LOCAL" />
+      <updated>1594196607663</updated>
+    </task>
+    <task id="LOCAL-00155" summary="修改pom">
+      <created>1594211950377</created>
+      <option name="number" value="00155" />
+      <option name="presentableId" value="LOCAL-00155" />
+      <option name="project" value="LOCAL" />
+      <updated>1594211950378</updated>
+    </task>
+    <task id="LOCAL-00156" summary="修改pom">
+      <created>1594218811491</created>
+      <option name="number" value="00156" />
+      <option name="presentableId" value="LOCAL-00156" />
+      <option name="project" value="LOCAL" />
+      <updated>1594218811491</updated>
+    </task>
+    <task id="LOCAL-00157" summary="修改pom">
+      <created>1594222216294</created>
+      <option name="number" value="00157" />
+      <option name="presentableId" value="LOCAL-00157" />
+      <option name="project" value="LOCAL" />
+      <updated>1594222216294</updated>
+    </task>
+    <task id="LOCAL-00158" summary="修改pom">
+      <created>1594223054046</created>
+      <option name="number" value="00158" />
+      <option name="presentableId" value="LOCAL-00158" />
+      <option name="project" value="LOCAL" />
+      <updated>1594223054047</updated>
+    </task>
+    <task id="LOCAL-00159" summary="修改pom">
+      <created>1594256339190</created>
+      <option name="number" value="00159" />
+      <option name="presentableId" value="LOCAL-00159" />
+      <option name="project" value="LOCAL" />
+      <updated>1594256339201</updated>
+    </task>
+    <task id="LOCAL-00160" summary="修改pom">
+      <created>1594258052125</created>
+      <option name="number" value="00160" />
+      <option name="presentableId" value="LOCAL-00160" />
+      <option name="project" value="LOCAL" />
+      <updated>1594258052125</updated>
+    </task>
+    <task id="LOCAL-00161" summary="修改pom">
+      <created>1594259491803</created>
+      <option name="number" value="00161" />
+      <option name="presentableId" value="LOCAL-00161" />
+      <option name="project" value="LOCAL" />
+      <updated>1594259491803</updated>
+    </task>
+    <task id="LOCAL-00162" summary="修改pom">
+      <created>1594264961477</created>
+      <option name="number" value="00162" />
+      <option name="presentableId" value="LOCAL-00162" />
+      <option name="project" value="LOCAL" />
+      <updated>1594264961477</updated>
+    </task>
+    <task id="LOCAL-00163" summary="修改pom">
+      <created>1594272916273</created>
+      <option name="number" value="00163" />
+      <option name="presentableId" value="LOCAL-00163" />
+      <option name="project" value="LOCAL" />
+      <updated>1594272916273</updated>
+    </task>
+    <task id="LOCAL-00164" summary="修改pom">
+      <created>1594273782555</created>
+      <option name="number" value="00164" />
+      <option name="presentableId" value="LOCAL-00164" />
+      <option name="project" value="LOCAL" />
+      <updated>1594273782555</updated>
+    </task>
+    <task id="LOCAL-00165" summary="修改pom">
+      <created>1594275349243</created>
+      <option name="number" value="00165" />
+      <option name="presentableId" value="LOCAL-00165" />
+      <option name="project" value="LOCAL" />
+      <updated>1594275349243</updated>
+    </task>
+    <task id="LOCAL-00166" summary="修改pom">
+      <created>1594279647631</created>
+      <option name="number" value="00166" />
+      <option name="presentableId" value="LOCAL-00166" />
+      <option name="project" value="LOCAL" />
+      <updated>1594279647631</updated>
+    </task>
+    <task id="LOCAL-00167" summary="修改pom">
+      <created>1594287076742</created>
+      <option name="number" value="00167" />
+      <option name="presentableId" value="LOCAL-00167" />
+      <option name="project" value="LOCAL" />
+      <updated>1594287076742</updated>
+    </task>
+    <task id="LOCAL-00168" summary="修改pom">
+      <created>1594293684046</created>
+      <option name="number" value="00168" />
+      <option name="presentableId" value="LOCAL-00168" />
+      <option name="project" value="LOCAL" />
+      <updated>1594293684046</updated>
+    </task>
+    <task id="LOCAL-00169" summary="修改pom">
+      <created>1594295166170</created>
+      <option name="number" value="00169" />
+      <option name="presentableId" value="LOCAL-00169" />
+      <option name="project" value="LOCAL" />
+      <updated>1594295166170</updated>
+    </task>
+    <task id="LOCAL-00170" summary="修改pom">
+      <created>1594297195473</created>
+      <option name="number" value="00170" />
+      <option name="presentableId" value="LOCAL-00170" />
+      <option name="project" value="LOCAL" />
+      <updated>1594297195473</updated>
+    </task>
+    <task id="LOCAL-00171" summary="修改pom">
+      <created>1594343516287</created>
+      <option name="number" value="00171" />
+      <option name="presentableId" value="LOCAL-00171" />
+      <option name="project" value="LOCAL" />
+      <updated>1594343516287</updated>
+    </task>
+    <task id="LOCAL-00172" summary="修改pom">
+      <created>1594346905941</created>
+      <option name="number" value="00172" />
+      <option name="presentableId" value="LOCAL-00172" />
+      <option name="project" value="LOCAL" />
+      <updated>1594346905941</updated>
+    </task>
+    <task id="LOCAL-00173" summary="修改pom">
+      <created>1594348081304</created>
+      <option name="number" value="00173" />
+      <option name="presentableId" value="LOCAL-00173" />
+      <option name="project" value="LOCAL" />
+      <updated>1594348081304</updated>
+    </task>
+    <task id="LOCAL-00174" summary="修改pom">
+      <created>1594360194047</created>
+      <option name="number" value="00174" />
+      <option name="presentableId" value="LOCAL-00174" />
+      <option name="project" value="LOCAL" />
+      <updated>1594360194047</updated>
+    </task>
+    <task id="LOCAL-00175" summary="修改pom">
+      <created>1594360808246</created>
+      <option name="number" value="00175" />
+      <option name="presentableId" value="LOCAL-00175" />
+      <option name="project" value="LOCAL" />
+      <updated>1594360808246</updated>
+    </task>
+    <task id="LOCAL-00176" summary="修改pom">
+      <created>1594365368812</created>
+      <option name="number" value="00176" />
+      <option name="presentableId" value="LOCAL-00176" />
+      <option name="project" value="LOCAL" />
+      <updated>1594365368812</updated>
+    </task>
+    <task id="LOCAL-00177" summary="修改pom">
+      <created>1594371329922</created>
+      <option name="number" value="00177" />
+      <option name="presentableId" value="LOCAL-00177" />
+      <option name="project" value="LOCAL" />
+      <updated>1594371329922</updated>
+    </task>
+    <task id="LOCAL-00178" summary="修改pom">
+      <created>1594372174104</created>
+      <option name="number" value="00178" />
+      <option name="presentableId" value="LOCAL-00178" />
+      <option name="project" value="LOCAL" />
+      <updated>1594372174104</updated>
+    </task>
+    <task id="LOCAL-00179" summary="修改pom">
+      <created>1594436434801</created>
+      <option name="number" value="00179" />
+      <option name="presentableId" value="LOCAL-00179" />
+      <option name="project" value="LOCAL" />
+      <updated>1594436434801</updated>
+    </task>
+    <task id="LOCAL-00180" summary="修改pom">
+      <created>1595857696530</created>
+      <option name="number" value="00180" />
+      <option name="presentableId" value="LOCAL-00180" />
+      <option name="project" value="LOCAL" />
+      <updated>1595857696540</updated>
+    </task>
+    <task id="LOCAL-00181" summary="修改pom">
+      <created>1596638262288</created>
+      <option name="number" value="00181" />
+      <option name="presentableId" value="LOCAL-00181" />
+      <option name="project" value="LOCAL" />
+      <updated>1596638262288</updated>
+    </task>
+    <task id="LOCAL-00182" summary="章节批量审核">
+      <created>1597938414142</created>
+      <option name="number" value="00182" />
+      <option name="presentableId" value="LOCAL-00182" />
+      <option name="project" value="LOCAL" />
+      <updated>1597938414142</updated>
+    </task>
+    <option name="localTasksCounter" value="183" />
+    <servers />
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="1" />
+  </component>
+  <component name="VcsManagerConfiguration">
+    <option name="CHECK_CODE_SMELLS_BEFORE_PROJECT_COMMIT" value="false" />
+    <option name="CHECK_NEW_TODO" value="false" />
+    <ignored-roots>
+      <path value="$PROJECT_DIR$" />
+    </ignored-roots>
+    <MESSAGE value="初始提交" />
+    <MESSAGE value="学校信息管理模块" />
+    <MESSAGE value="学校信息维护同时维护学校管理者信息" />
+    <MESSAGE value="修改添加学校信息页面样式" />
+    <MESSAGE value="层级点击查询学校信息-&gt;班级(学生)-&gt;课程-&gt;课程小节" />
+    <MESSAGE value="弹出框完善了一下" />
+    <MESSAGE value="学校logo上传功能稍微完善，人社用户相关点击查询功能差不多了" />
+    <MESSAGE value="学校信息修改功能完善" />
+    <MESSAGE value="人社管理相关功能菜单" />
+    <MESSAGE value="学校信息添加修改功能完善，上传学校背景图完成，轮播图删除功能完成" />
+    <MESSAGE value="专业下拉查询，轮播图启用禁用按钮功能完成" />
+    <MESSAGE value="敏感词汇功能完成" />
+    <MESSAGE value="习题功能菜单完善" />
+    <MESSAGE value="ng" />
+    <MESSAGE value="修改pom" />
+    <MESSAGE value="章节批量审核" />
+    <MESSAGE value="功能优化" />
+    <option name="LAST_COMMIT_MESSAGE" value="功能优化" />
+  </component>
+  <component name="WindowStateProjectService">
+    <state x="549" y="167" key="FileChooserDialogImpl" timestamp="1620743087004">
+      <screen x="0" y="0" width="1536" height="824" />
+    </state>
+    <state x="549" y="167" key="FileChooserDialogImpl/0.0.1536.824@0.0.1536.824" timestamp="1620743087004" />
+    <state x="0" y="0" key="com.intellij.ide.util.TipDialog" timestamp="1620784686676">
+      <screen x="0" y="0" width="1536" height="824" />
+    </state>
+    <state x="0" y="0" key="com.intellij.ide.util.TipDialog/0.0.1536.824@0.0.1536.824" timestamp="1620784686676" />
+    <state x="447" y="145" width="809" height="534" key="find.popup" timestamp="1620735550881">
+      <screen x="0" y="0" width="1536" height="824" />
+    </state>
+    <state x="447" y="145" width="809" height="534" key="find.popup/0.0.1536.824@0.0.1536.824" timestamp="1620735550881" />
+  </component>
+  <component name="XDebuggerManager">
+    <breakpoint-manager>
+      <breakpoints>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/people-society-train-ht/src/main/java/com/edgedo/society/controller/SocietySchoolClassAndCourseController.java</url>
+          <line>85</line>
+          <option name="timeStamp" value="16" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>jar://D:/GitHub-Maven/repository/com/edgedo/plant/sys-mng-web/1.0-RELEASE/sys-mng-web-1.0-RELEASE.jar!/com/edgedo/sys/service/SysUserService.class</url>
+          <line>102</line>
+          <option name="timeStamp" value="37" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/people-society-train-ht-nite/src/main/java/com/edgedo/timetask/demo/task.java</url>
+          <line>116</line>
+          <option name="timeStamp" value="96" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/people-society-train-ht/src/main/java/com/edgedo/society/controller/SocietySchoolClassGroupAdminController.java</url>
+          <line>45</line>
+          <option name="timeStamp" value="105" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/people-society-train-ht/src/main/java/com/edgedo/society/service/SocietySchoolClassGroupAdminService.java</url>
+          <line>47</line>
+          <option name="timeStamp" value="106" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/people-society-train-ht/src/main/java/com/edgedo/timetask/demo/task.java</url>
+          <line>102</line>
+          <option name="timeStamp" value="120" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/people-society-train-ht/src/main/java/com/edgedo/society/controller/SocietySchoolCourseNodeController.java</url>
+          <line>959</line>
+          <option name="timeStamp" value="122" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/people-society-train-data-machine/src/main/java/com/edgedo/society/controller/SocietyStudentStudyProcessFaceController.java</url>
+          <line>155</line>
+          <option name="timeStamp" value="123" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/people-society-train-data-machine/src/main/java/com/edgedo/timetask/demo/countTest.java</url>
+          <line>114</line>
+          <option name="timeStamp" value="124" />
+        </line-breakpoint>
+      </breakpoints>
+    </breakpoint-manager>
+  </component>
+  <component name="XSLT-Support.FileAssociations.UIState">
+    <expand />
+    <select />
+  </component>
+  <component name="com.intellij.coverage.CoverageDataManagerImpl">
+    <SUITE FILE_PATH="coverage/people_society_train$PeopleSocietyTrainHtApplication.ic" NAME="PeopleSocietyTrainHtApplication Coverage Results" MODIFIED="1597934028741" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="idea" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" />
+  </component>
+</project>

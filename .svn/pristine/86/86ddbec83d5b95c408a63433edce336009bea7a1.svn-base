@@ -1,0 +1,144 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.edgedo.society.mapper.SocietyStudentCertificateMapper" >
+   
+   
+    <resultMap id="BaseResultMap" type="com.edgedo.society.entity.SocietyStudentCertificate" >
+			<id column="ID" property="id"/>
+			<result column="CREATE_TIME" property="createTime"/>
+			<result column="OWNER_SCHOOL_ID" property="ownerSchoolId"/>
+			<result column="OWNER_SCHOOL_NAME" property="ownerSchoolName"/>
+			<result column="OWNER_MAJOR_ID" property="ownerMajorId"/>
+			<result column="OWNER_MAJOR_NAME" property="ownerMajorName"/>
+			<result column="CLASS_ID" property="classId"/>
+			<result column="CLASS_NAME" property="className"/>
+			<result column="STUDENT_ID" property="studentId"/>
+			<result column="STUDENT_NAME" property="studentName"/>
+			<result column="STUDENT_ID_CARD_NUM" property="studentIdCardNum"/>
+			<result column="CLASS_AND_STUDENT_ID" property="classAndStudentId"/>
+			<result column="CERTIFICATE_CODE" property="certificateCode"/>
+			<result column="CERTIFICATE_NAME" property="certificateName"/>
+			<result column="CERTIFICATE_IMAGE_URL" property="certificateImageUrl"/>
+			<result column="CERTIFICATE_TIME" property="certificateTime"/>
+			<result column="DATA_STATE" property="dataState"/>
+    </resultMap>
+   
+    <resultMap id="BaseResultViewMap" type="com.edgedo.society.queryvo.SocietyStudentCertificateView" extends="BaseResultMap">
+    
+    </resultMap>
+  
+  
+  <!-- ******* 新增字段请修改这里  ******  -->
+  <sql id="Base_Column_List">
+	 ID, CREATE_TIME, OWNER_SCHOOL_ID, OWNER_SCHOOL_NAME, OWNER_MAJOR_ID, OWNER_MAJOR_NAME, CLASS_ID, CLASS_NAME, STUDENT_ID, STUDENT_NAME, STUDENT_ID_CARD_NUM, CLASS_AND_STUDENT_ID, CERTIFICATE_CODE, CERTIFICATE_NAME, CERTIFICATE_IMAGE_URL, CERTIFICATE_TIME, DATA_STATE
+  </sql>
+  
+  <!-- ******* 利用好这里的动态查询条件  ******  -->
+  <sql id="where">
+  	<where>
+		<if test='queryObj != null and  queryObj.id != null and @org.apache.commons.lang3.StringUtils@isNotEmpty(queryObj.id)'>
+		AND  ID = #{queryObj.id}
+		</if>
+		<if test='queryObj != null and  queryObj.createTime != null'>
+			AND  CREATE_TIME = #{queryObj.createTime}
+		</if>
+		<if test='queryObj != null and  queryObj.ownerSchoolId != null and @org.apache.commons.lang3.StringUtils@isNotEmpty(queryObj.ownerSchoolId)'>
+		AND  OWNER_SCHOOL_ID = #{queryObj.ownerSchoolId}
+		</if>
+		<if test='queryObj != null and  queryObj.ownerSchoolName != null and @org.apache.commons.lang3.StringUtils@isNotEmpty(queryObj.ownerSchoolName)'>
+		AND  OWNER_SCHOOL_NAME = #{queryObj.ownerSchoolName}
+		</if>
+		<if test='queryObj != null and  queryObj.ownerMajorId != null and @org.apache.commons.lang3.StringUtils@isNotEmpty(queryObj.ownerMajorId)'>
+		AND  OWNER_MAJOR_ID = #{queryObj.ownerMajorId}
+		</if>
+		<if test='queryObj != null and  queryObj.ownerMajorName != null and @org.apache.commons.lang3.StringUtils@isNotEmpty(queryObj.ownerMajorName)'>
+		AND  OWNER_MAJOR_NAME = #{queryObj.ownerMajorName}
+		</if>
+		<if test='queryObj != null and  queryObj.classId != null and @org.apache.commons.lang3.StringUtils@isNotEmpty(queryObj.classId)'>
+		AND  CLASS_ID = #{queryObj.classId}
+		</if>
+		<if test='queryObj != null and  queryObj.className != null and @org.apache.commons.lang3.StringUtils@isNotEmpty(queryObj.className)'>
+		AND  CLASS_NAME = #{queryObj.className}
+		</if>
+		<if test='queryObj != null and  queryObj.studentId != null and @org.apache.commons.lang3.StringUtils@isNotEmpty(queryObj.studentId)'>
+		AND  STUDENT_ID = #{queryObj.studentId}
+		</if>
+		<if test='queryObj != null and  queryObj.studentName != null and @org.apache.commons.lang3.StringUtils@isNotEmpty(queryObj.studentName)'>
+		AND  STUDENT_NAME = #{queryObj.studentName}
+		</if>
+		<if test='queryObj != null and  queryObj.studentIdCardNum != null and @org.apache.commons.lang3.StringUtils@isNotEmpty(queryObj.studentIdCardNum)'>
+		AND  STUDENT_ID_CARD_NUM = #{queryObj.studentIdCardNum}
+		</if>
+		<if test='queryObj != null and  queryObj.classAndStudentId != null and @org.apache.commons.lang3.StringUtils@isNotEmpty(queryObj.classAndStudentId)'>
+		AND  CLASS_AND_STUDENT_ID = #{queryObj.classAndStudentId}
+		</if>
+		<if test='queryObj != null and  queryObj.certificateCode != null and @org.apache.commons.lang3.StringUtils@isNotEmpty(queryObj.certificateCode)'>
+		AND  CERTIFICATE_CODE = #{queryObj.certificateCode}
+		</if>
+		<if test='queryObj != null and  queryObj.certificateName != null and @org.apache.commons.lang3.StringUtils@isNotEmpty(queryObj.certificateName)'>
+		AND  CERTIFICATE_NAME = #{queryObj.certificateName}
+		</if>
+		<if test='queryObj != null and  queryObj.certificateImageUrl != null and @org.apache.commons.lang3.StringUtils@isNotEmpty(queryObj.certificateImageUrl)'>
+		AND  CERTIFICATE_IMAGE_URL = #{queryObj.certificateImageUrl}
+		</if>
+		<if test='queryObj != null and  queryObj.certificateTime != null'>
+			AND  CERTIFICATE_TIME = #{queryObj.certificateTime}
+		</if>
+		<if test='queryObj != null and  queryObj.dataState != null and @org.apache.commons.lang3.StringUtils@isNotEmpty(queryObj.dataState)'>
+		AND  DATA_STATE = #{queryObj.dataState}
+		</if>
+  	</where>
+  	
+  </sql>
+  
+  <!-- ******* 排序判断  ******  
+  <sql id="orderBy">
+  	<if test="orderBy != null and orderBy!= '' ">
+  		order by  ${orderBy}
+  	</if>
+  </sql>-->
+  
+  
+  <!-- 分页条件查询  -->
+  <select id="listPage" parameterType="com.edgedo.society.queryvo.SocietyStudentCertificateQuery" resultMap="BaseResultViewMap">
+  		select <include refid="Base_Column_List"/> from society_student_certificate 
+  		<include refid="where"/>
+  </select>
+  
+   <!-- 不分页条件查询  -->
+  <select id="listByObj" parameterType="com.edgedo.society.queryvo.SocietyStudentCertificateQuery" resultMap="BaseResultViewMap">
+  		select <include refid="Base_Column_List"/> from society_student_certificate 
+  		<include refid="where"/>
+  </select>
+
+	<!-- 根据学员查询证书数量 -->
+	<select id="countStudentCert" parameterType="string" resultType="int">
+		select count(1) from society_student_certificate
+		where DATA_STATE='1'
+		and STUDENT_ID=#{studentId}
+	</select>
+
+	<!-- 根据学员和课程查询证书 -->
+	<select id="selectCertByStuAndCourse" parameterType="map" resultMap="BaseResultViewMap">
+		select <include refid="Base_Column_List"/> from society_student_certificate
+		where DATA_STATE='1'
+		and STUDENT_ID=#{studentId}
+		and COURSE_ID=#{courseId}
+	</select>
+
+	<!--  根据身份证号获得证书 -->
+	<select id="countStudentCertByStudenIdCard" parameterType="string" resultType="int">
+		select count(1) from society_student_certificate where DATA_STATE='1' and
+		STUDENT_ID_CARD_NUM = #{studentIdCardNum}
+	</select>
+
+	<!--根据身份证号和课程id查询-->
+	<select id="selectCertByStuIdCardAndCourse" parameterType="map" resultMap="BaseResultViewMap">
+		select <include refid="Base_Column_List"/> from society_student_certificate
+		where DATA_STATE='1'
+		and STUDENT_ID_CARD_NUM = #{studentIdCardNum}
+		and COURSE_ID=#{courseId}
+	</select>
+  
+  
+</mapper>

@@ -1,0 +1,111 @@
+package com.edgedo.society.service;
+		
+import java.util.List;
+
+import com.edgedo.common.shiro.User;
+import com.edgedo.common.util.Guid;
+import com.edgedo.society.entity.SocietyNodeResources;
+import com.edgedo.society.entity.SocietySchoolCourse;
+import com.edgedo.society.mapper.SocietyNodeResourcesMapper;
+import com.edgedo.society.queryvo.SocietyNodeResourcesQuery;
+import com.edgedo.society.queryvo.SocietyNodeResourcesView;
+import com.edgedo.society.queryvo.SocietySchoolCourseNodeView;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
+
+
+@Service
+@Transactional(propagation = Propagation.REQUIRED,rollbackFor=Exception.class)
+public class SocietyNodeResourcesService {
+	
+	
+	@Autowired
+	private SocietyNodeResourcesMapper societyNodeResourcesMapper;
+
+	public List<SocietyNodeResourcesView> listPage(SocietyNodeResourcesQuery societyNodeResourcesQuery){
+		List list = societyNodeResourcesMapper.listPage(societyNodeResourcesQuery);
+		societyNodeResourcesQuery.setList(list);
+		return list;
+	}
+
+	/***
+	 * 新增方法
+	 * @return
+	 */
+	@Transactional(propagation = Propagation.REQUIRED,rollbackFor=Exception.class)
+	public String insert(SocietyNodeResources societyNodeResources) {
+		societyNodeResources.setId(Guid.guid());
+		societyNodeResourcesMapper.insert(societyNodeResources);
+		return "";
+	}
+
+	/***
+	 * 动态修改方法
+	 * @param
+	 * @return
+	 */
+	@Transactional(propagation = Propagation.REQUIRED,rollbackFor=Exception.class)
+	public String update(SocietyNodeResources societyNodeResources) {
+		societyNodeResourcesMapper.updateById(societyNodeResources);
+		return "";
+	}
+
+	/***
+	 * 全修改
+	 * @param
+	 * @return
+	 */
+	@Transactional(propagation = Propagation.REQUIRED,rollbackFor=Exception.class)
+	public String updateAll(SocietyNodeResources societyNodeResources) {
+		societyNodeResourcesMapper.updateAllColumnById(societyNodeResources);
+		return "";
+	}
+
+
+
+	/**
+	 * 单个删除
+	 * @param id
+	 */
+	@Transactional(propagation = Propagation.REQUIRED,rollbackFor=Exception.class)
+	public int delete(String id) {
+
+		return societyNodeResourcesMapper.deleteById(id);
+	}
+
+	/**
+	 * 批量删除
+	 * @param ids
+	 */
+	@Transactional(propagation = Propagation.REQUIRED,rollbackFor=Exception.class)
+	public int deleteByIds(List<String> ids) {
+
+		return societyNodeResourcesMapper.deleteBatchIds(ids);
+	}
+
+
+
+	/**
+	 * 加载单个
+	 * @param id
+	 */
+	public SocietyNodeResources loadById(String id) {
+		return societyNodeResourcesMapper.selectById(id);
+	}
+
+
+	@Transactional(propagation = Propagation.REQUIRED, rollbackFor = Exception.class)
+	public int joinToMyResources(User user, String ids) {
+		SocietyNodeResources societyNodeResources = this.loadById(ids);
+		//申请方设置
+		societyNodeResources.setOwnerNodeResourcesId(ids);
+		societyNodeResources.setApplySchoolId(user.getCompId());
+		String copyCourseId = Guid.guid();
+		societyNodeResources.setId(copyCourseId);
+		return societyNodeResourcesMapper.insert(societyNodeResources);
+
+	}
+
+}

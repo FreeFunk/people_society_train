@@ -1,0 +1,46 @@
+<section class="aui-flexView" style="height: 45px;">
+	<section class="aui-scrollView">
+		<header class="aui-navBar0 aui-navBar-fixed b-line"  style="background-color: #1786F7">
+			<a href="javascript:history.back(-1);" class="aui-navBar-item">
+				<i class="icon icon-return"></i>
+			</a>
+			<div class="aui-center">
+				<span class="aui-center-title"  style="color: white">修改密码</span>
+			</div>
+			<a href="javascript:;" class="aui-navBar-item">
+
+			</a>
+		</header>
+	</section>
+</section>
+
+<div class="aui-sign-form">
+	<form action="" id="studentUpPwdForm" method="post">
+		<!--<div class="aui-flex">
+			<label>学员姓名：</label>
+			<div class="aui-flex-box">
+				<input type="text" id="studentName" ng-value="studentName" autocomplete="off" disabled>
+			</div>
+		</div>-->
+		<div class="aui-flex">
+			<label>原始密码：</label>
+			<div class="aui-flex-box">
+				<input type="text" id="oldPwd" name="oldPassword" autocomplete="off" placeholder="请输入原始密码">
+			</div>
+		</div>
+		<div class="aui-flex">
+			<label>新&nbsp;密&nbsp;码：</label>
+			<div class="aui-flex-box">
+				<input type="password" id="password" name="newPassword" autocomplete="off" placeholder="请输入新密码">
+			</div>
+		</div>
+		<div class="aui-flex">
+			<label>确认密码：</label>
+			<div class="aui-flex-box">
+				<input type="password" id="conPassword" name="conPassword" autocomplete="off" placeholder="请再次填写确认">
+			</div>
+		</div>
+	</form>
+	<button class="aui-sign-login" ng-click="studentUpPwd()">确认修改</button>
+
+</div>

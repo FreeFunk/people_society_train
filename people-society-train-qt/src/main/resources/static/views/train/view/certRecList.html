@@ -1,0 +1,43 @@
+<section class="aui-flexView">
+	<header class="aui-navBar0 aui-navBar-fixed b-line">
+		<a href="javascript:history.back(-1);" class="aui-navBar-item">
+            <i class="icon icon-return"></i>
+        </a>
+		<div class="aui-center">
+			<span class="aui-center-title">我的证书</span>
+		</div>
+	</header>
+
+	<section class="aui-scrollView">
+		<div id="cert_course_panel_item" infinite-scroll-container class="aui-sit-list">
+			<a href="javascript:void(0);" ng-click="gotoCertInfoPage(cert.id)" style="padding: 10px;" class="aui-flex b-line" ng-repeat="cert in pageInfoObj.list track by cert.id">
+				<div class="aui-git-img">
+					<img style="height: 60px;" ng-src="{{cert.certificateImageUrl}}" alt="">
+				</div>
+				<div class="aui-flex-box">
+					<h4>{{cert.certificateName}}</h4>
+					<div>
+						<div class="aui-right-seep fl">
+							<p style="font-size: 12px;">发证日期：</p>
+							<p style="font-size: 12px;">{{cert.certificateTime}}</p>
+						</div>
+					</div>
+				</div>
+			</a>
+
+			<div infinite-scroll-parent="cert_course_panel_item" style="margin-bottom: 0px;" infinite-scroll="nextCertPage()" infinite-scroll-distance="0"></div>
+		</div>
+
+		<section class="aui-scrollView" ng-show="pageInfoObj.list.length==0">
+			<div class="wss">
+				<img src="images/nothing.png">
+				<p>您还没有证书</p>
+			</div>
+		</section>
+
+		<div class="blank20"></div>
+	</section>
+
+	<!-- 底部菜单栏 -->
+	<bottom-nav current-nav="currentNav" change-Menu="changeMenuBar(menu)"></bottom-nav>
+</section>

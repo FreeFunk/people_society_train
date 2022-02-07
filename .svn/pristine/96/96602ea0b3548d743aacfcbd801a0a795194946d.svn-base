@@ -1,0 +1,4 @@
+#微信公共服务的url
+app.commonWxServiceUrl: http://wx.qhd12328.com/wxplant
+#缓存的token时长
+app.commonTokenTimeOutSec: 1800

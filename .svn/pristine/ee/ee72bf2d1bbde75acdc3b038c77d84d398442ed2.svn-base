@@ -1,0 +1,86 @@
+package com.edgedo.society.queryvo;
+
+import com.edgedo.society.entity.SocietyStudentAndCourse;
+
+import java.util.List;
+
+public class SocietyStudentAndCourseView extends SocietyStudentAndCourse {
+    Integer courseProgressStart;
+    Integer courseProgressEnd;
+    /*课程时长*/
+    private Integer courseTimeLength;
+    //学习时长
+    private Integer studyTimeLength;
+
+    private String stuPhone;
+    private String isRealName;
+
+    //是否评价
+    private String isComment;
+    //是否通过考试
+    private String isTepar;
+
+    public String getIsComment() {
+        return isComment;
+    }
+
+    public void setIsComment(String isComment) {
+        this.isComment = isComment;
+    }
+
+    public String getIsTepar() {
+        return isTepar;
+    }
+
+    public void setIsTepar(String isTepar) {
+        this.isTepar = isTepar;
+    }
+
+    public String getStuPhone() {
+        return stuPhone;
+    }
+
+    public void setStuPhone(String stuPhone) {
+        this.stuPhone = stuPhone;
+    }
+
+    public String getIsRealName() {
+        return isRealName;
+    }
+
+    public void setIsRealName(String isRealName) {
+        this.isRealName = isRealName;
+    }
+
+    public Integer getCourseTimeLength() {
+        return courseTimeLength;
+    }
+
+    public void setCourseTimeLength(Integer courseTimeLength) {
+        this.courseTimeLength = courseTimeLength;
+    }
+
+    public Integer getStudyTimeLength() {
+        return studyTimeLength;
+    }
+
+    public void setStudyTimeLength(Integer studyTimeLength) {
+        this.studyTimeLength = studyTimeLength;
+    }
+
+    public Integer getCourseProgressStart() {
+        return courseProgressStart;
+    }
+
+    public void setCourseProgressStart(Integer courseProgressStart) {
+        this.courseProgressStart = courseProgressStart;
+    }
+
+    public Integer getCourseProgressEnd() {
+        return courseProgressEnd;
+    }
+
+    public void setCourseProgressEnd(Integer courseProgressEnd) {
+        this.courseProgressEnd = courseProgressEnd;
+    }
+}

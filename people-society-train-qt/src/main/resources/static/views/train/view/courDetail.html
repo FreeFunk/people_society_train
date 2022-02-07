@@ -1,0 +1,116 @@
+	 <section class="aui-flexView">
+         <a href="javascript:history.back(-1);">
+             <i class="iconfont icon-fanhui white" style="position: fixed; left:15px; top:15px; z-index: 99999"></i>
+         </a>
+
+        <section class="aui-scrollView" style="padding-bottom: 0px;">
+
+            <Div class="bg" >
+                <h4>{{curCourse.courseName}}</h4>
+                <p>{{curCourse.courseClsName}} <!--中级-->.{{curCourse.totalLessons}}小节.{{curCourse.totalStudentNum}}人学</p>
+            </Div>
+
+            <div class="aui-tab" >
+               <ul class="tab-nav0">
+                    <li class="tab-nav-item0 {{currTab=='courseDesc'?'tab-active':''}}" ng-click="changeTab('courseDesc')" style="width: 33.333%">
+                        <a href="javascript:void(0);">
+                            <span>简介</span>
+                        </a>
+                    </li>
+                    <li class="tab-nav-item0 {{currTab=='courseNode'?'tab-active':''}}" ng-click="changeTab('courseNode')" style="width: 33.333%">
+                        <a href="javascript:void(0);">
+                            <span>目录</span>
+                        </a>
+                    </li>
+                    <li class="tab-nav-item0 {{currTab=='courseComment'?'tab-active':''}}" ng-click="changeTab('courseComment')" style="width: 33.333%">
+                        <a href="javascript:void(0);">
+                            <span>评论</span>
+                        </a>
+                    </li>
+
+
+                </ul>
+            </div>
+            <!-- 课程简介 -->
+            <div class="tab-panel-xd" ng-show="currTab=='courseDesc'">
+                <div class="tab-panel-item tab-active">
+                    <div class="aui-course-catalog">
+                       <div class="kc_con">
+                           <div ng-bind="curCourse.courseDesc"></div>
+                           <img ng-src="{{curCourse.courseImage}}">
+                        </div>
+                        <div class="blank20"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 课程目录 -->
+            <div class="tab-panel-xd" ng-show="currTab=='courseNode'">
+                <div class="tab-panel-item tab-active">
+                    <div class="aui-course-catalog">
+                        <div class="kc_ml">
+                            <ul>
+                                <div ng-repeat="node in courseNodes track by node.id">
+                                    <!--<li><i class="iconfont icon-bofang  mr10 f8"></i><h4 ng-bind="node.nodeName"></h4></li>-->
+                                    <li>
+                                        <!--<span ng-show="$index==0" class="fr sk">试看</span>-->
+                                        <!--<i class="iconfont icon-bofang  mr10 f8"></i>-->
+                                        {{node.nodeName}}<span ng-show="node.nodeTimeLength!=null">（{{node.nodeTimeLengthStr}}）</span>
+                                    </li>
+                                </div>
+                            </ul>
+                        </div>
+                        <div class="blank20"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 课程评论 -->
+            <div class="tab-panel-xd" ng-show="currTab=='courseComment'">
+                <div class="tab-panel-item tab-active">
+                    <div class="aui-course-catalog">
+                        <!--<div class="fenshu clearfix">
+                            <ul>
+                                <li><h4>{{curCourse.courseScore}}</h4></li>
+                                <li><h3>内容实用</h3><p>9.85</p></li>
+                                <li><h3>通俗易懂</h3><p>9.93</p></li>
+                                <li><h3>逻辑清晰</h3><p>9.81</p></li>
+                            </ul>
+                        </div>-->
+
+                        <div href="javascript:void(0);" ng-repeat="comment in courseComments track by comment.id" class="aui-order-list b-line">
+                            <div class="aui-flex">
+                                <div class="aui-img-sml">
+                                    <img src="images/user-img.jpg" alt="">
+                                </div>
+                                <div class="aui-flex-box">
+                                    <div class="fl">
+                                        <h4>{{comment.nickName}}</h4>
+                                        <p class="huise">{{comment.createTime}}</p>
+                                    </div>
+                                    <!--<div class="hp fr">好评</div>-->
+                                </div>
+                            </div>
+                            <div class="aui-flex" style="padding-top:0">
+                                <div class="aui-flex-box">
+                                    <p>{{comment.commentText}}</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="blank20"></div>
+                    </div>
+                </div>
+            </div>
+
+        </section>
+
+    </section>
+    <!--<div class="aui-search-box2"  style=" background: #F7F7F7!important">
+        &lt;!&ndash;<div class="fl dx0">
+            <i class="iconfont icon-bofang" style="color: #f01d1d; font-size:20px;"></i>
+            <p>导学</p>
+        </div>&ndash;&gt;
+        &lt;!&ndash;<div class="fr gm" style="width: 100%;">
+            <a href="javascript:void(0)" ng-click="gotoStudy()">立即学习 &lt;!&ndash; ￥{{curCourse.coursePrice}} <em>￥{{curCourse.courseOrgPrice}}</em> &ndash;&gt;</a>
+        </div>&ndash;&gt;
+    </div>-->

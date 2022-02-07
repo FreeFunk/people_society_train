@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.edgedo.society.mapper.SocietySchoolCourseUseGlobleMapper" >
+   
+   
+    <resultMap id="BaseResultMap" type="com.edgedo.society.entity.SocietySchoolCourseUseGloble" >
+			<id column="ID" property="id"/>
+			<result column="CREATE_TIME" property="createTime"/>
+			<result column="CREATE_USER_ID" property="createUserId"/>
+			<result column="CREATE_USER_NAME" property="createUserName"/>
+			<result column="SCHOOL_ID" property="schoolId"/>
+			<result column="COURSE_ID" property="courseId"/>
+			<result column="COURSE_SCH_ID" property="courseSchId"/>
+			<result column="DATA_STATE" property="dataState"/>
+    </resultMap>
+   
+    <resultMap id="BaseResultViewMap" type="com.edgedo.society.queryvo.SocietySchoolCourseUseGlobleView" extends="BaseResultMap">
+    
+    </resultMap>
+  
+  
+  <!-- ******* 新增字段请修改这里  ******  -->
+  <sql id="Base_Column_List">
+	 ID, CREATE_TIME, CREATE_USER_ID, CREATE_USER_NAME, SCHOOL_ID, COURSE_ID, COURSE_SCH_ID, DATA_STATE
+  </sql>
+  
+  <!-- ******* 利用好这里的动态查询条件  ******  -->
+  <sql id="where">
+  	<where>
+		DATA_STATE='1'
+		<if test='queryObj != null and  queryObj.id != null and @org.apache.commons.lang3.StringUtils@isNotEmpty(queryObj.id)'>
+		AND  ID = #{queryObj.id}
+		</if>
+		<if test='queryObj != null and  queryObj.createTime != null'>
+			AND  CREATE_TIME = #{queryObj.createTime}
+		</if>
+		<if test='queryObj != null and  queryObj.createUserId != null and @org.apache.commons.lang3.StringUtils@isNotEmpty(queryObj.createUserId)'>
+		AND  CREATE_USER_ID = #{queryObj.createUserId}
+		</if>
+		<if test='queryObj != null and  queryObj.createUserName != null and @org.apache.commons.lang3.StringUtils@isNotEmpty(queryObj.createUserName)'>
+		AND  CREATE_USER_NAME = #{queryObj.createUserName}
+		</if>
+		<if test='queryObj != null and  queryObj.schoolId != null and @org.apache.commons.lang3.StringUtils@isNotEmpty(queryObj.schoolId)'>
+		AND  SCHOOL_ID = #{queryObj.schoolId}
+		</if>
+		<if test='queryObj != null and  queryObj.courseId != null and @org.apache.commons.lang3.StringUtils@isNotEmpty(queryObj.courseId)'>
+		AND  COURSE_ID = #{queryObj.courseId}
+		</if>
+		<if test='queryObj != null and  queryObj.courseSchId != null and @org.apache.commons.lang3.StringUtils@isNotEmpty(queryObj.courseSchId)'>
+		AND  COURSE_SCH_ID = #{queryObj.courseSchId}
+		</if>
+
+  	</where>
+  	
+  </sql>
+  
+  <!-- ******* 排序判断  ******  
+  <sql id="orderBy">
+  	<if test="orderBy != null and orderBy!= '' ">
+  		order by  ${orderBy}
+  	</if>
+  </sql>-->
+  
+  
+  <!-- 分页条件查询  -->
+  <select id="listPage" parameterType="com.edgedo.society.queryvo.SocietySchoolCourseUseGlobleQuery" resultMap="BaseResultViewMap">
+  		select <include refid="Base_Column_List"/> from society_school_course_use_globle 
+  		<include refid="where"/>
+		  and  COURSE_ID in (
+		  select ID from society_school_course
+	  		WHERE DATA_STATE='1'
+		  <if test='queryObj != null and  queryObj.globleCourseName != null and queryObj.globleCourseName != "" '>
+			  AND  COURSE_NAME  like concat('%',#{queryObj.globleCourseName},'%')
+		  </if>
+		  )
+
+  </select>
+  
+   <!-- 不分页条件查询  -->
+  <select id="listByObj" parameterType="com.edgedo.society.queryvo.SocietySchoolCourseUseGlobleQuery" resultMap="BaseResultViewMap">
+  		select <include refid="Base_Column_List"/> from society_school_course_use_globle 
+  		<include refid="where"/>
+  </select>
+
+	<select id="selectBySchoolId" parameterType="string" resultType="integer">
+		select count(1) from society_school_course_use_globle
+		where DATA_STATE='1' and SCHOOL_ID=#{schoolId}
+	</select>
+
+
+	<update id="updateByList" parameterType="string">
+		update society_student set DATA_STATE='0'
+		where DATA_STATE='1'
+		and ID in
+		<foreach item="id" index="index" collection="list" open="(" separator="," close=")">
+			#{id}
+		</foreach>
+	</update>
+
+
+	<select id="selectBySchoolObject" parameterType="string" resultMap="BaseResultViewMap">
+		select <include refid="Base_Column_List"/> from society_school_course_use_globle
+		where  DATA_STATE='1' and SCHOOL_ID=#{schoolId}
+	</select>
+
+	<select id="selectBySchoolIdAndCourseIdOnce" parameterType="string" resultMap="BaseResultViewMap">
+		select <include refid="Base_Column_List"/> from society_school_course_use_globle
+		where  DATA_STATE='1' and SCHOOL_ID=#{ownerSchoolId} and COURSE_ID=#{courseId}
+	</select>
+
+	<select id="selectByCourseId" parameterType="string" resultType="string">
+		select COURSE_ID courseId from society_school_course_use_globle
+		where  DATA_STATE='1' and SCHOOL_ID=#{ownerSchoolId}
+	</select>
+
+	<select id="selectSchoolIdAndCourseId" parameterType="String" resultType="int">
+		select count(1) from society_school_course_use_globle
+		where  DATA_STATE='1' and SCHOOL_ID = #{schoolId} and COURSE_ID = #{courseId}
+	</select>
+
+</mapper>

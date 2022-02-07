@@ -1,0 +1,158 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.edgedo.society.mapper.SocietyStudentPractiseQuestOptionMapper" >
+   
+   
+    <resultMap id="BaseResultMap" type="com.edgedo.society.entity.SocietyStudentPractiseQuestOption" >
+			<id column="ID" property="id"/>
+			<result column="CREATE_TIME" property="createTime"/>
+			<result column="UPDATE_TIME" property="updateTime"/>
+			<result column="OWNER_STUDENT_AND_NODE_ID" property="ownerStudentAndNodeId"/>
+			<result column="OWNER_STU_COURSE_ID" property="ownerStuCourseId"/>
+			<result column="STUDENT_ID" property="studentId"/>
+			<result column="OWNER_SCHOOL_ID" property="ownerSchoolId"/>
+			<result column="OWNER_SCHOOL_NAME" property="ownerSchoolName"/>
+			<result column="OWNER_NODE_ID" property="ownerNodeId"/>
+			<result column="OWNER_NODE_NAME" property="ownerNodeName"/>
+			<result column="OWNER_STUDENT_QUERSION_ID" property="ownerStudentQuersionId"/>
+			<result column="OWNER_STUDENT_QUERSION_NAME" property="ownerStudentQuersionName"/>
+			<result column="OWNER_NODE_QUE_OP_ID" property="ownerNodeQueOpId"/>
+			<result column="OPTION_TITLE" property="optionTitle"/>
+			<result column="OPTION_NAME" property="optionName"/>
+			<result column="IS_RIGHT" property="isRight"/>
+			<result column="IS_SELECT" property="isSelect"/>
+			<result column="ORDER_NUM" property="orderNum"/>
+			<result column="LAST_ANSWER_TIME" property="lastAnswerTime"/>
+    </resultMap>
+   
+    <resultMap id="BaseResultViewMap" type="com.edgedo.society.queryvo.SocietyStudentPractiseQuestOptionView" extends="BaseResultMap">
+    
+    </resultMap>
+  
+  
+  <!-- ******* 新增字段请修改这里  ******  -->
+  <sql id="Base_Column_List">
+	 ID, CREATE_TIME, UPDATE_TIME, OWNER_STUDENT_AND_NODE_ID, OWNER_STU_COURSE_ID, STUDENT_ID,
+	 OWNER_SCHOOL_ID, OWNER_SCHOOL_NAME, OWNER_NODE_ID, OWNER_NODE_NAME,
+	 OWNER_STUDENT_QUERSION_ID, OWNER_STUDENT_QUERSION_NAME, OWNER_NODE_QUE_OP_ID,OPTION_TITLE,
+	  OPTION_NAME, IS_RIGHT, IS_SELECT, ORDER_NUM, LAST_ANSWER_TIME
+  </sql>
+
+	<sql id="Base_Column_List_Simple">
+		ID, OWNER_STUDENT_AND_NODE_ID, OWNER_STU_COURSE_ID, STUDENT_ID,
+	 OWNER_SCHOOL_ID,OWNER_NODE_ID, OWNER_STUDENT_QUERSION_ID,
+	  OWNER_NODE_QUE_OP_ID, IS_RIGHT, IS_SELECT,ORDER_NUM, LAST_ANSWER_TIME
+	</sql>
+  <!-- ******* 利用好这里的动态查询条件  ******  -->
+  <sql id="where">
+  	<where>
+		<if test='queryObj != null and  queryObj.id != null and @org.apache.commons.lang3.StringUtils@isNotEmpty(queryObj.id)'>
+		AND  ID = #{queryObj.id}
+		</if>
+		<if test='queryObj != null and  queryObj.createTime != null'>
+			AND  CREATE_TIME = #{queryObj.createTime}
+		</if>
+		<if test='queryObj != null and  queryObj.updateTime != null'>
+			AND  UPDATE_TIME = #{queryObj.updateTime}
+		</if>
+		<if test='queryObj != null and  queryObj.ownerStudentAndNodeId != null and @org.apache.commons.lang3.StringUtils@isNotEmpty(queryObj.ownerStudentAndNodeId)'>
+		AND  OWNER_STUDENT_AND_NODE_ID = #{queryObj.ownerStudentAndNodeId}
+		</if>
+		<if test='queryObj != null and  queryObj.ownerStuCourseId != null and @org.apache.commons.lang3.StringUtils@isNotEmpty(queryObj.ownerStuCourseId)'>
+		AND  OWNER_STU_COURSE_ID = #{queryObj.ownerStuCourseId}
+		</if>
+		<if test='queryObj != null and  queryObj.studentId != null and @org.apache.commons.lang3.StringUtils@isNotEmpty(queryObj.studentId)'>
+		AND  STUDENT_ID = #{queryObj.studentId}
+		</if>
+		<if test='queryObj != null and  queryObj.ownerSchoolId != null and @org.apache.commons.lang3.StringUtils@isNotEmpty(queryObj.ownerSchoolId)'>
+		AND  OWNER_SCHOOL_ID = #{queryObj.ownerSchoolId}
+		</if>
+		<if test='queryObj != null and  queryObj.ownerSchoolName != null and @org.apache.commons.lang3.StringUtils@isNotEmpty(queryObj.ownerSchoolName)'>
+		AND  OWNER_SCHOOL_NAME = #{queryObj.ownerSchoolName}
+		</if>
+		<if test='queryObj != null and  queryObj.ownerNodeId != null and @org.apache.commons.lang3.StringUtils@isNotEmpty(queryObj.ownerNodeId)'>
+		AND  OWNER_NODE_ID = #{queryObj.ownerNodeId}
+		</if>
+		<if test='queryObj != null and  queryObj.ownerNodeName != null and @org.apache.commons.lang3.StringUtils@isNotEmpty(queryObj.ownerNodeName)'>
+		AND  OWNER_NODE_NAME = #{queryObj.ownerNodeName}
+		</if>
+		<if test='queryObj != null and  queryObj.ownerStudentQuersionId != null and @org.apache.commons.lang3.StringUtils@isNotEmpty(queryObj.ownerStudentQuersionId)'>
+		AND  OWNER_STUDENT_QUERSION_ID = #{queryObj.ownerStudentQuersionId}
+		</if>
+		<if test='queryObj != null and  queryObj.ownerStudentQuersionName != null and @org.apache.commons.lang3.StringUtils@isNotEmpty(queryObj.ownerStudentQuersionName)'>
+		AND  OWNER_STUDENT_QUERSION_NAME = #{queryObj.ownerStudentQuersionName}
+		</if>
+		<if test='queryObj != null and  queryObj.optionTitle != null and @org.apache.commons.lang3.StringUtils@isNotEmpty(queryObj.optionTitle)'>
+		AND  OPTION_TITLE = #{queryObj.optionTitle}
+		</if>
+		<if test='queryObj != null and  queryObj.optionName != null and @org.apache.commons.lang3.StringUtils@isNotEmpty(queryObj.optionName)'>
+		AND  OPTION_NAME = #{queryObj.optionName}
+		</if>
+		<if test='queryObj != null and  queryObj.isRight != null and @org.apache.commons.lang3.StringUtils@isNotEmpty(queryObj.isRight)'>
+		AND  IS_RIGHT = #{queryObj.isRight}
+		</if>
+		<if test='queryObj != null and  queryObj.isSelect != null and @org.apache.commons.lang3.StringUtils@isNotEmpty(queryObj.isSelect)'>
+		AND  IS_SELECT = #{queryObj.isSelect}
+		</if>
+		<if test='queryObj != null and  queryObj.lastAnswerTime != null'>
+			AND  LAST_ANSWER_TIME = #{queryObj.lastAnswerTime}
+		</if>
+  	</where>
+  	
+  </sql>
+  
+  <!-- ******* 排序判断  ******  
+  <sql id="orderBy">
+  	<if test="orderBy != null and orderBy!= '' ">
+  		order by  ${orderBy}
+  	</if>
+  </sql>-->
+  
+  
+  <!-- 分页条件查询  -->
+  <select id="listPage" parameterType="com.edgedo.society.queryvo.SocietyStudentPractiseQuestOptionQuery" resultMap="BaseResultViewMap">
+  		select <include refid="Base_Column_List"/> from society_student_practise_quest_option 
+  		<include refid="where"/>
+  </select>
+  
+   <!-- 不分页条件查询  -->
+  <select id="listByObj" parameterType="com.edgedo.society.queryvo.SocietyStudentPractiseQuestOptionQuery" resultMap="BaseResultViewMap">
+  		select <include refid="Base_Column_List"/> from society_student_practise_quest_option 
+  		<include refid="where"/>
+  </select>
+
+	<!-- 根据学生节点获得所有练习中选中的答案 -->
+	<select id="listByStuAndCouseNodeOfSelect"
+			parameterType="map"
+			resultMap="BaseResultViewMap" >
+		select <include refid="Base_Column_List_Simple"/> from society_student_practise_quest_option
+		where OWNER_STUDENT_AND_NODE_ID = #{ownerStudentAndNodeId}
+		and STUDENT_ID = #{studentId}
+		and OWNER_NODE_ID = #{ownerNodeId}
+		and IS_SELECT = '1'
+	</select>
+
+	<!--  根据选项id和学生学习章节记录找到已经插入的选项 -->
+	<select id="selectByCouseOpIdAndStuNodeId"
+			parameterType="map"
+			resultMap="BaseResultViewMap" >
+		select <include refid="Base_Column_List_Simple"/> from society_student_practise_quest_option
+		where OWNER_STUDENT_AND_NODE_ID = #{ownerStudentAndNodeId}
+		and OWNER_NODE_QUE_OP_ID=#{ownerNodeQueOpId}
+	</select>
+
+	<!--  更新问题的选项为不选择 -->
+	<update id="updateUnSelAllOption" parameterType="string">
+		update society_student_practise_quest_option
+		set IS_SELECT='0' where OWNER_STUDENT_QUERSION_ID=#{ownerStudentQuersionId}
+	</update>
+
+	<!-- 设置节点选项未选择 -->
+	<update id="updateAllStuNodeOptionUnSelect" parameterType="string">
+		update society_student_practise_quest_option
+		set IS_SELECT='0' where OWNER_STUDENT_AND_NODE_ID=#{stuNodeId}
+	</update>
+
+
+  
+</mapper>

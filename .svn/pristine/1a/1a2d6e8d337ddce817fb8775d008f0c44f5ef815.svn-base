@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title></title>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=0" name="viewport"/>
+    <meta content="yes" name="apple-mobile-web-app-capable"/>
+    <meta content="black" name="apple-mobile-web-app-status-bar-style"/>
+    <meta content="telephone=no" name="format-detection"/>
+    <link href="css/global.css" rel="stylesheet" type="text/css"/>
+    <link href="css/main.css?v=1" rel="stylesheet" type="text/css"/>
+    <link href="font/iconfont.css?v=1" rel="stylesheet" type="text/css"/>
+    <link rel="stylesheet" type="text/css" href="css/alertify.core.css">
+    <!--<link href="css/my1.css" rel="stylesheet" type="text/css"/>-->
+    <script type="text/javascript" src="js/base64.js"></script>
+    <script type="text/javascript" src="js/jquery203.js"></script>
+
+    <!--暂不需要此压缩方式这种压缩方式压缩的限度有限-->
+    <!--<script type="text/javascript" src="js/exif.js"></script>-->
+
+    <script type="text/javascript">
+        /**
+         * 获得操作系统
+         */
+        function getOs(){
+            var ua = navigator.userAgent.toLowerCase();
+            if (/(iphone|ipad|ipod|ios)/i.test(ua)) {
+                return "ios";
+            } else if (/(android)/i.test(ua)) {
+                return "android";
+            } else {
+                return "pc";
+            }
+        }
+        /**
+         * 判断是否是微信
+         * @returns {boolean}
+         */
+        function isWx(){
+            return navigator.userAgent.toLowerCase().indexOf('micromessenger') !== -1
+        }
+
+
+        /**
+         * 获得带有http或者https的 服务路径
+         * @returns {string}
+         */
+        function getContextRealPath(){
+            var url = document.location.toString();
+
+            var arrUrl = url.split("//");
+            var htp = arrUrl[0];
+            var rest = arrUrl[1];
+            var arrRest = rest.split("/");
+            var uri = arrRest[0];//stop省略，截取从start开始到结尾的所有字符
+
+            return htp+"//" + uri;
+        }
+
+        //获得url参数中的学校id 设置成全局变量
+        function getUrlParam(paramKey){
+            var reg = new RegExp("(^|&)"+ paramKey +"=([^&]*)(&|$)");
+            var r = window.location.search.substr(1).match(reg);
+            if (r!=null)
+                return decodeURI(r[2]);
+            return null;
+        }
+        window.globalSchId = getUrlParam('sch');
+        /*if( window.globalSchId==null ||  window.globalSchId==''){
+            alert('找不到学校,请检查链接地址');
+        }*/
+
+    </script>
+    <script type="text/javascript" data-main="./main_v2" src="./js/require.js"></script>
+</head>
+    <body ng-controller="bodyCtrl" ng-view>
+    </body>
+
+
+</html>

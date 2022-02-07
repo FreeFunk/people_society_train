@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.edgedo.sys.mapper.SysWxConfigMapper" >
+   
+   
+    <resultMap id="BaseResultMap" type="com.edgedo.sys.entity.SysWxConfig" >
+			<id column="ID" property="id"/>
+			<result column="WEIXIN_CODE" property="weixinCode"/>
+			<result column="NICK_NAME" property="nickName"/>
+			<result column="MP_TYPE" property="mpType"/>
+			<result column="REMARK" property="remark"/>
+			<result column="EMAIL" property="email"/>
+			<result column="APP_ID" property="appId"/>
+			<result column="APP_SECRET" property="appSecret"/>
+			<result column="TOKEN" property="token"/>
+			<result column="ENCODING_AES_KEY" property="encodingAesKey"/>
+			<result column="URL" property="url"/>
+			<result column="SECRET_TYPE" property="secretType"/>
+			<result column="ACCESS_TOKEN" property="accessToken"/>
+			<result column="TICKET" property="ticket"/>
+			<result column="OPERATE_TIME" property="operateTime"/>
+			<result column="WX_IP" property="wxIp"/>
+			<result column="WX_MENUE_JSON" property="wxMenueJson"/>
+    </resultMap>
+   
+    <resultMap id="BaseResultViewMap" type="com.edgedo.sys.queryvo.SysWxConfigView" extends="BaseResultMap">
+    
+    </resultMap>
+  
+  
+  <!-- ******* 新增字段请修改这里  ******  -->
+  <sql id="Base_Column_List">
+	 ID, WEIXIN_CODE, NICK_NAME, MP_TYPE, REMARK, EMAIL, APP_ID, APP_SECRET, TOKEN, ENCODING_AES_KEY, URL, SECRET_TYPE, ACCESS_TOKEN, TICKET, OPERATE_TIME, WX_IP,WX_MENUE_JSON
+  </sql>
+  
+  <!-- ******* 利用好这里的动态查询条件  ******  -->
+  <sql id="where">
+  	<where>
+				<if test='queryObj != null and  queryObj.operateTime != null'>
+					AND  OPERATE_TIME = #{queryObj.operateTime}
+				</if>
+				<if test='queryObj != null and  queryObj.id != null'>
+					AND  ID = #{queryObj.id}
+				</if>
+  	</where>
+  	
+  </sql>
+  
+  <!-- ******* 排序判断  ******  
+  <sql id="orderBy">
+  	<if test="orderBy != null and orderBy!= '' ">
+  		order by  ${orderBy}
+  	</if>
+  </sql>-->
+  
+  
+  <!-- 分页条件查询  -->
+  <select id="listPage" parameterType="com.edgedo.sys.queryvo.SysWxConfigQuery" resultMap="BaseResultViewMap">
+  		select <include refid="Base_Column_List"/> from sys_wx_config 
+  		<include refid="where"/>
+  </select>
+  
+   <!-- 不分页条件查询  -->
+  <select id="listByObj" parameterType="com.edgedo.sys.queryvo.SysWxConfigQuery" resultMap="BaseResultViewMap">
+  		select <include refid="Base_Column_List"/> from sys_wx_config 
+  		<include refid="where"/>
+  </select>
+
+	<!-- 查询所所有 -->
+	<select id="selectAllConfig"  resultMap="BaseResultViewMap">
+		select <include refid="Base_Column_List"/> from sys_wx_config
+	</select>
+
+  
+  
+</mapper>

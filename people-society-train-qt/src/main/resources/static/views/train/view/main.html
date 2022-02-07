@@ -1,0 +1,98 @@
+<section class="aui-flexView">
+    <header class="aui-navBar aui-navBar-fixed">
+		<a href="javascript:;" class="aui-navBar-item">
+			
+		</a>
+		<div class="aui-center">
+			<span class="aui-center-title">{{globalSchObj.schoolName}}</span>
+		</div>
+		<a href="javascript:void(0);" ng-click="gotoSearch()" class="aui-navBar-item" >
+			<i class="icon icon-search0"></i>
+		</a>
+	</header>
+    
+    
+    
+    
+    <section class="aui-scrollView">
+        <div class="aui-head-blue">
+          <div class="fenlei">
+             <ul>
+               <li ng-click="freshCourseInfo('')" class="{{majorId==''?'on':''}}">全部</li>
+               <li ng-click="freshCourseInfo(major.id)" class="{{majorId==major.id?'on':''}}" ng-repeat="major in majorList track by major.id">{{major.majorName}}</li>
+             </ul>  
+          </div>
+        </div>
+
+        <div id="m-slider" class="m-slider" data-ydui-slider>
+			<div class="slider-wrapper">
+				<div class="slider-item" ng-repeat="imageUrl in schoolInfo.banImgList track by $index">
+					<a href="javascript:void(0);">
+						<img ng-src="{{imageUrl}}" alt="">
+					</a>
+				</div>
+			</div>
+			<div class="slider-pagination"></div>
+		</div>
+        <div class="divHeight"></div>
+        <div class="aui-flex b-line">
+			<div class="aui-flex-box">
+				<h1>新上好课</h1>
+			</div>
+		</div>
+        <div class="aui-sit-list">
+			<a href="javascript:void(0);" ng-click="gotoCourDetail(course.id)" class="aui-flex b-line" ng-repeat="course in latelyCourseList track by course.id">
+				<div class="aui-git-img">
+					<img ng-src="{{course.courseImage}}" alt="">
+				</div>
+				<div class="aui-flex-box">
+					<h3 ng-bind="course.courseName"></h3>
+					<div class="aui-coin-ing">
+						<em>{{course.courseClsName}}</em>
+						<em><i class="icon icon-pro"></i><label ng-bind="course.totalStudentNum"></label></em>
+						<!--<em><label ng-bind="course.commentCount"></label>评论</em>-->
+					</div>
+					<div class="money"><em class="jinqian"><em ng-show="{{course.coursePrice!='免费'}}">￥</em>{{course.coursePrice}}</em>
+						<i ng-show="{{course.coursePrice!='免费'}}">￥{{course.courseOrgPrice}}</i><!--<span>满减</span>--></div>
+				</div>
+			</a>
+		</div>
+         <div class="divHeight"></div>
+        <div class="aui-flex b-line">
+			<div class="aui-flex-box">
+				<h1>学习路线<i>职业进阶</i></h1>
+			</div>
+		</div>
+        <div class="aui-flex">
+            <div class="dh_con">
+            <div class="dh">
+				<a href="javascript:void(0);" ng-click="selectThreeCourseByCourClsAndLevel(courseCls.id)" ng-repeat="courseCls in courseClsList track by courseCls.id"
+				   class="{{courseClsId==courseCls.id ? 'on' : ''}}">{{courseCls.courseClsName}}</a>
+            </div>
+            </div>
+        </div>
+        <div class="aui-sit-list">
+			<a href="javascript:void(0);" class="aui-flex b-line" ng-click="gotoCourDetail(course.id)" ng-repeat="course in levelCourseList track by course.id">
+				<div class="aui-git-img">
+					<img ng-src="{{course.courseImage}}" alt="">
+				</div>
+				<div class="aui-flex-box">
+					<h3 ng-bind="course.courseName"></h3>
+					<div class="aui-coin-ing"><em ng-bind="course.courseDesc"></em></div>
+					<div class="aui-coin-ing">
+						<em class="bold"><em ng-show="{{course.coursePrice!='免费'}}">￥</em>{{course.coursePrice}}</em>
+						<em class="bold">{{course.totalLessons}}章节</em>
+						<em class="fr">{{course.totalStudentNum}}人学习</em>
+						<!--<em class="fr">4799人收藏</em>-->
+					</div>
+				</div>
+			</a>
+		</div>
+        
+    <div class="blank20"></div>      
+    </section>   
+
+	<!-- 底部菜单栏 -->
+	<bottom-nav current-nav="currentNav" change-Menu="changeMenuBar(menu)"></bottom-nav>
+
+</section>

@@ -1,0 +1,336 @@
+package com.edgedo.society.controller;
+
+
+import java.math.BigDecimal;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import com.alibaba.fastjson.JSON;
+import com.edgedo.common.base.BaseController;
+import com.edgedo.common.base.BusinessException;
+import com.edgedo.common.base.annotation.Pass;
+import com.edgedo.common.util.RedisUtil;
+import com.edgedo.dataenum.SchoolConfigKeyEnum;
+import com.edgedo.face.entity.FaceMatchInfoExt;
+import com.edgedo.society.entity.*;
+import com.edgedo.society.queryvo.*;
+import com.edgedo.society.service.*;
+import freemarker.template.SimpleDate;
+import io.swagger.annotations.Api;
+import io.swagger.models.Model;
+import org.jetbrains.annotations.ApiStatus;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.servlet.ModelAndView;
+
+import javax.servlet.http.HttpServletRequest;
+
+
+@Api(tags = "SocietyStudentAndCourse")
+@Controller
+@RequestMapping("/stuCourse")
+public class SocietyStudentAndCourseController extends BaseController{
+	@Autowired
+	RedisUtil redisUtil;
+	//是否启用人脸识别
+	@Value("${app.studyfacecheck}")
+	private boolean studyfacecheck;
+
+	@Autowired
+	private SocietyStudentAndCourseService service;
+	@Autowired
+	private SocietyStudentService societyStudentService;
+	@Autowired
+	private SocietyStudentUniqueService studentUniqueService;
+	@Autowired
+	private SocietySchoolCourseService schoolCourseService;
+	@Autowired
+	private SocietySchoolCourseNodeService schoolCourseNodeService;
+	@Autowired
+	private SocietyStudentAndNodeService studentAndNodeService;
+	@Autowired
+	private SocietyStudentStudyProcessService studyProcessService;
+	@Autowired
+	private SocietyStudentTestPaperService testPaperService;
+	@Autowired
+    private SocietySchoolClassAndCourseService classAndCourseService;
+	@Autowired
+	private SocietySchoolClassService schoolClassService;
+	@Autowired
+	private SocietySchoolConfigService societySchoolConfigService;
+	/**
+	 * @Author WangZhen
+	 * @Description  学员前端根据自己的课程信息获得课程信息
+	 * @Date 2020/5/4 10:20
+	 **/
+	@RequestMapping("/loadCourse")
+	public ModelAndView loadCourse(String stuCourseId) {
+		//获得当前登录学员
+		SocietyStudentUnique student = getLoginStudent(studentUniqueService);
+		ModelAndView modelAndView = new ModelAndView();
+		String idCardNum = student.getId();
+		SocietyStudentAndCourseView stuCourse = service.loadByIdAndStuIdCardNum(stuCourseId,idCardNum);
+		if(stuCourse==null){
+			throw new BusinessException("未找到课程!");
+		}
+		//查询课程详情
+		SocietySchoolCourse schoolCourse = schoolCourseService.loadById(stuCourse.getCourseId());
+		if(schoolCourse==null){
+			throw new BusinessException("未找到课程!");
+		}
+		String schoolId = stuCourse.getOwnerSchoolId();
+		String IN_STUDY_NEED_FACE = societySchoolConfigService.loadKeyValue(schoolId, SchoolConfigKeyEnum.IN_STUDY_NEED_FACE);
+		if(IN_STUDY_NEED_FACE==null || IN_STUDY_NEED_FACE.trim().equals("")){
+			//程序默认是必须的
+			IN_STUDY_NEED_FACE = "1";
+		}
+		if(IN_STUDY_NEED_FACE.equals("1")){
+			//清理一下学员的人脸识别
+			societyStudentService.clearStudentFaceCatch(student);
+		}
+		List<SocietySchoolCourseNodeView>  courseNodes = schoolCourseNodeService.selectCousrseNodesByCourseIdSimple(stuCourse.getCourseId());
+		List<SocietyStudentAndNodeView> stuNodes = studentAndNodeService.selectNodeHisByOwnerCorse(stuCourse.getId());
+		stuCourse.setStuNodes(stuNodes);
+		stuCourse.setCourseNodes(courseNodes);
+		stuCourse.setCourseDesc(schoolCourse.getCourseDesc());
+		stuCourse.setCourseImage(schoolCourse.getCourseImage());
+		stuCourse.setCourseName(schoolCourse.getCourseName());
+		return buildResponse(modelAndView,stuCourse);
+	}
+
+
+
+	/**
+	 * @Author WangZhen
+	 * @Description 返回node信息
+	 * @Date 2020/7/11 8:14
+	 **/
+	@RequestMapping("/freshLearnNode_v1")
+	public ModelAndView freshLearnNode_v1(
+			String courseNodeId,
+			String stuCourseId,boolean isBegin,
+			Integer lastLearnLocation) {
+		//获得当前登录学员
+		SocietyStudentUnique student = getLoginStudent(studentUniqueService);
+		FaceMatchInfoExt faceMatchInfo =null;
+
+		ModelAndView modelAndView = new ModelAndView();
+		SocietyStudentAndCourseView stuCourse = service.loadByIdAndStuIdCardNum(stuCourseId,student.getId());
+		if(stuCourse == null){
+			throw new BusinessException("未找到课程!");
+		}
+		//默认就是允许
+		String isNeedFace =  stuCourse.getCourseIsNeedFaceContrast();
+		if(isNeedFace==null || isNeedFace.equals("") || isNeedFace.equals("1")){
+			//判断课程是否需要人脸识别 --同理调用结束的那个段代码
+			if(studyfacecheck){
+				faceMatchInfo  = societyStudentService.checkLearnFace(student);
+			}
+		}
+
+		//判断课程学习数量的限制是否达到  --同理调用结束的那个段代码
+		Integer studyTimeLimit = stuCourse.getCourseStudyNum();
+		if(studyTimeLimit != null && studyTimeLimit>0){
+			//判断redis 里面的学习数量
+
+		}
+		SocietyStudent schStu =  societyStudentService.loadById(stuCourse.getStudentId());
+		//如果没有插入一条新的学习过程记录
+		SocietyStudentAndNode stuNode = studyProcessService.freshProgress(
+				schStu,stuCourse,courseNodeId,
+				faceMatchInfo,isBegin,lastLearnLocation);
+		return buildResponse(modelAndView,stuNode);
+	}
+
+	/**
+	 * @Author WangZhen
+	 * @Description 获得课程当日完成数量
+	 * @Date 2020/7/27 16:23
+	 **/
+	private int countCourseLearnNumOfCurrentDay(String courseId,String studentIdCard){
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
+		String dayStr = sdf.format(new Date());
+		String key = "stucourse_" + dayStr + "_" + courseId  + "_" + studentIdCard;
+		String learnNodeId = (String)redisUtil.get(key);
+
+	}
+
+	/**
+	 * @Author WangZhen
+	 * @Description 播放某个课程章节到最后完结
+	 * @Date 2020/5/7 9:01
+	 **/
+	@RequestMapping("/curNodePlayDone")
+	public ModelAndView curNodePlayDone(
+			String courseNodeId,
+			String stuCourseId) {
+		//获得当前登录学员
+		SocietyStudentUnique student = getLoginStudent(studentUniqueService);
+		if(studyfacecheck){
+			FaceMatchInfoExt faceMatchInfo = societyStudentService.checkLearnFace(student);
+		}
+
+		ModelAndView modelAndView = new ModelAndView();
+		SocietyStudentAndCourseView stuCourse = service.loadByIdAndStuIdCardNum(stuCourseId,student.getId());
+		if(stuCourse == null){
+			throw new BusinessException("未找到课程!");
+		}
+		SocietyStudent schStu =  societyStudentService.loadById(stuCourse.getStudentId());
+		if(schStu == null){
+			return buildErrorResponse(modelAndView,"未查询到学员信息！");
+		}
+		//插入一条新的学习过程记录
+		SocietyStudentAndNode stuNode = studyProcessService.finishStuCourseNode(schStu,stuCourse,courseNodeId);
+		return buildResponse(modelAndView,stuNode);
+	}
+
+
+	/**
+	 * @Author ZhangCC
+	 * @Description 根据学员分页查询关联的课程
+	 * @Date 2020/5/7 16:20
+	 **/
+	@RequestMapping("/stuCourseListPage")
+	public ModelAndView stuCourseListPage(@ModelAttribute SocietyStudentAndCourseQuery query){
+		ModelAndView modelAndView = new ModelAndView();
+		SocietyStudentUnique student = getLoginStudent(studentUniqueService);
+		String stuIdCardNum = student.getId();
+		query.getQueryObj().setStudentIdCardNum(stuIdCardNum);
+		service.stuCourseByIdCardListPage(query);
+		List<SocietyStudentAndCourseView> stuAndCourseList = query.getList();
+		int siz = stuAndCourseList.size();
+		if(siz>0){
+			Map<String,SocietyStudentAndCourseView> stuCourseMap = new HashMap<>();
+			for(int i=0;i<siz;i++){
+				SocietyStudentAndCourseView tempStuCourse = stuAndCourseList.get(i);
+				if(tempStuCourse.getCourseProgress() == null){
+					tempStuCourse.setCourseProgress(new BigDecimal(0));
+				}
+				stuCourseMap.put(tempStuCourse.getCourseId(),tempStuCourse);
+			}
+			List<SocietySchoolCourseView> schCourseList = schoolCourseService.listSchCourseByStuCourse(stuAndCourseList);
+			schCourseList.forEach((schCourse)->{
+				SocietyStudentAndCourseView stuCourse = stuCourseMap.get(schCourse.getId());
+				if(stuCourse!=null){
+					stuCourse.setTotalLessons(schCourse.getTotalLessons());
+				}
+			});
+		}
+
+		return buildResponse(modelAndView,query);
+	}
+
+	/**
+	 * @Author ZhangCC
+	 * @Description 根据学员查询需要考试的课程
+	 * @Date 2020/5/7 16:20
+	 **/
+	//TODO:可能有问题
+	@RequestMapping("/stuCourseListPageForExam")
+	public ModelAndView stuCourseListPageForExam(@ModelAttribute SocietyStudentAndCourseQuery query){
+		ModelAndView modelAndView = new ModelAndView();
+		SocietyStudentUnique student = getLoginStudent(studentUniqueService);
+		String stuIdCardNum = student.getId();
+		query.getQueryObj().setStudentIdCardNum(stuIdCardNum);
+		service.stuCourseByIdCardListPage(query);
+		List<SocietyStudentAndCourseView> stuAndCourseList = query.getList();
+		for(int i=0;i<stuAndCourseList.size();i++){
+			SocietyStudentAndCourseView stuCourse = stuAndCourseList.get(i);
+			String courseId = stuCourse.getCourseId();
+			String studentId = stuCourse.getStudentId();
+			//查询是否答过试卷
+			SocietyStudentTestPaperQuery paperQuery = new SocietyStudentTestPaperQuery();
+			paperQuery.getQueryObj().setStudentId(studentId);
+			paperQuery.getQueryObj().setOwnerCourseId(courseId);
+			paperQuery.getQueryObj().setIsFinished("1");
+			List<SocietyStudentTestPaperView> testPaperList = testPaperService.selectPaperByStuCourListPage(paperQuery);
+			if(testPaperList != null && testPaperList.size() > 0){
+				stuAndCourseList.get(i).setPaperState("finished");
+			}else{
+				stuAndCourseList.get(i).setPaperState("notFinished");
+			}
+		}
+		return buildResponse(modelAndView,query);
+	}
+
+	/**
+	 * @Author ZhangCC
+	 * @Description 学员根据课程查询一条关联课程
+	 * @Date 2020/5/12 19:46
+	 **/
+	//TODO:有问题
+	@RequestMapping("/selectOneStuCourseById")
+	public ModelAndView selectOneStuCourseById(String courseId){
+		ModelAndView modelAndView = new ModelAndView();
+		SocietyStudentUnique student = getLoginStudent(studentUniqueService);
+		SocietyStudentAndCourse stuAndCourse = service.selectOneByCourseIdAndIdCarNum(student.getId(),courseId);
+		return buildResponse(modelAndView,stuAndCourse);
+	}
+
+	/**
+	 * @Author wangzhen
+	 * @Description 用户点击立即学习按钮
+	 * @Date 2020/5/12 19:46
+	 **/
+	//TODO:有问题
+	@RequestMapping("/goToStudyCourseById")
+	public ModelAndView goToStudyCourseById(String courseId){
+		ModelAndView modelAndView = new ModelAndView();
+		SocietyStudentUnique student = getLoginStudent(studentUniqueService);
+
+		SocietyStudentAndCourse stuAndCourse = service.selectOneByCourseIdAndIdCarNum(student.getId(),courseId);
+		//TODO: 添加开关动态配置是否允许添加课程
+		if(stuAndCourse==null){
+			String schoolId = stuAndCourse.getOwnerSchoolId();
+			//添加班级和课程
+			//1.查询最新的班级
+			String clsId = classAndCourseService.selectLatestClassIdBySchAndCourse(schoolId,courseId);
+			if(clsId!=null){
+				SocietySchoolClass clsObj = schoolClassService.loadById(clsId);
+				if(clsObj!=null){
+					//2.将人加入到班级里免去  将studentcourse 返回
+					stuAndCourse = societyStudentService.updateStuAndClassInfo(student,clsObj);
+				}
+			}
+		}else{
+			return buildErrorResponse(modelAndView,"未查询到课程信息！");
+		}
+		return buildResponse(modelAndView,stuAndCourse);
+	}
+
+	/**
+	 * 购买课程预支付
+	 * @param stuCourseId
+	 * @return
+	 */
+	@RequestMapping("/submitBillForWxPay")
+	public ModelAndView chargeWxPrepay(String stuCourseId){
+		ModelAndView modelAndView = new ModelAndView();
+		//System.out.println("======taocanId:" + stuCourseId);
+		//获得当前登录学员
+		SocietyStudentUnique student = getLoginStudent(studentUniqueService);
+		String openid = student.getWxOpenId();
+		//System.out.println("openid==="+openid);
+		try {
+			String prePayId = service.updateWxWapPrepayCourse(stuCourseId,getIpAddr(), getUserAgent(),openid);
+			buildResponse(modelAndView,prePayId);
+			return modelAndView;
+		} catch (BusinessException e) {
+			return  buildErrorResponse(modelAndView,e.getMessage());
+		}catch (Exception e){
+			e.printStackTrace();
+			return  buildErrorResponse(modelAndView,e.getMessage());
+		}
+
+	}
+
+
+
+
+}

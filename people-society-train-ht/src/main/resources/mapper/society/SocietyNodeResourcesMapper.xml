@@ -1,0 +1,265 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.edgedo.society.mapper.SocietyNodeResourcesMapper" >
+   
+   
+    <resultMap id="BaseResultMap" type="com.edgedo.society.entity.SocietyNodeResources" >
+			<id column="ID" property="id"/>
+			<result column="CREATE_TIME" property="createTime"/>
+			<result column="CREATE_USER_ID" property="createUserId"/>
+			<result column="CREATE_USER_NAME" property="createUserName"/>
+			<result column="OWNER_SCHOOL_ID" property="ownerSchoolId"/>
+			<result column="OWNER_SCHOOL_NAME" property="ownerSchoolName"/>
+			<result column="OWNER_MAJOR_ID" property="ownerMajorId"/>
+			<result column="OWNER_MAJOR_NAME" property="ownerMajorName"/>
+			<result column="OWNER_COURSE_CLS_ID" property="ownerCourseClsId"/>
+			<result column="OWNER_COURSE_CLS_NAME" property="ownerCourseClsName"/>
+			<result column="OWNER_COURSE_ID" property="ownerCourseId"/>
+			<result column="OWNER_COURSE_NAME" property="ownerCourseName"/>
+			<result column="NODE_NAME" property="nodeName"/>
+			<result column="NODE_TIME_LENGTH" property="nodeTimeLength"/>
+			<result column="IMAGE_URL" property="imageUrl"/>
+			<result column="FILE_URL" property="fileUrl"/>
+			<result column="QUESTION_NUM" property="questionNum"/>
+			<result column="ORDER_NUM" property="orderNum"/>
+			<result column="DATA_STATE" property="dataState"/>
+			<result column="FILE_ID" property="fileId"/>
+			<result column="IS_OPEN" property="isOpen"/>
+			<result column="APPLY_SCHOOL_ID" property="applySchoolId"/>
+			<result column="OWNER_NODE_RESOURCES_ID" property="ownerNodeResourcesId"/>
+			<result column="IS_RELATION_PUBLIC_COURSE" property="isRelationPublicCourse"/>
+    </resultMap>
+   
+    <resultMap id="BaseResultViewMap" type="com.edgedo.society.queryvo.SocietyNodeResourcesView" extends="BaseResultMap">
+    
+    </resultMap>
+  
+  
+  <!-- ******* 新增字段请修改这里  ******  -->
+  <sql id="Base_Column_List">
+	 ID, CREATE_TIME, CREATE_USER_ID, CREATE_USER_NAME, OWNER_SCHOOL_ID,
+	 OWNER_SCHOOL_NAME, OWNER_MAJOR_ID, OWNER_MAJOR_NAME, OWNER_COURSE_CLS_ID,
+	 OWNER_COURSE_CLS_NAME, OWNER_COURSE_ID, OWNER_COURSE_NAME, NODE_NAME,
+	 NODE_TIME_LENGTH, IMAGE_URL, FILE_URL, QUESTION_NUM, ORDER_NUM, DATA_STATE,
+	 FILE_ID, IS_OPEN, APPLY_SCHOOL_ID, OWNER_NODE_RESOURCES_ID, IS_RELATION_PUBLIC_COURSE
+  </sql>
+  
+  <!-- ******* 利用好这里的动态查询条件  ******  -->
+  <sql id="where">
+  	<where>
+		DATA_STATE='1'
+		<if test='queryObj != null and  queryObj.id != null and @org.apache.commons.lang3.StringUtils@isNotEmpty(queryObj.id)'>
+		AND  ID = #{queryObj.id}
+		</if>
+		<if test='queryObj != null and  queryObj.createTime != null'>
+			AND  CREATE_TIME = #{queryObj.createTime}
+		</if>
+		<if test='queryObj != null and  queryObj.createUserId != null and @org.apache.commons.lang3.StringUtils@isNotEmpty(queryObj.createUserId)'>
+		AND  CREATE_USER_ID = #{queryObj.createUserId}
+		</if>
+		<if test='queryObj != null and  queryObj.createUserName != null and @org.apache.commons.lang3.StringUtils@isNotEmpty(queryObj.createUserName)'>
+		AND  CREATE_USER_NAME = #{queryObj.createUserName}
+		</if>
+		<if test='queryObj != null and  queryObj.ownerSchoolId != null and @org.apache.commons.lang3.StringUtils@isNotEmpty(queryObj.ownerSchoolId)'>
+		AND  OWNER_SCHOOL_ID = #{queryObj.ownerSchoolId}
+		</if>
+		<if test='queryObj != null and  queryObj.ownerSchoolName != null and @org.apache.commons.lang3.StringUtils@isNotEmpty(queryObj.ownerSchoolName)'>
+		AND  OWNER_SCHOOL_NAME = #{queryObj.ownerSchoolName}
+		</if>
+		<if test='queryObj != null and  queryObj.ownerMajorId != null and @org.apache.commons.lang3.StringUtils@isNotEmpty(queryObj.ownerMajorId)'>
+		AND  OWNER_MAJOR_ID = #{queryObj.ownerMajorId}
+		</if>
+		<if test='queryObj != null and  queryObj.ownerMajorName != null and @org.apache.commons.lang3.StringUtils@isNotEmpty(queryObj.ownerMajorName)'>
+		AND  OWNER_MAJOR_NAME = #{queryObj.ownerMajorName}
+		</if>
+		<if test='queryObj != null and  queryObj.ownerCourseClsId != null and @org.apache.commons.lang3.StringUtils@isNotEmpty(queryObj.ownerCourseClsId)'>
+		AND  OWNER_COURSE_CLS_ID = #{queryObj.ownerCourseClsId}
+		</if>
+		<if test='queryObj != null and  queryObj.ownerCourseClsName != null and @org.apache.commons.lang3.StringUtils@isNotEmpty(queryObj.ownerCourseClsName)'>
+		AND  OWNER_COURSE_CLS_NAME = #{queryObj.ownerCourseClsName}
+		</if>
+		<if test='queryObj != null and  queryObj.ownerCourseId != null and @org.apache.commons.lang3.StringUtils@isNotEmpty(queryObj.ownerCourseId)'>
+		AND  OWNER_COURSE_ID = #{queryObj.ownerCourseId}
+		</if>
+		<if test='queryObj != null and  queryObj.ownerCourseName != null and @org.apache.commons.lang3.StringUtils@isNotEmpty(queryObj.ownerCourseName)'>
+		AND  OWNER_COURSE_NAME like concat('%',#{queryObj.ownerCourseName},'%')
+		</if>
+		<if test='queryObj != null and  queryObj.nodeName != null and @org.apache.commons.lang3.StringUtils@isNotEmpty(queryObj.nodeName)'>
+			AND  NODE_NAME like concat('%',#{queryObj.nodeName},'%')
+		</if>
+		<if test='queryObj != null and  queryObj.nodeTimeLength != null and @org.apache.commons.lang3.StringUtils@isNotEmpty(queryObj.nodeTimeLength)'>
+			AND  NODE_TIME_LENGTH = #{queryObj.nodeTimeLength}
+		</if>
+		<if test='queryObj != null and  queryObj.imageUrl != null and @org.apache.commons.lang3.StringUtils@isNotEmpty(queryObj.imageUrl)'>
+		AND  IMAGE_URL = #{queryObj.imageUrl}
+		</if>
+		<if test='queryObj != null and  queryObj.fileUrl != null and @org.apache.commons.lang3.StringUtils@isNotEmpty(queryObj.fileUrl)'>
+		AND  FILE_URL = #{queryObj.fileUrl}
+		</if>
+		<if test='queryObj != null and  queryObj.questionNum != null and @org.apache.commons.lang3.StringUtils@isNotEmpty(queryObj.questionNum)'>
+			AND  QUESTION_NUM = #{queryObj.questionNum}
+		</if>
+		<if test='queryObj != null and  queryObj.dataState != null and @org.apache.commons.lang3.StringUtils@isNotEmpty(queryObj.dataState)'>
+		AND  DATA_STATE = #{queryObj.dataState}
+		</if>
+		<if test='queryObj != null and  queryObj.fileId != null and @org.apache.commons.lang3.StringUtils@isNotEmpty(queryObj.fileId)'>
+		AND  FILE_ID = #{queryObj.fileId}
+		</if>
+		<if test='queryObj != null and  queryObj.isOpen != null and @org.apache.commons.lang3.StringUtils@isNotEmpty(queryObj.isOpen)'>
+		AND  IS_OPEN = #{queryObj.isOpen}
+		</if>
+		<if test='queryObj != null and  queryObj.applySchoolId != null and @org.apache.commons.lang3.StringUtils@isNotEmpty(queryObj.applySchoolId)'>
+		AND  APPLY_SCHOOL_ID = #{queryObj.applySchoolId}
+		</if>
+		<if test='queryObj != null and  queryObj.ownerNodeResourcesId != null and @org.apache.commons.lang3.StringUtils@isNotEmpty(queryObj.ownerNodeResourcesId)'>
+		AND  OWNER_NODE_RESOURCES_ID = #{queryObj.ownerNodeResourcesId}
+		</if>
+		<if test='queryObj != null and  queryObj.isRelationPublicCourse != null and @org.apache.commons.lang3.StringUtils@isNotEmpty(queryObj.isRelationPublicCourse)'>
+			<if test='queryObj.isRelationPublicCourse == "1"'>
+				AND  IS_RELATION_PUBLIC_COURSE = '1'
+			</if>
+			<if test='queryObj.isRelationPublicCourse == "0"'>
+				AND  (IS_RELATION_PUBLIC_COURSE = '0' or IS_RELATION_PUBLIC_COURSE is null)
+			</if>
+
+		</if>
+
+  	</where>
+  	
+  </sql>
+
+	<sql id="where1">
+		<where>
+			DATA_STATE='1'
+			<if test='queryObj != null and  queryObj.ownerSchoolId != null and @org.apache.commons.lang3.StringUtils@isNotEmpty(queryObj.ownerSchoolId)'>
+				AND  ((OWNER_SCHOOL_ID = #{queryObj.ownerSchoolId} and APPLY_SCHOOL_ID is null) or (APPLY_SCHOOL_ID = #{queryObj.applySchoolId} and OWNER_SCHOOL_ID!=#{queryObj.applySchoolId}))
+			</if>
+			<if test='queryObj != null and  queryObj.nodeName != null and @org.apache.commons.lang3.StringUtils@isNotEmpty(queryObj.nodeName)'>
+				AND  NODE_NAME like concat('%',#{queryObj.nodeName},'%')
+			</if>
+			<if test='queryObj != null and  queryObj.ownerCourseName != null and @org.apache.commons.lang3.StringUtils@isNotEmpty(queryObj.ownerCourseName)'>
+				AND  OWNER_COURSE_NAME like concat('%',#{queryObj.ownerCourseName},'%')
+			</if>
+			<if test='queryObj != null and  queryObj.ownerCourseId != null and @org.apache.commons.lang3.StringUtils@isNotEmpty(queryObj.ownerCourseId)'>
+				AND  OWNER_COURSE_ID like concat('%',#{queryObj.ownerCourseId},'%')
+			</if>
+			<if test='queryObj != null and  queryObj.ownerNodeResourcesId != null and @org.apache.commons.lang3.StringUtils@isNotEmpty(queryObj.ownerNodeResourcesId)'>
+				AND  OWNER_NODE_RESOURCES_ID = #{queryObj.ownerNodeResourcesId}
+			</if>
+			<if test='queryObj != null and  queryObj.isRelationPublicCourse != null and @org.apache.commons.lang3.StringUtils@isNotEmpty(queryObj.isRelationPublicCourse)'>
+				<if test='queryObj.isRelationPublicCourse == "1"'>
+					AND  IS_RELATION_PUBLIC_COURSE = '1'
+				</if>
+				<if test='queryObj.isRelationPublicCourse == "0"'>
+					AND  (IS_RELATION_PUBLIC_COURSE = '0' or IS_RELATION_PUBLIC_COURSE is null)
+				</if>
+
+			</if>
+
+		</where>
+
+	</sql>
+
+  <!-- ******* 排序判断  ******  
+  <sql id="orderBy">
+  	<if test="orderBy != null and orderBy!= '' ">
+  		order by  ${orderBy}
+  	</if>
+  </sql>-->
+  
+  
+  <!-- 分页条件查询  -->
+  <select id="listPage" parameterType="com.edgedo.society.queryvo.SocietyNodeResourcesQuery" resultMap="BaseResultViewMap">
+  		select <include refid="Base_Column_List"/> from society_node_resources 
+  		<include refid="where"/>
+  </select>
+
+	<select id="listPageMyNode" parameterType="com.edgedo.society.queryvo.SocietyNodeResourcesQuery" resultMap="BaseResultViewMap">
+		select <include refid="Base_Column_List"/> from society_node_resources
+		<include refid="where1"/>
+	</select>
+
+
+	<select id="listPageCountNode" parameterType="com.edgedo.society.queryvo.SocietyNodeResourcesQuery" resultMap="BaseResultViewMap">
+		select <include refid="Base_Column_List"/> from society_node_resources
+		<include refid="where"/> and APPLY_SCHOOL_ID is not null order by NODE_NAME asc
+	</select>
+
+   <!-- 不分页条件查询  -->
+  <select id="listByObj" parameterType="com.edgedo.society.queryvo.SocietyNodeResourcesQuery" resultMap="BaseResultViewMap">
+  		select <include refid="Base_Column_List"/> from society_node_resources 
+  		<include refid="where"/>
+  </select>
+
+
+	<select id="selectByResourcerId" parameterType="string" resultMap="BaseResultViewMap">
+		select <include refid="Base_Column_List"/> from society_node_resources
+		where DATA_STATE = '1' and OWNER_NODE_RESOURCES_ID=#{resourceId}
+	</select>
+
+	<select id="selectByCourseId" parameterType="string" resultMap="BaseResultMap">
+		select <include refid="Base_Column_List"/> from society_node_resources
+		where DATA_STATE='1' and OWNER_COURSE_ID=#{courseId}  order by ORDER_NUM ASC
+	</select>
+
+	<select id="selectBySchoolIdAndResourId" parameterType="String" resultType="int">
+		select count(1) from society_node_resources
+		where  DATA_STATE='1' and IS_OPEN='0' and IS_RELATION_PUBLIC_COURSE='1'
+		and OWNER_NODE_RESOURCES_ID=#{resourcesViewId} and APPLY_SCHOOL_ID=#{nowSchoolId}
+	</select>
+
+	<select id="selectBySchoolId" parameterType="String" resultType="String">
+		select ID from society_node_resources
+		where  DATA_STATE='1' AND OWNER_SCHOOL_ID=#{schoolId} and IS_OPEN='1' and APPLY_SCHOOL_ID IS NULL
+	</select>
+
+	<update id="updateByDataStateId" parameterType="String">
+		update society_node_resources set DATA_STATE='0'
+		where  DATA_STATE='1' and IS_OPEN='0' and IS_RELATION_PUBLIC_COURSE='1'
+		and OWNER_COURSE_ID=#{courseId} and OWNER_SCHOOL_ID=#{ownerSchoolId}
+	</update>
+
+
+	<update id="updateByIsOpen" parameterType="String">
+		update society_node_resources set IS_OPEN=#{isOpen}
+		where  DATA_STATE='1' and ID=#{resourceId}
+	</update>
+
+	<update id="updateByDateState" parameterType="String">
+		update society_node_resources set DATA_STATE='0'
+		where  DATA_STATE='1' and ID=#{ids}
+	</update>
+
+	<update id="updateByNodeNameAndNum" parameterType="java.util.List">
+		<foreach collection="nodeResourceList" item="studentAnswer" index= "index" open="" close="" separator =";">
+			update society_node_resources
+			<set>
+				NODE_NAME=#{studentAnswer.nodeName},
+				ORDER_NUM=#{studentAnswer.orderNum},
+				FILE_ID=#{studentAnswer.fileId},
+				FILE_URL=#{studentAnswer.fileUrl}
+			</set>
+			<where>
+				ID=#{studentAnswer.id}
+			</where>
+		</foreach>
+	</update>
+
+	<insert id="insertAllRecord" parameterType="com.edgedo.society.entity.SocietyNodeResources"  >
+
+		insert into society_node_resources
+		(
+		<include refid="Base_Column_List"/>
+		)
+		values
+		<foreach collection ="list" item="item" index= "index" separator =",">
+			(#{item.id},#{item.createTime},#{item.createUserId},#{item.createUserName},
+			#{item.ownerSchoolId},#{item.ownerSchoolName},#{item.ownerMajorId},
+			#{item.ownerMajorName},#{item.ownerCourseClsId}, #{item.ownerCourseClsName},
+			#{item.ownerCourseId},#{item.ownerCourseName},#{item.nodeName},#{item.nodeTimeLength},
+			#{item.imageUrl},#{item.fileUrl},#{item.questionNum},#{item.orderNum},#{item.dataState},
+			#{item.fileId},#{item.isOpen},#{item.applySchoolId},#{item.ownerNodeResourcesId},
+			#{item.isRelationPublicCourse})
+		</foreach >
+	</insert>
+</mapper>

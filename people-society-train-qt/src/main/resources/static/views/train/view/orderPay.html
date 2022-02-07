@@ -1,0 +1,74 @@
+
+<section class="aui-flexView">
+         <header class="aui-navBar aui-navBar-fixed">
+                <a href="javascript:void (0)" class="aui-navBar-item" ng-click="backPage()">
+                     <i class="iconfont icon-fanhui "></i>
+                </a>
+                <div class="aui-center">
+                    <span class="aui-center-title">确认购买</span>
+                </div>
+                <a href="javascript:;" class="aui-navBar-item" >
+
+                </a>
+            </header>
+
+
+        <section class="aui-scrollView">
+            <div class="aui-flex" style="padding-bottom: 0px;">
+                <div class="aui-flex-box">
+                    <h3>课程信息</h3>
+                </div>
+            </div>
+            <div class="aui-order-product">
+                <div class="aui-order-product-hd">
+                    <img ng-src="{{stuCourse.courseImage}}" alt="">
+                </div>
+                <div class="aui-order-product-bd">
+                    <h2 ng-bind="stuCourse.courseName"></h2>
+                    <div class="aui-order-text">
+                        <span class="aui-order-text-hd">￥<span ng-bind="stuCourse.coursePrice"></span></span>
+                    </div>
+                </div>
+            </div>
+           <div class="divHeight"></div>
+            <form style="display: none;" method="post" action="http://wxtest.qhd12328.com/wxplant/wx/payWxWeb" id="prepay_submit_form">
+                <input type="hidden" name="id" id="prepayIdHidden"/>
+            </form>
+      <!--   <div style="display: none" class="mt10 mb10">
+               <div class="yh">
+                   <Span class="fl">优惠券<em class="xk">0张可用</em></Span>
+                   <span class="fr">
+                      <span class="magic-radio"></span>
+                   </span>
+               </div>
+                <div class="yh">
+                   <Span class="fl">优惠码<em  class="xk0">兑换</em></Span>
+                   <span class="fr"><span class="magic-radio checked"></span></span>
+               </div>
+               <div class="tsdd">同一订单中，优惠券和优惠码只能使用一种</div>
+         </div>-->
+        <div class="divHeight"></div>
+
+            <div class="mt10 mb10">
+               <div class="yh">
+                   <Span class="fl">商品金额</Span>
+                   <span class="fr jine">￥<span ng-bind="stuCourse.coursePrice"></span></span>
+               </div>
+              <!--  <div class="yh">
+                   <Span class="fl">余额抵扣<em  class="xk0">充值</em></Span>
+                   <span class="fr"><span class="jine mr5 fl">-￥0.00</span><span class="magic-radio fl"></span></span>
+               </div>
+-->
+         </div>
+
+
+          <div class="blank20"></div>
+        </section>
+
+    </section>
+ <footer class="aui-footer aui-footer-fixed00" style="padding:0px!important;">
+        <div class="fl" style="width: 55%; text-align: center">实付 <span class="jine">￥<span ng-bind="stuCourse.coursePrice"></span></span></div>
+        <div class="fr" style="width: 45%" ng-click="submitOrder()">
+          <a href="javascript:void (0);" class="btn_tjdd">立即付款</a>
+        </div>
+   </footer>

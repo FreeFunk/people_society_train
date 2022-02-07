@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>编辑</title>
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=0">
+    <link rel="stylesheet" href="/layuiadmin/layui/css/layui.css" media="all">
+    <link rel="stylesheet" href="/layuiadmin/style/app.css" media="all">
+</head>
+<body>
+
+<div class="layui-form" lay-filter="SocietySchoolClass-form" id="SocietySchoolClass-form" style="padding: 20px 30px 0 0;">
+    <div class="layui-row">
+                <div class="layui-form-item layui-hide">
+                    <label class="layui-form-label">主键</label>
+                    <div class="layui-input-block">
+                        <input type="text" name="id" id="id" lay-verify="required" placeholder="请输入主键" autocomplete="off" class="layui-input">
+                    </div>
+                </div>
+        <div class="layui-col-xs6 layui-col-sm6 layui-col-md6">
+            <div class="layui-form-item">
+                <label class="layui-form-label">所属学校ID</label>
+                <div class="layui-input-block">
+                    <input type="text" name="ownerSchoolId" lay-verify="required" placeholder="请输入所属学校ID" autocomplete="off" class="layui-input">
+                </div>
+            </div>
+        </div>
+
+        <div class="layui-col-xs6 layui-col-sm6 layui-col-md6">
+            <div class="layui-form-item">
+                <label class="layui-form-label">所属学校名</label>
+                <div class="layui-input-block">
+                    <input type="text" name="ownerSchoolName" lay-verify="required" placeholder="请输入所属学校名" autocomplete="off" class="layui-input">
+                </div>
+            </div>
+        </div>
+
+        <div class="layui-col-xs6 layui-col-sm6 layui-col-md6">
+            <div class="layui-form-item">
+                <label class="layui-form-label">所属专业ID</label>
+                <div class="layui-input-block">
+                    <input type="text" name="ownerMajorId" lay-verify="required" placeholder="请输入所属专业ID" autocomplete="off" class="layui-input">
+                </div>
+            </div>
+        </div>
+
+        <div class="layui-col-xs6 layui-col-sm6 layui-col-md6">
+            <div class="layui-form-item">
+                <label class="layui-form-label">所属专业名</label>
+                <div class="layui-input-block">
+                    <input type="text" name="ownerMajorName" lay-verify="required" placeholder="请输入所属专业名" autocomplete="off" class="layui-input">
+                </div>
+            </div>
+        </div>
+
+        <div class="layui-col-xs6 layui-col-sm6 layui-col-md6">
+            <div class="layui-form-item">
+                <label class="layui-form-label">负责人名</label>
+                <div class="layui-input-block">
+                    <input type="text" name="personInCharge" lay-verify="required" placeholder="请输入负责人名" autocomplete="off" class="layui-input">
+                </div>
+            </div>
+        </div>
+
+        <div class="layui-col-xs6 layui-col-sm6 layui-col-md6">
+            <div class="layui-form-item">
+                <label class="layui-form-label">负责人电话</label>
+                <div class="layui-input-block">
+                    <input type="text" name="personInChargePhoneNum" lay-verify="required" placeholder="请输入负责人电话" autocomplete="off" class="layui-input">
+                </div>
+            </div>
+        </div>
+
+        <div class="layui-col-xs6 layui-col-sm6 layui-col-md6">
+            <div class="layui-form-item">
+                <label class="layui-form-label">班级名</label>
+                <div class="layui-input-block">
+                    <input type="text" name="className" lay-verify="required" placeholder="请输入班级名" autocomplete="off" class="layui-input">
+                </div>
+            </div>
+        </div>
+
+        <div class="layui-col-xs6 layui-col-sm6 layui-col-md6">
+            <div class="layui-form-item">
+                <label class="layui-form-label">开始时间</label>
+                <div class="layui-input-block">
+                    <input type="text" name="classStartTime" id="classStartTime" lay-verify="required" placeholder="请输入开始时间" autocomplete="off" class="layui-input">
+                </div>
+            </div>
+        </div>
+        <div class="layui-col-xs6 layui-col-sm6 layui-col-md6">
+            <div class="layui-form-item">
+                <label class="layui-form-label">结束时间</label>
+                <div class="layui-input-block">
+                    <input type="text" name="classEndTime" id="classEndTime" lay-verify="required" placeholder="请输入结束时间" autocomplete="off" class="layui-input">
+                </div>
+            </div>
+        </div>
+        <div class="layui-col-xs6 layui-col-sm6 layui-col-md6">
+            <div class="layui-form-item">
+                <label class="layui-form-label">培训人数</label>
+                <div class="layui-input-block">
+                    <input type="text" name="classPersonNum" lay-verify="required" placeholder="请输入培训人数" autocomplete="off" class="layui-input">
+                </div>
+            </div>
+        </div>
+
+        <div class="layui-col-xs6 layui-col-sm6 layui-col-md6">
+            <div class="layui-form-item">
+                <label class="layui-form-label">总课时数</label>
+                <div class="layui-input-block">
+                    <input type="text" name="totalLessons" lay-verify="required" placeholder="请输入总课时数" autocomplete="off" class="layui-input">
+                </div>
+            </div>
+        </div>
+
+        <div class="layui-col-xs6 layui-col-sm6 layui-col-md6">
+            <div class="layui-form-item">
+                <label class="layui-form-label">培训时长</label>
+                <div class="layui-input-block">
+                    <input type="text" name="courseTimeLength" lay-verify="required" placeholder="请输入培训时长" autocomplete="off" class="layui-input">
+                </div>
+            </div>
+        </div>
+
+        <div class="layui-col-xs6 layui-col-sm6 layui-col-md6">
+            <div class="layui-form-item">
+                <label class="layui-form-label">已完成人数</label>
+                <div class="layui-input-block">
+                    <input type="text" name="finishedPersonNum" lay-verify="required" placeholder="请输入已完成人数" autocomplete="off" class="layui-input">
+                </div>
+            </div>
+        </div>
+
+        <div class="layui-col-xs6 layui-col-sm6 layui-col-md6">
+            <div class="layui-form-item">
+                <label class="layui-form-label">未完成人数</label>
+                <div class="layui-input-block">
+                    <input type="text" name="notFinishedPersonNum" lay-verify="required" placeholder="请输入未完成人数" autocomplete="off" class="layui-input">
+                </div>
+            </div>
+        </div>
+
+    </div>
+    <div class="layui-form-item layui-hide">
+        <input type="button" lay-submit lay-filter="SocietySchoolClass-form-edit" id="SocietySchoolClass-form-edit" value="确认编辑">
+    </div>
+</div>
+
+<script src="/layuiadmin/layui/layui.js"></script>
+<script>
+        layui.config({
+            base: '/layuiadmin/' //静态资源所在路径
+        }).extend({
+            index: 'lib/index', //主入口模块
+            $tool:'tool'
+        }).use(['index', 'form','$tool','laydate'], function(){
+
+            var $ = layui.$
+                ,$tool = layui.$tool
+                ,laydate = layui.laydate
+                ,admin = layui.admin
+                ,form = layui.form;
+
+            /*var queryArgs = $tool.getQueryParam();//获取查询参数
+            var id = queryArgs['id'];*/
+            //监听修改保存
+            form.on('submit(SocietySchoolClass-form-edit)', function(data){
+                var field = data.field; //获取提交的字段
+                var index = parent.layer.getFrameIndex(window.name);//先得到当前iframe层的索引
+                admin.req({
+                    url:layui.setter.basePath +'/society/societySchoolClass/saveOrUpdate.jsn',
+                    data:field,
+                    method:"post",
+                    success:function (data) {
+                        if(data.success){
+                            parent.layui.table.reload('SocietySchoolClass-list'); //重载表格
+                            parent.layer.close(index); //再执行关闭
+                            parent.layer.msg('修改成功', {
+                                icon: 1
+                            });
+                        }else{
+                            parent.layer.msg(data.errMsg, {
+                            });
+                        }
+                    }
+                });
+            });
+
+            laydate.render({
+                elem: '#createTime', //指定元素
+                type:'datetime'
+            });
+            laydate.render({
+                elem: '#classStartTime', //指定元素
+                type:'datetime'
+            });
+            laydate.render({
+                elem: '#classEndTime', //指定元素
+                type:'datetime'
+            });
+        })
+</script>
+</body>
+</html>

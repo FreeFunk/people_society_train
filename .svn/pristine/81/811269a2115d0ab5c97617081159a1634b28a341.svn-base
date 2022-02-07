@@ -1,0 +1,250 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.edgedo.society.mapper.SocietyStudentStudyProcessFaceMapper" >
+   
+   
+    <resultMap id="BaseResultMap" type="com.edgedo.society.entity.SocietyStudentStudyProcessFace" >
+			<id column="ID" property="id"/>
+			<result column="CREATE_TIME" property="createTime"/>
+			<result column="STU_COURSE_ID" property="stuCourseId"/>
+			<result column="OWNER_SCHOOL_ID" property="ownerSchoolId"/>
+			<result column="OWNER_SCHOOL_NAME" property="ownerSchoolName"/>
+			<result column="OWNER_COURSE_ID" property="ownerCourseId"/>
+			<result column="OWNER_COURSE_NAME" property="ownerCourseName"/>
+			<result column="OWNER_NODE_ID" property="ownerNodeId"/>
+			<result column="OWNER_NODE_NAME" property="ownerNodeName"/>
+			<result column="OWNER_STUDY_PROCESS_ID" property="ownerStudyProcessId"/>
+			<result column="STUDENT_ID" property="studentId"/>
+			<result column="STUDENT_NAME" property="studentName"/>
+			<result column="FACE_IMAGE_URL" property="faceImageUrl"/>
+			<result column="FACE_SCORE" property="faceScore"/>
+			<result column="FACE_TYPE" property="faceType"/>
+			<result column="TIME_OUT_SEC" property="timeOutSec"/>
+			<result column="DATA_STATE" property="dataState"/>
+			<result column="PROVINCE_ID" property="provinceId"/>
+			<result column="PROVINCE_NAME" property="provinceName"/>
+			<result column="CITY_ID" property="cityId"/>
+			<result column="CITY_NAME" property="cityName"/>
+			<result column="XIANQU_ID" property="xianquId"/>
+			<result column="XIANQU_NAME" property="xianquName"/>
+			<result column="OPERATOR_ID" property="operatorId"/>
+			<result column="OPERATOR_NAME" property="operatorName"/>
+			<result column="OPERATOR_TIME" property="operatorTime"/>
+    </resultMap>
+    <resultMap id="BaseResultViewMap" type="com.edgedo.society.queryvo.SocietyStudentStudyProcessFaceView" extends="BaseResultMap">
+    
+    </resultMap>
+  
+  
+  <!-- ******* 新增字段请修改这里  ******  -->
+  <sql id="Base_Column_List">
+	 ID, CREATE_TIME, STU_COURSE_ID, OWNER_SCHOOL_ID, OWNER_SCHOOL_NAME, OWNER_COURSE_ID,
+	 OWNER_COURSE_NAME, OWNER_NODE_ID, OWNER_NODE_NAME, OWNER_STUDY_PROCESS_ID, STUDENT_ID,
+	 STUDENT_NAME, FACE_IMAGE_URL, FACE_SCORE, FACE_TYPE, TIME_OUT_SEC,DATA_STATE,
+	 PROVINCE_ID,PROVINCE_NAME, CITY_ID, CITY_NAME, XIANQU_ID, XIANQU_NAME,OPERATOR_ID,OPERATOR_NAME,OPERATOR_TIME
+  </sql>
+  
+  <!-- ******* 利用好这里的动态查询条件  ******  -->
+  <sql id="where">
+  	<where>
+		DATA_STATE='1'
+		<if test='queryObj != null and  queryObj.id != null and @org.apache.commons.lang3.StringUtils@isNotEmpty(queryObj.id)'>
+		AND  ID = #{queryObj.id}
+		</if>
+		<if test='queryObj != null and  queryObj.createTime != null'>
+			AND  CREATE_TIME = #{queryObj.createTime}
+		</if>
+		<if test='queryObj != null and  queryObj.stuCourseId != null and @org.apache.commons.lang3.StringUtils@isNotEmpty(queryObj.stuCourseId)'>
+		AND  STU_COURSE_ID = #{queryObj.stuCourseId}
+		</if>
+		<if test='queryObj != null and  queryObj.ownerSchoolId != null and @org.apache.commons.lang3.StringUtils@isNotEmpty(queryObj.ownerSchoolId)'>
+		AND  OWNER_SCHOOL_ID = #{queryObj.ownerSchoolId}
+		</if>
+		<if test='queryObj != null and  queryObj.ownerSchoolName != null and @org.apache.commons.lang3.StringUtils@isNotEmpty(queryObj.ownerSchoolName)'>
+		AND  OWNER_SCHOOL_NAME = #{queryObj.ownerSchoolName}
+		</if>
+		<if test='queryObj != null and  queryObj.ownerCourseId != null and @org.apache.commons.lang3.StringUtils@isNotEmpty(queryObj.ownerCourseId)'>
+		AND  OWNER_COURSE_ID = #{queryObj.ownerCourseId}
+		</if>
+		<if test='queryObj != null and  queryObj.ownerCourseName != null and @org.apache.commons.lang3.StringUtils@isNotEmpty(queryObj.ownerCourseName)'>
+		AND  OWNER_COURSE_NAME = #{queryObj.ownerCourseName}
+		</if>
+		<if test='queryObj != null and  queryObj.ownerNodeId != null and @org.apache.commons.lang3.StringUtils@isNotEmpty(queryObj.ownerNodeId)'>
+		AND  OWNER_NODE_ID = #{queryObj.ownerNodeId}
+		</if>
+		<if test="queryObj != null and  queryObj.ownerNodeName != null and queryObj.ownerNodeName != ''">
+		AND  OWNER_NODE_NAME like concat('%',#{queryObj.ownerNodeName},'%')
+		</if>
+		<if test='queryObj != null and  queryObj.ownerStudyProcessId != null and @org.apache.commons.lang3.StringUtils@isNotEmpty(queryObj.ownerStudyProcessId)'>
+		AND  OWNER_STUDY_PROCESS_ID = #{queryObj.ownerStudyProcessId}
+		</if>
+		<if test='queryObj != null and  queryObj.studentId != null and @org.apache.commons.lang3.StringUtils@isNotEmpty(queryObj.studentId)'>
+		AND  STUDENT_ID = #{queryObj.studentId}
+		</if>
+		<if test='queryObj != null and  queryObj.studentName != null and @org.apache.commons.lang3.StringUtils@isNotEmpty(queryObj.studentName)'>
+		AND  STUDENT_NAME = #{queryObj.studentName}
+		</if>
+		<if test='queryObj != null and  queryObj.faceImageUrl != null and @org.apache.commons.lang3.StringUtils@isNotEmpty(queryObj.faceImageUrl)'>
+		AND  FACE_IMAGE_URL = #{queryObj.faceImageUrl}
+		</if>
+		<if test='queryObj != null and  queryObj.faceType != null and @org.apache.commons.lang3.StringUtils@isNotEmpty(queryObj.faceType)'>
+		AND  FACE_TYPE = #{queryObj.faceType}
+		</if>
+		<if test='queryObj != null and  queryObj.timeOutSec != null and @org.apache.commons.lang3.StringUtils@isNotEmpty(queryObj.timeOutSec)'>
+			AND  TIME_OUT_SEC = #{queryObj.timeOutSec}
+		</if>
+  	</where>
+  	
+  </sql>
+
+
+
+	<sql id="where1">
+		<where>
+			DATA_STATE='0'
+			<if test='queryObj != null and  queryObj.id != null and @org.apache.commons.lang3.StringUtils@isNotEmpty(queryObj.id)'>
+				AND  ID = #{queryObj.id}
+			</if>
+			<if test='queryObj != null and  queryObj.createTime != null'>
+				AND  CREATE_TIME = #{queryObj.createTime}
+			</if>
+			<if test='queryObj != null and  queryObj.stuCourseId != null and @org.apache.commons.lang3.StringUtils@isNotEmpty(queryObj.stuCourseId)'>
+				AND  STU_COURSE_ID = #{queryObj.stuCourseId}
+			</if>
+			<if test='queryObj != null and  queryObj.ownerSchoolId != null and @org.apache.commons.lang3.StringUtils@isNotEmpty(queryObj.ownerSchoolId)'>
+				AND  OWNER_SCHOOL_ID = #{queryObj.ownerSchoolId}
+			</if>
+			<if test='queryObj != null and  queryObj.ownerSchoolName != null and @org.apache.commons.lang3.StringUtils@isNotEmpty(queryObj.ownerSchoolName)'>
+				AND  OWNER_SCHOOL_NAME = #{queryObj.ownerSchoolName}
+			</if>
+			<if test='queryObj != null and  queryObj.ownerCourseId != null and @org.apache.commons.lang3.StringUtils@isNotEmpty(queryObj.ownerCourseId)'>
+				AND  OWNER_COURSE_ID = #{queryObj.ownerCourseId}
+			</if>
+			<if test='queryObj != null and  queryObj.ownerCourseName != null and @org.apache.commons.lang3.StringUtils@isNotEmpty(queryObj.ownerCourseName)'>
+				AND  OWNER_COURSE_NAME = #{queryObj.ownerCourseName}
+			</if>
+			<if test='queryObj != null and  queryObj.ownerNodeId != null and @org.apache.commons.lang3.StringUtils@isNotEmpty(queryObj.ownerNodeId)'>
+				AND  OWNER_NODE_ID = #{queryObj.ownerNodeId}
+			</if>
+			<if test="queryObj != null and  queryObj.ownerNodeName != null and queryObj.ownerNodeName != ''">
+				AND  OWNER_NODE_NAME like concat('%',#{queryObj.ownerNodeName},'%')
+			</if>
+			<if test='queryObj != null and  queryObj.ownerStudyProcessId != null and @org.apache.commons.lang3.StringUtils@isNotEmpty(queryObj.ownerStudyProcessId)'>
+				AND  OWNER_STUDY_PROCESS_ID = #{queryObj.ownerStudyProcessId}
+			</if>
+			<if test='queryObj != null and  queryObj.studentId != null and @org.apache.commons.lang3.StringUtils@isNotEmpty(queryObj.studentId)'>
+				AND  STUDENT_ID = #{queryObj.studentId}
+			</if>
+			<if test='queryObj != null and  queryObj.studentName != null and @org.apache.commons.lang3.StringUtils@isNotEmpty(queryObj.studentName)'>
+				AND  STUDENT_NAME = #{queryObj.studentName}
+			</if>
+			<if test='queryObj != null and  queryObj.faceImageUrl != null and @org.apache.commons.lang3.StringUtils@isNotEmpty(queryObj.faceImageUrl)'>
+				AND  FACE_IMAGE_URL = #{queryObj.faceImageUrl}
+			</if>
+			<if test='queryObj != null and  queryObj.faceType != null and @org.apache.commons.lang3.StringUtils@isNotEmpty(queryObj.faceType)'>
+				AND  FACE_TYPE = #{queryObj.faceType}
+			</if>
+			<if test='queryObj != null and  queryObj.timeOutSec != null and @org.apache.commons.lang3.StringUtils@isNotEmpty(queryObj.timeOutSec)'>
+				AND  TIME_OUT_SEC = #{queryObj.timeOutSec}
+			</if>
+		</where>
+
+	</sql>
+  <!-- ******* 排序判断  ******  
+  <sql id="orderBy">
+  	<if test="orderBy != null and orderBy!= '' ">
+  		order by  ${orderBy}
+  	</if>
+  </sql>-->
+  
+  
+  <!-- 分页条件查询  -->
+  <select id="listPage" parameterType="com.edgedo.society.queryvo.SocietyStudentStudyProcessFaceQuery" resultMap="BaseResultViewMap">
+  		select <include refid="Base_Column_List"/> from society_student_study_process_face 
+  		<include refid="where"/>
+  </select>
+
+	<select id="listpageHuiFu" parameterType="com.edgedo.society.queryvo.SocietyStudentStudyProcessFaceQuery" resultMap="BaseResultViewMap">
+		select <include refid="Base_Column_List"/> from society_student_study_process_face
+		<include refid="where1"/>
+	</select>
+  
+   <!-- 不分页条件查询  -->
+  <select id="listByObj" parameterType="com.edgedo.society.queryvo.SocietyStudentStudyProcessFaceQuery" resultMap="BaseResultViewMap">
+  		select <include refid="Base_Column_List"/> from society_student_study_process_face 
+  		<include refid="where"/>
+  </select>
+	<update id="updateByNodeIdAndNodeName" parameterType="string">
+		update society_student_study_process_face
+		set OWNER_NODE_NAME=#{nodeName}
+		where OWNER_NODE_ID=#{nodeId}
+	</update>
+
+	<update id="updateByCourseIdAndCourseName" parameterType="map">
+		update society_student_study_process_face
+		set OWNER_COURSE_NAME=#{courseName}
+		where OWNER_COURSE_ID=#{courseId}
+	</update>
+
+	<update id="updateByIdLogin">
+		update society_student_study_process_face
+		set DATA_STATE='0',OPERATOR_ID=#{user.userId},OPERATOR_NAME=#{user.userName},OPERATOR_TIME=#{date}
+		where DATA_STATE='1'
+		and ID in
+		<foreach item="id" index="index" collection="list" open="(" separator="," close=")">
+			#{id}
+		</foreach>
+	</update>
+
+	<update id="retrieveFaceByIds" parameterType="string">
+		update society_student_study_process_face
+		set DATA_STATE='1',OPERATOR_ID=null,OPERATOR_NAME=null,OPERATOR_TIME=null
+		where DATA_STATE='0'
+		and ID in
+		<foreach item="id" index="index" collection="list" open="(" separator="," close=")">
+			#{id}
+		</foreach>
+	</update>
+	<select id="selectByNodeIdAndStudentId" parameterType="string" resultType="integer">
+		select count(1) from society_student_study_process_face
+		where DATA_STATE='1' and  OWNER_NODE_ID=#{nodeId} and STU_COURSE_ID = #{stuAndCouId}
+	</select>
+
+	<select id="selectByStuCouId" parameterType="string" resultMap="BaseResultViewMap">
+		select <include refid="Base_Column_List"/> from society_student_study_process_face
+		where DATA_STATE='1' and STU_COURSE_ID = #{stuCouId}
+	</select>
+
+	<select id="selectByStuCouIdAndNodeId" parameterType="string" resultMap="BaseResultViewMap">
+		select <include refid="Base_Column_List"/> from society_student_study_process_face
+		where DATA_STATE='1' and STU_COURSE_ID = #{stuCourseId} and  OWNER_NODE_ID=#{nodeId}
+	</select>
+
+	<update id="updateByListId" parameterType="java.util.List">
+		<foreach collection="list" item="studentAnswer" index= "index" open="" close="" separator =";">
+			update society_student_study_process_face
+			<set>
+				OWNER_COURSE_ID=#{studentAnswer.ownerCourseId},
+				OWNER_COURSE_NAME=#{studentAnswer.ownerCourseName},
+				OWNER_NODE_ID=#{studentAnswer.ownerNodeId}
+			</set>
+			<where>
+				ID=#{studentAnswer.id}
+			</where>
+		</foreach>
+	</update>
+
+	<select id="selectStuNodeAndFaceNum" resultType="string">
+		select
+		IF((
+		select count(1) from society_student_study_process_face
+		<where>
+			OWNER_NODE_ID=#{nodeId}
+			and STU_COURSE_ID = #{stuCouId}
+			and DATA_STATE='1'
+		</where>
+		) &lt; #{num},#{nodeId},'') as nodeId
+		from society_student_study_process_face where DATA_STATE='1' LIMIT 1
+	</select>
+
+</mapper>

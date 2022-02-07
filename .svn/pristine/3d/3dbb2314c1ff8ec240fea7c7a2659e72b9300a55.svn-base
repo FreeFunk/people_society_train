@@ -1,0 +1,281 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.edgedo.society.mapper.SocietySchoolCourseNodeMapper" >
+   
+   
+    <resultMap id="BaseResultMap" type="com.edgedo.society.entity.SocietySchoolCourseNode" >
+			<id column="ID" property="id"/>
+			<result column="CREATE_TIME" property="createTime"/>
+			<result column="CREATE_USER_ID" property="createUserId"/>
+			<result column="CREATE_USER_NAME" property="createUserName"/>
+			<result column="OWNER_SCHOOL_ID" property="ownerSchoolId"/>
+			<result column="OWNER_SCHOOL_NAME" property="ownerSchoolName"/>
+			<result column="OWNER_MAJOR_ID" property="ownerMajorId"/>
+			<result column="OWNER_MAJOR_NAME" property="ownerMajorName"/>
+			<result column="OWNER_COURSE_CLS_ID" property="ownerCourseClsId"/>
+			<result column="OWNER_COURSE_CLS_NAME" property="ownerCourseClsName"/>
+			<result column="OWNER_COURSE_ID" property="ownerCourseId"/>
+			<result column="OWNER_COURSE_NAME" property="ownerCourseName"/>
+			<result column="NODE_NAME" property="nodeName"/>
+			<result column="NODE_TIME_LENGTH" property="nodeTimeLength"/>
+			<result column="IMAGE_URL" property="imageUrl"/>
+			<result column="FILE_URL" property="fileUrl"/>
+			<result column="ORDER_NUM" property="orderNum"/>
+			<result column="QUESTION_NUM" property="questionNum"/>
+			<result column="SH_STATE" property="shState"/>
+			<result column="DATA_STATE" property="dataState"/>
+    </resultMap>
+   
+    <resultMap id="BaseResultViewMap" type="com.edgedo.society.queryvo.SocietySchoolCourseNodeView" extends="BaseResultMap">
+    
+    </resultMap>
+  
+  
+  <!-- ******* 新增字段请修改这里  ******  -->
+  <sql id="Base_Column_List">
+	 ID, CREATE_TIME, CREATE_USER_ID, CREATE_USER_NAME, OWNER_SCHOOL_ID, OWNER_SCHOOL_NAME, OWNER_MAJOR_ID, OWNER_MAJOR_NAME,
+	  OWNER_COURSE_CLS_ID, OWNER_COURSE_CLS_NAME, OWNER_COURSE_ID, OWNER_COURSE_NAME, NODE_NAME, NODE_TIME_LENGTH, IMAGE_URL,
+	  FILE_URL, ORDER_NUM, QUESTION_NUM, SH_STATE, DATA_STATE
+  </sql>
+  
+  <!-- ******* 利用好这里的动态查询条件  ******  -->
+  <sql id="where">
+  	<where>
+		DATA_STATE = '1'
+		<if test='queryObj != null and  queryObj.id != null and @org.apache.commons.lang3.StringUtils@isNotEmpty(queryObj.id)'>
+		AND  ID = #{queryObj.id}
+		</if>
+		<if test='queryObj != null and  queryObj.createTime != null'>
+			AND  CREATE_TIME = #{queryObj.createTime}
+		</if>
+		<if test='queryObj != null and  queryObj.createUserId != null and @org.apache.commons.lang3.StringUtils@isNotEmpty(queryObj.createUserId)'>
+		AND  CREATE_USER_ID = #{queryObj.createUserId}
+		</if>
+		<if test='queryObj != null and  queryObj.createUserName != null and @org.apache.commons.lang3.StringUtils@isNotEmpty(queryObj.createUserName)'>
+		AND  CREATE_USER_NAME = #{queryObj.createUserName}
+		</if>
+		<if test="queryObj != null and  queryObj.ownerSchoolId != null and queryObj.ownerSchoolId != ''">
+		AND  OWNER_SCHOOL_ID = #{queryObj.ownerSchoolId}
+		</if>
+		<if test='queryObj != null and  queryObj.ownerSchoolName != null and @org.apache.commons.lang3.StringUtils@isNotEmpty(queryObj.ownerSchoolName)'>
+		AND  OWNER_SCHOOL_NAME = #{queryObj.ownerSchoolName}
+		</if>
+		<if test='queryObj != null and  queryObj.ownerMajorId != null and @org.apache.commons.lang3.StringUtils@isNotEmpty(queryObj.ownerMajorId)'>
+		AND  OWNER_MAJOR_ID = #{queryObj.ownerMajorId}
+		</if>
+		<if test='queryObj != null and  queryObj.ownerMajorName != null and @org.apache.commons.lang3.StringUtils@isNotEmpty(queryObj.ownerMajorName)'>
+		AND  OWNER_MAJOR_NAME = #{queryObj.ownerMajorName}
+		</if>
+		<if test='queryObj != null and  queryObj.ownerCourseClsId != null and @org.apache.commons.lang3.StringUtils@isNotEmpty(queryObj.ownerCourseClsId)'>
+		AND  OWNER_COURSE_CLS_ID = #{queryObj.ownerCourseClsId}
+		</if>
+		<if test='queryObj != null and  queryObj.ownerCourseClsName != null and @org.apache.commons.lang3.StringUtils@isNotEmpty(queryObj.ownerCourseClsName)'>
+		AND  OWNER_COURSE_CLS_NAME = #{queryObj.ownerCourseClsName}
+		</if>
+		<if test="queryObj != null and  queryObj.ownerCourseId != null and queryObj.ownerCourseId != ''">
+		AND  OWNER_COURSE_ID = #{queryObj.ownerCourseId}
+		</if>
+		<if test='queryObj != null and  queryObj.ownerCourseName != null and @org.apache.commons.lang3.StringUtils@isNotEmpty(queryObj.ownerCourseName)'>
+		AND  OWNER_COURSE_NAME = #{queryObj.ownerCourseName}
+		</if>
+		<if test="queryObj != null and  queryObj.nodeName != null and queryObj.nodeName != ''">
+		AND  NODE_NAME like concat('%',#{queryObj.nodeName},'%')
+		</if>
+		<if test='queryObj != null and  queryObj.nodeTimeLength != null and @org.apache.commons.lang3.StringUtils@isNotEmpty(queryObj.nodeTimeLength)'>
+			AND  NODE_TIME_LENGTH = #{queryObj.nodeTimeLength}
+		</if>
+		<if test='queryObj != null and  queryObj.imageUrl != null and @org.apache.commons.lang3.StringUtils@isNotEmpty(queryObj.imageUrl)'>
+		AND  IMAGE_URL = #{queryObj.imageUrl}
+		</if>
+		<if test='queryObj != null and  queryObj.fileUrl != null and @org.apache.commons.lang3.StringUtils@isNotEmpty(queryObj.fileUrl)'>
+		AND  FILE_URL = #{queryObj.fileUrl}
+		</if>
+  	</where>
+  	
+  </sql>
+  
+  <!-- ******* 排序判断  ******  
+  <sql id="orderBy">
+  	<if test="orderBy != null and orderBy!= '' ">
+  		order by  ${orderBy}
+  	</if>
+  </sql>-->
+  
+  
+  <!-- 分页条件查询  -->
+  <select id="listPage" parameterType="com.edgedo.society.queryvo.SocietySchoolCourseNodeQuery" resultMap="BaseResultViewMap">
+  		select <include refid="Base_Column_List"/> from society_school_course_node 
+  		<include refid="where"/>
+  </select>
+  
+   <!-- 不分页条件查询  -->
+  <select id="listByObj" parameterType="com.edgedo.society.queryvo.SocietySchoolCourseNodeQuery" resultMap="BaseResultViewMap">
+  		select <include refid="Base_Column_List"/> from society_school_course_node 
+  		<include refid="where"/>
+  </select>
+
+	<!--统计课程下面的课时数-->
+	<select id="countNodes" parameterType="string" resultType="int">
+		select count(1) from society_school_course_node
+		where DATA_STATE = '1' and OWNER_COURSE_ID =#{courseId}
+	</select>
+
+	<!--统计课程的总的时长-->
+	<select id="sumTimeLength" parameterType="string" resultType="int">
+		select COALESCE(sum(NODE_TIME_LENGTH),0) from society_school_course_node
+		where DATA_STATE = '1' and OWNER_COURSE_ID =#{courseId}
+	</select>
+
+	<!--countByCourseId根据课程ID统计下面的章节数量-->
+	<select id="countByCourseId" parameterType="string" resultType="int">
+		select count(1) from society_school_course_node
+		where DATA_STATE = '1' and OWNER_COURSE_ID =#{courseId}
+	</select>
+	<!--根据id逻辑删除-->
+	<update id="updateByIds" parameterType="string" >
+		update society_school_course_node set DATA_STATE='0'
+		where DATA_STATE='1'
+		and ID in
+		<foreach item="id" index="index" collection="list" close=")" open="(" separator=",">
+			#{id}
+		</foreach>
+	</update>
+
+	<!--根据课程ID查询所有小节-->
+	<select id="listByCourseId" parameterType="string" resultMap="BaseResultViewMap">
+		select <include refid="Base_Column_List"/> from society_school_course_node
+		where DATA_STATE = '1' and OWNER_COURSE_ID =#{courseId} order by ORDER_NUM ASC
+	</select>
+<!--根据课程ID和随机数查询小节-->
+	<select id="listByCourseIdSuiJiNum" resultMap="BaseResultViewMap">
+		select <include refid="Base_Column_List"/> from society_school_course_node
+		where DATA_STATE = '1' and OWNER_COURSE_ID =#{courseId} order by ORDER_NUM ASC limit #{randNum}
+	</select>
+
+	<select id="selectByClassIdVoNodeNum" parameterType="string" resultType="integer">
+		select count(1)
+		from society_school_course_node
+		where OWNER_COURSE_ID = #{courseId} and DATA_STATE = '1'
+	</select>
+
+	<update id="updateByIdAndQuestionNum" >
+		update society_school_course_node set QUESTION_NUM=#{questionNum}
+		where DATA_STATE = '1' and ID=#{ownerNodeId}
+	</update>
+
+	<select id="listByMajorIdAndSchoolId" parameterType="map" resultMap="BaseResultViewMap">
+		select <include refid="Base_Column_List"/> from society_school_course_node
+		where DATA_STATE='1' and  OWNER_COURSE_ID = #{courseId} and OWNER_SCHOOL_ID = #{schoolId} ORDER BY ORDER_NUM ASC
+	</select>
+
+	<select id="selectByCourseIdAndSchoolId" parameterType="string" resultMap="BaseResultViewMap">
+		select <include refid="Base_Column_List"/> from society_school_course_node
+		where DATA_STATE='1' and  ID = #{courseId} and OWNER_SCHOOL_ID = #{schoolId}
+	</select>
+
+	<select id="selectByCourseIdAndSchoolIdAll" parameterType="string" resultMap="BaseResultViewMap">
+		select <include refid="Base_Column_List"/> from society_school_course_node
+		where DATA_STATE='1' and  OWNER_COURSE_ID = #{ownerCourseId} and OWNER_SCHOOL_ID = #{schoolId}
+	</select>
+
+	<select id="selectByCourseNameAndId" parameterType="string" resultType="int">
+		select count(1) from society_school_course_node
+		where DATA_STATE='1' and  OWNER_COURSE_ID = #{courseId} and NODE_NAME = #{nodeName}
+	</select>
+
+	<update id="updateByMajorId" parameterType="string">
+		update society_school_course_node set OWNER_MAJOR_NAME=#{majorName}
+		where DATA_STATE='1'
+		and OWNER_MAJOR_ID=#{majorId}
+	</update>
+
+	<update id="updateByClsId" parameterType="string">
+		update society_school_course_node
+		set OWNER_COURSE_CLS_NAME=#{clsName},OWNER_MAJOR_NAME=#{majorName},OWNER_MAJOR_ID=#{majorId}
+		where DATA_STATE='1'
+		and OWNER_COURSE_CLS_ID=#{clsId}
+	</update>
+
+
+	<resultMap id="ComRecMap" type="com.edgedo.society.entity.YwTrainConsumRec" >
+		<id column="ID" property="id"/>
+		<result column="CREATE_TIME" property="createTime"/>
+		<result column="LEARN_ID" property="learnId"/>
+		<result column="PLAN_ID" property="planId"/>
+		<result column="PLAN_NAME" property="planName"/>
+		<result column="PLAN_CREATE_TIME" property="planCreateTime"/>
+		<result column="STU_ID" property="stuId"/>
+		<result column="STU_PHONE_NUM" property="stuPhoneNum"/>
+		<result column="STU_ID_CARD" property="stuIdCard"/>
+		<result column="LICENCE_CODE" property="licenceCode"/>
+		<result column="STUDY_TIME" property="studyTime"/>
+		<result column="TRAIN_TIME_NUM" property="trainTimeNum"/>
+		<result column="LEARN_NUM" property="learnNum"/>
+		<result column="BEGIN_TIME" property="beginTime"/>
+		<result column="END_TIME" property="endTime"/>
+		<result column="COMP_ID" property="compId"/>
+		<result column="COMP_NAME" property="compName"/>
+		<result column="APP_ID" property="appId"/>
+		<result column="LEARN_TYPE" property="learnType"/>
+		<result column="STU_NAME" property="stuName"/>
+		<result column="REC_ID" property="recId"/>
+		<result column="PROVINCE_ID" property="provinceId"/>
+		<result column="PROVINCE_NAME" property="provinceName"/>
+		<result column="CITY_ID" property="cityId"/>
+		<result column="CITY_NAME" property="cityName"/>
+		<result column="XIANQU_ID" property="xianquId"/>
+		<result column="XIANQU_NAME" property="xianquName"/>
+		<result column="CONSUME_MONEY" property="consumeMoney"/>
+		<result column="CHARGE_BILL_ID" property="chargeBillId"/>
+		<result column="PLACE_TYPE" property="placeType"/>
+		<result column="PLACE_NAME" property="placeName"/>
+		<result column="PLACE_ID" property="placeId"/>
+		<result column="car_plate_num" property="carPlateNum"/>
+		<result column="car_frame_num" property="carFrameNum"/>
+		<result column="GLOBLE_PLAN_ID" property="globlePlanId"></result>
+		<result column="SHENHE_STATE" property="shenheState"></result>
+		<result column="FAIL_REASON" property="failReason"></result>
+		<result column="SH_USER_NAME" property="shUserName"></result>
+		<result column="SH_USER_ID" property="shUserId"></result>
+		<result column="SH_TIME" property="shTime"></result>
+		<result column="EMP_TYPE" property="empType"></result>
+	</resultMap>
+	<!--根据身份证号查询出学习记录-->
+	<select id="selectByIdCardNum" parameterType="string" resultMap="ComRecMap">
+		select  ID, CREATE_TIME, LEARN_ID, PLAN_ID, PLAN_NAME, PLAN_CREATE_TIME, STU_ID, STU_PHONE_NUM,
+				 STU_ID_CARD, LICENCE_CODE, STUDY_TIME, TRAIN_TIME_NUM, LEARN_NUM, BEGIN_TIME, END_TIME,
+				 COMP_ID,COMP_NAME, APP_ID, LEARN_TYPE, STU_NAME,REC_ID,PROVINCE_ID,PROVINCE_NAME,
+				 CITY_ID,CITY_NAME,XIANQU_ID,XIANQU_NAME,CONSUME_MONEY,CHARGE_BILL_ID,
+				 PLACE_TYPE,PLACE_NAME,PLACE_ID,car_plate_num,car_frame_num,GLOBLE_PLAN_ID,SHENHE_STATE,
+				 FAIL_REASON,SH_USER_NAME,SH_USER_ID,SH_TIME,EMP_TYPE
+		from yw_train_consum_rec
+		where SHENHE_STATE='1' and STU_ID_CARD =#{studentIdCardNum}
+	</select>
+
+	<resultMap id="LearnRecMap" type="com.edgedo.society.entity.YwTrainLearnRec" >
+		<id column="ID" property="id"/>
+		<result column="CREATE_TIME" property="createTime"/>
+		<result column="CREATE_USER_ID" property="createUserId"/>
+		<result column="CREATE_USER_NAME" property="createUserName"/>
+		<result column="BEGIN_TIME" property="beginTime"/>
+		<result column="END_FRESH_TIME" property="endFreshTime"/>
+		<result column="LEARN_MINITE_NUM" property="learnMiniteNum"/>
+		<result column="COMP_ID" property="compId"/>
+		<result column="APP_ID" property="appId"/>
+		<result column="FACE_URL" property="faceUrl"/>
+		<result column="LEARN_REC_ID" property="learnRecId"/>
+		<result column="OWNER_CONSUM_ID" property="ownerConsumId"/>
+		<result column="FACE_MATCH_SCORE" property="faceMatchScore"/>
+		<result column="FACE_MATCH_TOKEN" property="faceMatchToken"/>
+		<result column="PLAN_ID" property="planId"/>
+	</resultMap>
+	<!--根据学习记录id查询学习过程中的人脸记录-->
+	<select id="selectByConRecId" parameterType="string" resultMap="LearnRecMap">
+		select ID, CREATE_TIME, CREATE_USER_ID, CREATE_USER_NAME, BEGIN_TIME, END_FRESH_TIME, LEARN_MINITE_NUM, COMP_ID, APP_ID, FACE_URL, LEARN_REC_ID
+	 			,OWNER_CONSUM_ID,FACE_MATCH_SCORE,PLAN_ID
+		from yw_train_learn_rec
+		where OWNER_CONSUM_ID =#{conRecId}
+	</select>
+
+
+</mapper>

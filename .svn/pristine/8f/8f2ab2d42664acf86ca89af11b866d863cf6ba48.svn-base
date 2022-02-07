@@ -1,0 +1,45 @@
+<section class="aui-flexView">
+	<header class="aui-navBar0 aui-navBar-fixed b-line">
+		<a href="javascript:history.back(-1);" class="aui-navBar-item">
+            <i class="icon icon-return"></i>
+        </a>
+		<div class="aui-center">
+			<span class="aui-center-title">课程考试</span>
+		</div>
+	</header>
+
+	<section class="aui-scrollView">
+		<div id="exam_course_panel_item" infinite-scroll-container class="aui-sit-list">
+			<a href="javascript:void(0);" style="padding: 10px;" class="aui-flex b-line" ng-repeat="stuCourse in pageInfoObj.list track by stuCourse.id">
+				<div class="aui-git-img">
+					<img ng-src="{{stuCourse.courseImage}}" alt="">
+				</div>
+				<div class="aui-flex-box">
+					<h4>{{stuCourse.courseName}}</h4>
+					<div>
+						<div class="aui-right-seep fl">
+							<p style="font-size: 12px;" ng-show="stuCourse.paperState=='notFinished'">状态：<label style="color: #E84D50;">未作答</label></p>
+							<p style="font-size: 12px;" ng-show="stuCourse.paperState=='finished'">状态：<label style="color: #3CB371;">已作答</label></p>
+							<div style="margin-top: 10px;">
+								<div class="examBtnLeft" ng-click="gotoExamDescPage(stuCourse.courseId)">去考试</div>
+								<div class="examBtnRight" ng-click="gotoExamRecListPage(stuCourse.courseId)">考试记录</div>
+							</div>
+						</div>
+						<!--<div class="fr more"><img class="iconImg" src="./images/exam.png"/></div>-->
+					</div>
+				</div>
+			</a>
+
+			<div infinite-scroll-parent="exam_course_panel_item" style="margin-bottom: 0px;" infinite-scroll="nextCoursePage()" infinite-scroll-distance="0"></div>
+		</div>
+
+		<section class="aui-scrollView" ng-show="pageInfoObj.list.length==0">
+			<div class="wss">
+				<img src="images/nothing.png">
+				<p>您还未进行考试</p>
+			</div>
+		</section>
+
+		<div class="blank20"></div>
+	</section>
+</section>

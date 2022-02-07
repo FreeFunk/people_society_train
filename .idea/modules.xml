@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/people-society-train-qt/people-society.iml" filepath="$PROJECT_DIR$/people-society-train-qt/people-society.iml" />
+      <module fileurl="file://$PROJECT_DIR$/people-society-train-data-machine/people-society-train-data-machine.iml" filepath="$PROJECT_DIR$/people-society-train-data-machine/people-society-train-data-machine.iml" />
+      <module fileurl="file://$PROJECT_DIR$/people-society-train-dataenum/people-society-train-dataenum.iml" filepath="$PROJECT_DIR$/people-society-train-dataenum/people-society-train-dataenum.iml" />
+      <module fileurl="file://$PROJECT_DIR$/people-society-train-ht/people-society-train-ht.iml" filepath="$PROJECT_DIR$/people-society-train-ht/people-society-train-ht.iml" />
+      <module fileurl="file://$PROJECT_DIR$/people-society-train-ht-juxian/people-society-train-ht-juxian.iml" filepath="$PROJECT_DIR$/people-society-train-ht-juxian/people-society-train-ht-juxian.iml" />
+      <module fileurl="file://$PROJECT_DIR$/people-society-train-ht-nite/people-society-train-ht-nite.iml" filepath="$PROJECT_DIR$/people-society-train-ht-nite/people-society-train-ht-nite.iml" />
+      <module fileurl="file://$PROJECT_DIR$/people-society-train-qt/people-society-train-qt.iml" filepath="$PROJECT_DIR$/people-society-train-qt/people-society-train-qt.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/people_society_train.iml" filepath="$PROJECT_DIR$/.idea/people_society_train.iml" />
+      <module fileurl="file://$PROJECT_DIR$/tdp-codegen/tdp-codegen.iml" filepath="$PROJECT_DIR$/tdp-codegen/tdp-codegen.iml" />
+    </modules>
+  </component>
+</project>

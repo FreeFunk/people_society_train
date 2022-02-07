@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>编辑</title>
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=0">
+    <link rel="stylesheet" href="/layuiadmin/layui/css/layui.css" media="all">
+    <link rel="stylesheet" href="/layuiadmin/style/app.css" media="all">
+    <script src="/layuiadmin/js/qrcode.js"></script>
+</head>
+<body>
+
+<div class="layui-fluid">
+    <div class="layui-card" style="margin-top: 2%;width: 54%;margin-left: 22%;height: 556px;border-radius: 19px;">
+        <div id="schoolAdminSchoolInfoId" class="layui-form" style="padding-top: 3%;height: 100%;padding-right: 8%;">
+            <div class="layui-row">
+                <div class="layui-form-item layui-hide">
+                    <label class="layui-form-label">主键</label>
+                    <div class="layui-input-block">
+                        <input type="text" name="id" id="id" placeholder="请输入主键" autocomplete="off" class="layui-input">
+                    </div>
+                </div>
+                <div class="layui-col-xs6 layui-col-sm6 layui-col-md6 layui-hide">
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">省ID</label>
+                        <div class="layui-input-block">
+                            <input type="text" id="provinceId" placeholder="请输入省ID" autocomplete="off" class="layui-input">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="layui-col-xs6 layui-col-sm6 layui-col-md6 layui-hide">
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">创建时间</label>
+                        <div class="layui-input-block">
+                            <input type="text" id="createTime" class="layui-input">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="layui-col-xs6 layui-col-sm6 layui-col-md6 layui-hide">
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">创建人id</label>
+                        <div class="layui-input-block">
+                            <input type="text" id="createUserId"  class="layui-input">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="layui-col-xs6 layui-col-sm6 layui-col-md6 layui-hide">
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">创建人名</label>
+                        <div class="layui-input-block">
+                            <input type="text" id="createUserName" class="layui-input">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="layui-col-xs6 layui-col-sm6 layui-col-md6 layui-hide">
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">城市ID</label>
+                        <div class="layui-input-block">
+                            <input type="text" id="cityId" placeholder="请输入城市ID" autocomplete="off" class="layui-input">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="layui-col-xs6 layui-col-sm6 layui-col-md6 layui-hide">
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">城市名</label>
+                        <div class="layui-input-block">
+                            <input type="text" id="cityName" placeholder="请输入城市名" autocomplete="off" class="layui-input">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="layui-col-xs6 layui-col-sm6 layui-col-md6 layui-hide">
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">县区ID</label>
+                        <div class="layui-input-block">
+                            <input type="text" id="xianquId" placeholder="请输入县区ID" autocomplete="off" class="layui-input">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="layui-form-item">
+                    <label class="layui-form-label">学校名称</label>
+                    <div class="layui-input-block">
+                        <input type="text" value="" name="schoolName" id="schoolName" readonly autocomplete="off" class="layui-input">
+                    </div>
+                </div>
+
+                <div class="layui-form-item">
+                    <label class="layui-form-label">县区名</label>
+                    <div class="layui-input-block">
+                        <input type="text" readonly name="xianquName" id="xianquName" class="layui-input">
+                    </div>
+                </div>
+
+
+                <div class="layui-col-xs6 layui-col-sm6 layui-col-md6">
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">联系人</label>
+                        <div class="layui-input-block">
+                            <input type="text" id="contactPerson" readonly class="layui-input">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="layui-col-xs6 layui-col-sm6 layui-col-md6">
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">联系电话</label>
+                        <div class="layui-input-block">
+                            <input type="text" id="contactPhoneNum" readonly class="layui-input">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="layui-form-item">
+                    <label class="layui-form-label">学校地址</label>
+                    <div class="layui-input-block">
+                        <textarea id="schoolAddress" readonly class="layui-textarea"></textarea>
+                    </div>
+                </div>
+
+                <div class="layui-form-item">
+                    <label class="layui-form-label">学校简介</label>
+                    <div class="layui-input-block">
+                        <textarea class="layui-textarea" id="schoolDesc" readonly ></textarea>
+                    </div>
+                </div>
+
+                <input type="text" id="schoolLogoUrlInput" name="schoolLogoUrlInput"  class="layui-input layui-hide">
+              <!--  <div class="layui-form-item">
+                    <div style="width: 40%;position: absolute">
+                        <label class="layui-form-label">学校logo</label>
+                        <div class="layui-input-block">
+                            <div class="file-iteme">
+                                <img id="oldSchoolLogoUrl" src="" class="layui-upload-img" style="width: 90px;height: 90px">
+                            </div>
+                        </div>
+                    </div>
+                </div>-->
+
+                <div class="layui-form-item" >
+                    <div style="width: 40%;position: absolute">
+                        <label class="layui-form-label">登录页背景图</label>
+                        <div class="layui-input-block">
+                            <div class="file-iteme">
+                                <img id="schoolAppLoginImg" src="" class="layui-upload-img" style="width: 120px;height: 120px">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="layui-form-item" style="position: absolute;left: 40%;top: 74%;" >
+                    <div style="width: 40%;position: absolute">
+                        <label class="layui-form-label">微信二维码</label>
+                        <div class="layui-input-block">
+                            <div class="file-iteme">
+                                <div id="wxQrcode" onclick="getImg(this)" class="layui-upload-img" style="width: 90px;height: 90px"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!--<div class="layui-form-item" style="position: absolute;left: 51%;top: 74%;" >
+                    <div style="width: 40%;position: absolute">
+                        <label class="layui-form-label">APP二维码</label>
+                        <div class="layui-input-block">
+                            <div class="file-iteme">
+                                <div id="appQrcode" onclick="getImg(this)" class="layui-upload-img" style="width: 90px;height: 90px"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>-->
+
+                <div class="layui-col-xs6 layui-col-sm6 layui-col-md6 layui-hide">
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">学校logo审核状态(1:通过,0:审核中,-1:不通过)</label>
+                        <div class="layui-input-block">
+                            <input type="text" id="schoolLogoShState" placeholder="请输入学校logo审核状态(1:通过,0:审核中,-1:不通过)" autocomplete="off" class="layui-input">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="layui-col-xs6 layui-col-sm6 layui-col-md6 layui-hide">
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">关联系统用户ID</label>
+                        <div class="layui-input-block">
+                            <input type="text" id="sysUserId" class="layui-input">
+                        </div>
+                    </div>
+                </div>
+                <button id="updateDataId" style="position: absolute;left: 65%;top: 92%;" type="button" class="layui-btn layui-btn-radius"><i class="layui-icon layui-icon-edit"></i>编辑</button>
+            </div>
+        </div>
+    </div>
+</div>
+<script src="/layuiadmin/layui/layui.js"></script>
+<script>
+    layui.config({
+        base: '/layuiadmin/' //静态资源所在路径
+    }).extend({
+        index: 'lib/index', //主入口模块
+        $tool:'tool',
+        viewer: 'layui_ext/viewer/viewer'
+    }).use(['index', 'form','$tool','laydate','upload','viewer'], function(){
+
+        var $ = layui.$
+            ,$tool = layui.$tool
+            ,laydate = layui.laydate
+            ,admin = layui.admin
+            ,upload = layui.upload
+            ,viewer = layui.viewer
+            ,form = layui.form;
+
+        //微信二维码路径
+        var wxQrcodeUrl = layui.setter.WxPath;
+        //APP二维码路径
+        var appQrcodeUrl = layui.setter.AppPath;
+
+        var schoolInfo;
+
+        //初始化学校管理员信息
+        function initSchoolAdminInfo() {
+            admin.req({
+                url:layui.setter.basePath +'/society/societySchool/schoolAdminListpage.jsn',
+                method:"post",
+                success:function (data) {
+                    //data.list[0].cityName
+                    //赋值 schoolAdminSchoolInfoId
+                    schoolInfo = data.list[0];
+                    $("#id").attr("value",data.list[0].id);
+                    $("#createTime").attr("value",data.list[0].createTime);
+                    $("#createUserId").attr("value",data.list[0].createUserId);
+                    $("#createUserName").attr("value",data.list[0].createUserName);
+                    $("#provinceId").attr("value",data.list[0].provinceId);
+                    $("#provinceName").attr("value",data.list[0].provinceName);
+                    $("#cityId").attr("value",data.list[0].cityId);
+                    $("#cityName").attr("value",data.list[0].cityName);
+                    $("#xianquId").attr("value",data.list[0].xianquId);
+                    $("#xianquName").attr("value",data.list[0].xianquName);
+                    $("#schoolName").attr("value",data.list[0].schoolName);
+                    $("#contactPerson").attr("value",data.list[0].contactPerson);
+                    $("#contactPhoneNum").attr("value",data.list[0].contactPhoneNum);
+                    $("#schoolAddress").val(data.list[0].schoolAddress);
+                    $("#schoolDesc").val(data.list[0].schoolDesc);
+                    initLogoImg(data.list[0].schoolLogoUrl,data.list[0].schoolAppLoginImg);
+                    $("#schoolLogoShState").attr("value",data.list[0].schoolLogoShState);
+                    $("#sysUserId").attr("value",data.list[0].sysUserId);
+                    // 设置微信二维码  wxQrcode
+                    var driverQrcode = new QRCode('wxQrcode', {
+                        text: wxQrcodeUrl+data.list[0].id + "&timestamp=" + new Date().getTime(),
+                        width: 120,
+                        height: 120,
+                        colorDark : '#000000',
+                        colorLight : '#ffffff',
+                        correctLevel : QRCode.CorrectLevel.H
+                    });
+                    // 设置app二维码 appQrcode
+                    /*var userQrcode = new QRCode('appQrcode', {
+                        text: appQrcodeUrl,
+                        width: 90,
+                        height: 90,
+                        colorDark : '#000000',
+                        colorLight : '#ffffff',
+                        correctLevel : QRCode.CorrectLevel.H
+                    });*/
+                },
+            });
+        }
+        initSchoolAdminInfo();
+
+        //点击二维码变大
+        getImg = function (value) {
+            $(value.parentElement.parentElement).viewer();
+        }
+
+
+        //初始化加载学校logo
+        function initLogoImg(schoolLogoUrlInput,schoolAppLoginImg) {
+            $('#oldSchoolLogoUrl').attr('src', layui.setter.ImgPath+schoolLogoUrlInput);
+            $('#schoolAppLoginImg').attr('src', layui.setter.ImgPath+schoolAppLoginImg);
+        }
+
+
+        //点击修改
+        $("#updateDataId").click(function(){
+            $tool.JumpPage('SocietySchoolEdit.html',schoolInfo);
+          /*  //拼接县区
+            var xianQu = schoolInfo.xianquId+","+schoolInfo.xianquName;
+            //学生名字
+            var schoolName = schoolInfo.schoolName;
+            //contactPerson
+            var contactPerson = schoolInfo.contactPerson;
+            // contactPhoneNum
+            var contactPhoneNum = schoolInfo.contactPhoneNum;
+            // schoolAddress
+            var schoolAddress = schoolInfo.schoolAddress;
+            // schoolDesc
+            var schoolDesc = schoolInfo.schoolDesc;
+            // schoolLogoUrl
+            var schoolLogoUrl = schoolInfo.schoolLogoUrl;
+            // id
+            var schoolAppLoginImg = schoolInfo.schoolAppLoginImg;
+            // id
+            var id = schoolInfo.id;
+            //跳转页面
+            location.href="SocietySchoolEdit.html?xianQu="+ encodeURI(xianQu)
+                + "&schoolName=" +encodeURI(schoolName)
+                + "&contactPerson=" +encodeURI(contactPerson)
+                + "&contactPhoneNum=" +encodeURI(contactPhoneNum)
+                + "&schoolAddress=" +encodeURI(schoolAddress)
+                + "&schoolDesc=" +encodeURI(schoolDesc)
+                + "&schoolLogoUrl=" +encodeURI(schoolLogoUrl)
+                + "&schoolAppLoginImg=" +encodeURI(schoolAppLoginImg)
+                + "&id=" +encodeURI(id);*/
+        });
+
+    })
+</script>
+</body>
+</html>

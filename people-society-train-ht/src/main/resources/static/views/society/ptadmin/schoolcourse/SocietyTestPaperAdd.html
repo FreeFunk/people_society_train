@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>试卷管理新增</title>
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=0">
+    <link rel="stylesheet" href="/layuiadmin/layui/css/layui.css" media="all">
+    <link rel="stylesheet" href="/layuiadmin/style/app.css" media="all">
+</head>
+<body>
+
+<div class="layui-form" lay-filter="SocietyTestPaper-form" id="SocietyTestPaper-form" style="padding: 20px 30px 0 0;">
+    <div class="layui-row">
+        <!--<div class="layui-col-xs6 layui-col-sm6 layui-col-md6">
+            <div class="layui-form-item">
+                <label class="layui-form-label">所属学校ID</label>
+                <div class="layui-input-block">
+                    <input type="text" name="ownerSchoolId" lay-verify="required" placeholder="请输入所属学校ID" autocomplete="off" class="layui-input">
+                </div>
+            </div>
+        </div>
+        <div class="layui-col-xs6 layui-col-sm6 layui-col-md6">
+            <div class="layui-form-item">
+                <label class="layui-form-label">所属学校名</label>
+                <div class="layui-input-block">
+                    <input type="text" name="ownerSchoolName" lay-verify="required" placeholder="请输入所属学校名" autocomplete="off" class="layui-input">
+                </div>
+            </div>
+        </div>
+        <div class="layui-col-xs6 layui-col-sm6 layui-col-md6">
+            <div class="layui-form-item">
+                <label class="layui-form-label">所属课程ID</label>
+                <div class="layui-input-block">
+                    <input type="text" name="ownerCourseId" lay-verify="required" placeholder="请输入所属课程ID" autocomplete="off" class="layui-input">
+                </div>
+            </div>
+        </div>
+        <div class="layui-col-xs6 layui-col-sm6 layui-col-md6">
+            <div class="layui-form-item">
+                <label class="layui-form-label">课程名称</label>
+                <div class="layui-input-block">
+                    <input type="text" name="ownerCourseName" lay-verify="required" placeholder="请输入课程名称" autocomplete="off" class="layui-input">
+                </div>
+            </div>
+        </div>-->
+        <input type="hidden" name="ownerCourseId" id="ownerCourseId"  autocomplete="off" class="layui-input">
+        <div class="layui-col-xs12 layui-col-sm12 layui-col-md12">
+            <div class="layui-form-item">
+                <label class="layui-form-label">试卷名称</label>
+                <div class="layui-input-block">
+                    <input type="text" name="testPaperName" lay-verify="required" placeholder="请输入试卷名称" autocomplete="off" class="layui-input">
+                </div>
+            </div>
+        </div>
+        <div class="layui-col-xs6 layui-col-sm6 layui-col-md6">
+            <div class="layui-form-item">
+                <label class="layui-form-label">题目总数</label>
+                <div class="layui-input-block">
+                    <input type="text" name="totalQuestionNum" lay-verify="required|number" placeholder="请输入题目数" autocomplete="off" class="layui-input">
+                </div>
+            </div>
+        </div>
+        <div class="layui-col-xs6 layui-col-sm6 layui-col-md6">
+            <div class="layui-form-item">
+                <label class="layui-form-label">总分数</label>
+                <div class="layui-input-block">
+                    <input type="text" name="totalScore" lay-verify="required|number" placeholder="请输入总分数" autocomplete="off" class="layui-input">
+                </div>
+            </div>
+        </div>
+        <div class="layui-col-xs6 layui-col-sm6 layui-col-md6">
+            <div class="layui-form-item">
+                <label class="layui-form-label">及格分数</label>
+                <div class="layui-input-block">
+                    <input type="text" name="passScore" lay-verify="required|number" placeholder="请输入及格分数" autocomplete="off" class="layui-input">
+                </div>
+            </div>
+        </div>
+
+    <div class="layui-col-xs6 layui-col-sm6 layui-col-md6">
+        <div class="layui-form-item">
+            <label class="layui-form-label">考试时长/分钟</label>
+            <div class="layui-input-block">
+                <input type="text" name="testPaperTimeLength" lay-verify="required|number" placeholder="考试时长" autocomplete="off" class="layui-input">
+            </div>
+        </div>
+    </div>
+    <div class="layui-col-xs6 layui-col-sm6 layui-col-md6">
+        <div class="layui-form-item">
+            <label class="layui-form-label">判断题目数</label>
+            <div class="layui-input-block">
+                <input type="text" name="panduanQuestionNum" lay-verify="required|number" placeholder="请输入判断题目数" autocomplete="off" class="layui-input">
+            </div>
+        </div>
+    </div>
+    <div class="layui-col-xs6 layui-col-sm6 layui-col-md6">
+        <div class="layui-form-item">
+            <label class="layui-form-label">判断每题分数</label>
+            <div class="layui-input-block">
+                <input type="text" name="panduanScore" lay-verify="required|number" placeholder="请输入判断每题分数" autocomplete="off" class="layui-input">
+            </div>
+        </div>
+    </div>
+    <div class="layui-col-xs6 layui-col-sm6 layui-col-md6">
+        <div class="layui-form-item">
+            <label class="layui-form-label">单选题目数</label>
+            <div class="layui-input-block">
+                <input type="text" name="danxuanQuestionNum" lay-verify="required|number" placeholder="请输入单选题目数" autocomplete="off" class="layui-input">
+            </div>
+        </div>
+    </div>
+    <div class="layui-col-xs6 layui-col-sm6 layui-col-md6">
+        <div class="layui-form-item">
+            <label class="layui-form-label">单选每题分数</label>
+            <div class="layui-input-block">
+                <input type="text" name="danxuanScore" lay-verify="required|number" placeholder="请输入单选每题分数" autocomplete="off" class="layui-input">
+            </div>
+        </div>
+    </div>
+    </div>
+    <div class="layui-form-item layui-hide">
+        <input type="button" lay-submit lay-filter="SocietyTestPaper-form-submit" id="SocietyTestPaper-form-submit" value="确认添加">
+    </div>
+</div>
+
+<script src="/layuiadmin/layui/layui.js"></script>
+<script>
+        layui.config({
+            base: '/layuiadmin/' //静态资源所在路径
+        }).extend({
+            index: 'lib/index' //主入口模块
+            ,$tool:'tool'
+        }).use(['index', 'form','laydate','$tool'], function(){
+            var $ = layui.$
+                ,laydate = layui.laydate
+                ,admin  = layui.admin
+                ,$tool  = layui.$tool
+                ,form = layui.form;
+
+            var queryArgs = $tool.getQueryParam();//获取查询参数
+            var courseId = queryArgs['courseId'];
+            $("#ownerCourseId").val(courseId);
+
+            //监听提交
+            form.on('submit(SocietyTestPaper-form-submit)', function(data){
+
+                //判断题目数量是否匹配
+                var total = Number($("[name='totalQuestionNum']").val());
+                var totalS = Number($("[name='totalScore']").val());
+                var panduan = Number($("[name='panduanQuestionNum']").val());
+                var danxuan = Number($("[name='danxuanQuestionNum']").val());
+                var danxuanS = Number($("[name='danxuanScore']").val());
+                var panduanS = Number($("[name='panduanScore']").val());
+                //debugger;
+                if(total!=(panduan+danxuan)){
+                    return layer.msg('题目总数与判断题单选题数量之和不符，请修改！');
+                }
+                if(totalS!=(panduan*panduanS + danxuan*danxuanS)){
+                    return layer.msg('题目总分数与判断题单选题分数之和不符，请修改！');
+                }
+
+                var field = data.field; //获取提交的字段
+                var index = parent.layer.getFrameIndex(window.name); //先得到当前iframe层的索引
+
+                //提交 Ajax 成功后，关闭当前弹层并重载表格
+                admin.req({
+                    url:layui.setter.basePath +'/society/societyTestPaper/schoolsaveOrUpdate.jsn',
+                    data:field,
+                    method:"post",
+                    success:function (data) {
+                        if(data.success){
+                            debugger;
+                            if(data.data){//校验章节习题数量是否足够
+                                parent.layer.msg(data.data, {
+                                });
+                            }else{
+                                parent.layui.table.reload('SocietyTestPaper-list'); //重载表格
+                                parent.layer.close(index); //再执行关闭
+                                parent.layer.msg('添加成功', {
+                                    icon: 1
+                                });
+                            }
+
+                        }else{
+                            parent.layer.msg(data.errMsg, {
+                            });
+                        }
+
+                    },
+                });
+
+            });
+            laydate.render({
+                elem: '#createTime', //指定元素
+                type:'datetime'
+            });
+        })
+</script>
+</body>
+</html>

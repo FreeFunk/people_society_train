@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="MavenProjectsManager">
+    <option name="originalFiles">
+      <list>
+        <option value="$PROJECT_DIR$/tdp-codegen/pom.xml" />
+        <option value="$PROJECT_DIR$/people-society-train-face-service/people-society-train-face-service-api/pom.xml" />
+        <option value="$PROJECT_DIR$/people-society-train-face-service/people-society-train-face-service-client-starter/pom.xml" />
+        <option value="$PROJECT_DIR$/people-society-train-face-service/people-society-train-face-service-server/pom.xml" />
+        <option value="$PROJECT_DIR$/people-society-train-qt/pom.xml" />
+        <option value="$PROJECT_DIR$/people-society-train-ht/pom.xml" />
+        <option value="$PROJECT_DIR$/people-society-train-ht-juxian/pom.xml" />
+        <option value="$PROJECT_DIR$/people-society-train-ht-nite/pom.xml" />
+      </list>
+    </option>
+  </component>
+  <component name="ProjectRootManager" version="2" languageLevel="JDK_1_8" default="false" project-jdk-name="1.8" project-jdk-type="JavaSDK" />
+  <component name="SvnBranchConfigurationManager">
+    <option name="myConfigurationMap">
+      <map>
+        <entry key="$PROJECT_DIR$">
+          <value>
+            <SvnBranchConfiguration>
+              <option name="trunkUrl" value="svn://140.143.246.143/hangling/other/people_society_train" />
+            </SvnBranchConfiguration>
+          </value>
+        </entry>
+      </map>
+    </option>
+    <option name="mySupportsUserInfoFilter" value="true" />
+  </component>
+</project>

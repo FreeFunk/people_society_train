@@ -1,0 +1,30 @@
+package com.edgedo.society.queryvo;
+
+import com.edgedo.society.entity.SocietySchoolCourse;
+
+public class SocietySchoolCourseView extends SocietySchoolCourse {
+
+    private  String isUpdateStudentCourseState;
+
+
+    //课程学习
+    private Integer courseStudyNum;
+
+    @Override
+    public Integer getCourseStudyNum() {
+        return courseStudyNum;
+    }
+
+    @Override
+    public void setCourseStudyNum(Integer courseStudyNum) {
+        this.courseStudyNum = courseStudyNum;
+    }
+
+    public String getIsUpdateStudentCourseState() {
+        return isUpdateStudentCourseState;
+    }
+
+    public void setIsUpdateStudentCourseState(String isUpdateStudentCourseState) {
+        this.isUpdateStudentCourseState = isUpdateStudentCourseState;
+    }
+}

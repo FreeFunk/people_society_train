@@ -1,0 +1,48 @@
+<img ng-src="{{globalSchObj.schoolAppLoginImg}}"
+	 onerror="javascript:this.src='images/logon.png'"   style="width: 100%;max-height: 250px; ">
+
+<!--<div class="aui-sign-form" > 去掉style 就是纯手机-->
+<div class="aui-sign-form" style="max-width:600px;">
+	<h4 ng-bind="globalSchObj.schoolName"></h4>
+	<div>
+		<form action="" id="studentLoginForm" >
+			<div class="aui-flex">
+				<i class="icon icon-phone" style=" margin-right: .5rem"></i>
+				<div class="aui-flex-box">
+					<input type="number" id="phone1" name="studentPhoneNum" ng-model="studentPhoneNum" autocomplete="off" placeholder="输入手机号码">
+				</div>
+			</div>
+			<div class="aui-flex">
+				<i class="icon icon-code"  style=" margin-right: .5rem"></i>
+				<div class="aui-flex-box">
+					<input type="password" id="code1" name="password" ng-model="password" autocomplete="off" placeholder="请输入密码">
+				</div>
+			</div>
+		</form>
+		<button class="aui-sign-login" ng-click="studentLogin()">立即登录</button>
+		<div>
+			<a class="regBtn" href="javascript:void(0)" ng-click="gotoRegisterPage()">立即注册</a>
+		</div>
+
+	</div>
+
+	<!--<div ng-show="loginState=='not_update_pwd'">
+		<form action="" id="studentUpPwdForm" method="post">
+			<div class="aui-flex">
+				<i class="icon icon-code" style=" margin-right: .5rem"></i>
+				<div class="aui-flex-box">
+					<input type="password" id="password" name="password" autocomplete="off" placeholder="请输入新密码">
+				</div>
+			</div>
+			<div class="aui-flex">
+				<i class="icon icon-code"  style=" margin-right: .5rem"></i>
+				<div class="aui-flex-box">
+					<input type="password" id="conPassword" name="conPassword" autocomplete="off" placeholder="请输入确认密码">
+				</div>
+			</div>
+			<button class="aui-sign-login" ng-click="studentUpPwd()">确认修改</button>
+		</form>
+	</div>-->
+
+</div>
+</div>

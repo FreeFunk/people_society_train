@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>新增</title>
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=0">
+    <link rel="stylesheet" href="/layuiadmin/layui/css/layui.css" media="all">
+    <link rel="stylesheet" href="/layuiadmin/style/app.css" media="all">
+    <script src="/layuiadmin/js/qrcode.js"></script>
+</head>
+<body>
+
+<div class="layui-form" lay-filter="ZhygBusCar-form" id="ZhygBusCar-form" style="padding: 20px 30px 0 0;">
+    <div class="layui-row">
+        <div class="layui-col-xs6 layui-col-sm6 layui-col-md6">
+            <div class="layui-form-item">
+                <label class="layui-form-label">微信二维码</label>
+                <div class="layui-input-block">
+                    <div id="wxQrcode"></div>
+                </div>
+            </div>
+        </div>
+        <div class="layui-col-xs6 layui-col-sm6 layui-col-md6">
+            <div class="layui-form-item">
+                <label class="layui-form-label">APP二维码</label>
+                <div class="layui-input-block">
+                    <div id="appQrcode"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="layui-form-item layui-hide">
+        <input type="button" lay-submit lay-filter="ZhygBusCar-form-submit" id="ZhygBusCar-form-submit" value="确认添加">
+    </div>
+</div>
+
+<script src="/layuiadmin/layui/layui.js"></script>
+<script>
+    layui.config({
+        base: '/layuiadmin/' //静态资源所在路径
+    }).extend({
+        index: 'lib/index', //主入口模块
+        $tool:'tool'
+    }).use(['index', 'form','laydate','$tool'], function(){
+        var $ = layui.$
+            ,laydate = layui.laydate
+            ,admin  = layui.admin
+            ,$tool = layui.$tool
+            ,form = layui.form;
+        //微信二维码路径
+        var wxQrcodeUrl = layui.setter.WxPath;
+        //APP二维码路径
+        var appQrcodeUrl = 'https://studys.heb12328.com:60002/appDownload.html';
+        //学校ID
+        var queryArgs = $tool.getQueryParam();//获取查询参数
+        var schoolId = decodeURI(queryArgs['schoolId']);
+        // 设置微信二维码  wxQrcode
+        var driverQrcode = new QRCode('wxQrcode', {
+            text: wxQrcodeUrl+schoolId + "&timestamp=" + new Date().getTime(),
+            width: 210,
+            height: 210,
+            colorDark : '#000000',
+            colorLight : '#ffffff',
+            correctLevel : QRCode.CorrectLevel.H
+        });
+        // 设置app二维码 appQrcode
+        var userQrcode = new QRCode('appQrcode', {
+            text: appQrcodeUrl+'?sch='+schoolId,
+            width: 210,
+            height: 210,
+            colorDark : '#000000',
+            colorLight : '#ffffff',
+            correctLevel : QRCode.CorrectLevel.H
+        });
+    })
+</script>
+</body>
+</html>

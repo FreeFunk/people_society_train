@@ -1,0 +1,142 @@
+package com.edgedo.society.service;
+		
+import java.util.Date;
+import java.util.List;
+
+import com.edgedo.common.shiro.User;
+import com.edgedo.common.util.Guid;
+import com.edgedo.society.entity.SocietyNodeExamineRecord;
+import com.edgedo.society.entity.SocietyStudentAndCourse;
+import com.edgedo.society.mapper.SocietyNodeExamineRecordMapper;
+import com.edgedo.society.queryvo.SocietyNodeExamineRecordQuery;
+import com.edgedo.society.queryvo.SocietyNodeExamineRecordView;
+import com.edgedo.society.queryvo.SocietyStudentAndNodeView;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
+
+
+@Service
+@Transactional(propagation = Propagation.REQUIRED,rollbackFor=Exception.class)
+public class SocietyNodeExamineRecordService {
+	
+	
+	@Autowired
+	private SocietyNodeExamineRecordMapper societyNodeExamineRecordMapper;
+
+	@Autowired
+	private SocietyStudentAndCourseService societyStudentAndCourseService;
+	@Autowired
+	private SocietyStudentAndNodeService societyStudentAndNodeService;
+
+	public List<SocietyNodeExamineRecordView> listPage(SocietyNodeExamineRecordQuery societyNodeExamineRecordQuery){
+		List list = societyNodeExamineRecordMapper.listPage(societyNodeExamineRecordQuery);
+		societyNodeExamineRecordQuery.setList(list);
+		return list;
+	}
+	
+	/***
+	 * 新增方法
+	 * @return
+	 */
+	@Transactional(propagation = Propagation.REQUIRED,rollbackFor=Exception.class)
+	public String insert(SocietyNodeExamineRecord societyNodeExamineRecord) {
+		societyNodeExamineRecord.setId(Guid.guid());
+		societyNodeExamineRecordMapper.insert(societyNodeExamineRecord);
+		return "";
+	}
+	
+	/***
+	 * 动态修改方法
+	 * @param
+	 * @return
+	 */
+	@Transactional(propagation = Propagation.REQUIRED,rollbackFor=Exception.class)
+	public String update(SocietyNodeExamineRecord societyNodeExamineRecord) {
+		societyNodeExamineRecordMapper.updateById(societyNodeExamineRecord);
+		return "";
+	}
+	
+	/***
+	 * 全修改
+	 * @param
+	 * @return
+	 */
+	@Transactional(propagation = Propagation.REQUIRED,rollbackFor=Exception.class)
+	public String updateAll(SocietyNodeExamineRecord societyNodeExamineRecord) {
+		societyNodeExamineRecordMapper.updateAllColumnById(societyNodeExamineRecord);
+		return "";
+	}
+	
+	
+	
+	/**
+	 * 单个删除
+	 * @param id
+	 */
+	@Transactional(propagation = Propagation.REQUIRED,rollbackFor=Exception.class)
+	public int delete(String id) {
+		
+		return societyNodeExamineRecordMapper.deleteById(id);
+	}
+	
+	/**
+	 * 批量删除
+	 * @param ids
+	 */
+	@Transactional(propagation = Propagation.REQUIRED,rollbackFor=Exception.class)
+	public int deleteByIds(List<String> ids) {
+		
+		return societyNodeExamineRecordMapper.deleteBatchIds(ids);
+	}
+	
+	
+	
+	/**
+	 * 加载单个
+	 * @param id
+	 */
+	public SocietyNodeExamineRecord loadById(String id) {
+		return societyNodeExamineRecordMapper.selectById(id);
+	}
+
+	/**
+	 * 根据已有id 补充审核记录表信息
+	 * @param stuCourseId
+	 * @param nodeId
+	 * @param ownerCourseId
+	 * @param studentId
+	 * @param user
+	 * @param record
+	 */
+	@Transactional(propagation = Propagation.REQUIRED,rollbackFor=Exception.class)
+	public void insertEeamineInfo(String stuCourseId, String nodeId, String ownerCourseId,
+								  String studentId, User user,String record) {
+		SocietyNodeExamineRecord societyNodeExamineRecord = new SocietyNodeExamineRecord();
+		//主键
+		societyNodeExamineRecord.setId(Guid.guid());
+		//创建时间
+		societyNodeExamineRecord.setCreateTime(new Date());
+		//创建人id
+		societyNodeExamineRecord.setCreateUserId(user.getUserId());
+		//创建人名
+		societyNodeExamineRecord.setCreateUserName(user.getUserName());
+		//原课程完成时间
+		SocietyStudentAndCourse societyStudentAndCourse = societyStudentAndCourseService.loadById(stuCourseId);
+		societyNodeExamineRecord.setOrgCourseFinishedTime(societyStudentAndCourse.getLearnFinishTime());
+		//原章节完成时间
+		SocietyStudentAndNodeView societyStudentAndNodeView =
+				societyStudentAndNodeService.selectByStuIdAndNodeIdAndStuCourseId(stuCourseId,nodeId,studentId);
+		societyNodeExamineRecord.setOrgNodeFinishedTime(societyStudentAndNodeView.getFinishTime());
+		//上一次章节学习位置
+		societyNodeExamineRecord.setLastNodeStudyLocation(societyStudentAndNodeView.getLastLearnLocation());
+		//现学习章节位置ID 就是现在需要重学的章节id
+		societyNodeExamineRecord.setNowNodeStudyId(nodeId);
+		//原因
+		societyNodeExamineRecord.setReason(record);
+		//数据状态
+		societyNodeExamineRecord.setDataState("1");
+		societyNodeExamineRecordMapper.insert(societyNodeExamineRecord);
+	}
+}

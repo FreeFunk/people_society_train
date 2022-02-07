@@ -1,0 +1,16 @@
+package com.edgedo.society.queryvo;
+
+import com.edgedo.society.entity.SocietyNodeResources;
+
+public class SocietyNodeResourcesView extends SocietyNodeResources {
+
+  private  int showFlg ;
+
+    public int getShowFlg() {
+        return showFlg;
+    }
+
+    public void setShowFlg(int showFlg) {
+        this.showFlg = showFlg;
+    }
+}

@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>学员课程进度统计,学校管理员页面</title>
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=0">
+    <link rel="stylesheet" href="/layuiadmin/layui/css/layui.css" media="all">
+    <link rel="stylesheet" href="/layuiadmin/style/admin.css" media="all">
+    <style type="text/css">
+        .layui-table td{
+            border:0.5px solid black;
+        }
+        body,td,th {color: black;}
+        .bodyDiv{
+            text-align: center;
+            margin-bottom: 0.6%;
+            page-break-before:left;
+        }
+        .bodySecondTitle{
+            font-family: monospace;
+            font-size: 24px;
+            position: relative;
+            top: 5%;
+            font-weight: 900;
+        }
+        .bodySecondTitleDiv{
+            text-align: center;
+            position: relative;
+            top: 24%;
+            margin-right: 2px;
+            margin-left: 2px;
+        }
+        .pLeft{
+            font-weight: 600;
+            color: black;
+            position: relative;
+            float: left;
+            left: 10.5%;
+        }
+        .pRight{
+            font-weight: 600;
+            color: black;
+            float: right;
+            position: relative;
+            right: 15.5%;
+        }
+        .officialSealFourth{
+            height: 124px;
+            z-index: 9;
+            opacity: 1.8;
+            transform: rotate(-270deg);
+            margin-left: 28%;
+            border: none;
+            margin-top: -62px;
+        }
+        .opNameClass{
+            font-weight: 600;
+            color: black;
+            float: left;
+            position: relative;
+            left: -0.5%;
+        }
+    </style>
+</head>
+<body>
+
+<div class="layui-fluid">
+
+    <div class="layui-inline " style="left: 91%;position: fixed">
+        <button type="button" class="layui-btn layuiadmin-btn-comm layui-btn-sm" onclick="exportData()">
+            <i class="layui-icon layui-icon-export layuiadmin-button-btn"></i>截屏保存
+        </button>
+    </div>
+    <div class="layui-card bodyDiv" >
+
+        <div style="height: 839px">
+            <div class="bodySecondTitle">截屏备案表</div>
+            <div style="position: relative;top: 10%;">
+                <p id="jiePinTime" class="pLeft"></p>
+                <p class="pRight" id="schoolCompanyName"></p><img style="max-width: 142px;position: absolute" class="officialSealFourth" src="/layuiadmin/images/hege.png">
+            </div>
+            <div style="position: relative;top: 13%;"><p id="opeName" class="opNameClass"></p></div>
+            <div style="height: 560px;">
+                <div class="bodySecondTitleDiv" >
+                    <table class="layui-table" id="studentTale"style="margin-top: -1.8%;border:1px solid black;table-layout: fixed;">
+
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="/layuiadmin/layui/layui.js"></script>
+<!--<script src="https://cdn.bootcdn.net/ajax/libs/exif-js/2.3.0/exif.js"></script>-->
+<script>
+    layui.config({
+        base: '/layuiadmin/' //静态资源所在路径
+    }).extend({
+        index:'lib/index',
+        common:'common',
+        $tool:'tool',
+        html2canvas: 'layui_ext/html2canvas/html2canvas',
+        jspdf: 'layui_ext/jspdf/jspdf.debug'
+    }).use(['index','common','excel','$tool','html2canvas','jspdf'], function(exports){
+        var $ = layui.$
+            ,common = layui.common
+            ,$tool = layui.$tool
+            ,html2canvas = layui.html2canvas
+            ,jspdf = layui.jspdf
+            ,admin = layui.admin;
+
+        var queryArgs = $tool.getUrlParams();//获取查询参数
+        var classId = queryArgs.id;
+        var className = queryArgs.className;
+        var headers = layui.admin.getTokenHeader();
+
+
+        //动态赋值
+        function init(){
+
+            var loadIndex =  layer.load(1, {shade: [0.1, '#393D49']});
+            admin.req({
+                url:layui.setter.basePath +'/society/societyStudentAndCourse/studentTrainCheckPDFInfo.jsn',
+                data:{
+                    'classId':classId
+                },
+                method:"post",
+                success:function (data) {
+                    //第一部分
+                    var dateStart = common.DateFormat(new Date(),"yyyy-MM-dd HH:mm:ss");
+                    $("#schoolCompanyName").html(data.data.schoolCompanyName);
+                    $('#jiePinTime').html(dateStart);
+                    $('#opeName').html('操作人：'+data.data.opeName);
+                    firstData(data.data.list);
+
+                    layer.close(loadIndex);
+                }
+            });
+        }
+        init();
+
+
+        function firstData(data){
+            //studentTale
+            var html = '<tr>\n' +
+                '<td style="width: 7%;">序号</td>\n' +
+                '<td style="width: 9%;">姓名</td>\n' +
+                '<td style="width: 17%;">身份证号</td>\n' +
+                '<td style="width: 11%;">班级名称</td>\n' +
+                '<td style="width: 17%;">机构名称</td>\n' +
+                '<td style="width: 11%;">课程名称</td>\n' +
+                '<td style="width: 7%;">应修学时</td>\n' +
+                '<td style="width: 7%;">已修学时</td>\n' +
+                '<td style="width: 10%;">累计在线学习时长</td>\n' +
+                '<td style="width: 12%;">最后一次学习时间</td>\n' +
+                '<td style="width: 9%;">学习进度</td>\n' +
+                '<td style="width: 8%;">是否通过考试</td>\n' +
+                '<td style="width: 7%;">考试成绩</td>\n' +
+                '<td style="width: 7%;">考试次数</td>\n' +
+                '</tr>';
+            $.each(data, function(i,val){
+                html = html+'<tr>\n' +
+                    '<td >'+Number(i+1)+'</td>\n' +
+                    '<td >'+val.studentName+'</td>\n' +
+                    '<td >'+val.studentIdCardNum+'</td>\n' +
+                    '<td >'+val.className+'</td>\n' +
+                    '<td >'+val.schoolName+'</td>\n' +
+                    '<td >'+val.courseName+'</td>\n' +
+                    '<td >'+val.totalLessons+'</td>\n' +
+                    '<td >'+val.finishNodeNum+'</td>\n' +
+                    '<td >'+formatSeconds(val.studyTimeLength)+'</td>\n' +
+                    '<td >'+val.lastTime+'</td>\n' +
+                    '<td >'+val.studySituation+'</td>\n' +
+                    '<td >'+val.isTepar+'</td>\n' +
+                    '<td >'+val.testScore+'</td>\n' +
+                    '<td >'+val.testNum+'</td>\n' +
+                    '</tr>';
+            });
+            $('#studentTale').html(html);
+        }
+
+        exportData = function () {
+            var loadIndex =  parent.layer.load(1, {shade: [0.1, '#393D49']});
+            window.pageYOffset = 0;
+            document.documentElement.scrollTop = 0;
+            document.body.scrollTop = 0;
+            var pdf = new jsPDF('', 'pt', 'a4');
+            var flag1 = false;
+            var pageData1;
+            var imgHeight1;
+            html2canvas(document.getElementsByClassName('layui-card bodyDiv')[0],{useCORS:true,allowTaint : false, taintTest: true,scale: 2}).then(function (canvas) {
+                var contentWidth = canvas.width;
+                var contentHeight = canvas.height;
+                imgHeight1 = 590.28/contentWidth * contentHeight;
+                pageData1 = canvas.toDataURL('image/jpeg', 1.0);
+                flag1 = true;
+            })
+
+            var downLoadPdf = setInterval(function () {
+                if(flag1){
+                    pdf.addImage(pageData1, 'JPEG', 0, 0, 590.28, imgHeight1 );
+                    parent.layer.close(loadIndex);
+                    pdf.save(new Date().toLocaleString()+className+'学员随机抽查.pdf');
+                    clearInterval(downLoadPdf);
+                    // 将pdf输入为base格式的字符串
+                    var time = common.DateFormat(new Date(),"yyyy_MM_dd");
+                    var buffer = pdf.output("datauristring")
+                    // 将base64格式的字符串转换为file文件
+                    var myfile = dataURLtoFile(buffer, time+className+'学员随机抽查.pdf');
+                    var formdata = new FormData();
+                    formdata.append('file', myfile);
+                    formdata.append('fileType', 'STU_CHECK');
+                    admin.req({
+                        url:layui.setter.basePath +'/society/common/uploadPDFFile.jsn',
+                        method: "POST",
+                        data: formdata,
+                        headers:headers,
+                        datatype: 'json' ,
+                        cache: false ,
+                        traditional: true ,
+                        contentType: false ,
+                        processData: false ,
+                        success:function (data) {
+                            layer.msg('保存完成');
+                        }
+                    });
+
+                }
+            },300)
+
+        }
+        function formatSeconds(value) {
+            var theTime = parseInt(value);// 需要转换的时间秒
+            var theTime1 = 0;// 分
+            var theTime2 = 0;// 小时
+            var theTime3 = 0;// 天
+            if(theTime > 60) {
+                theTime1 = parseInt(theTime/60);
+                theTime = parseInt(theTime%60);
+                if(theTime1 > 60) {
+                    theTime2 = parseInt(theTime1/60);
+                    theTime1 = parseInt(theTime1%60);
+                    if(theTime2 > 24){
+                        //大于24小时
+                        theTime3 = parseInt(theTime2/24);
+                        theTime2 = parseInt(theTime2%24);
+                    }
+                }
+            }
+            var result = '';
+            if(theTime > 0){
+                result = ""+parseInt(theTime)+"秒";
+            }
+            if(theTime1 > 0) {
+                result = ""+parseInt(theTime1)+"分钟"+result;
+            }
+            if(theTime2 > 0) {
+                result = ""+parseInt(theTime2)+"小时"+result;
+            }
+            if(theTime3 > 0) {
+                result = ""+parseInt(theTime3)+"天"+result;
+            }
+            return result;
+        }
+//将base64转换为文件对象
+        function dataURLtoFile(dataurl, filename) {
+            var arr = dataurl.split(',');
+            var mime = arr[0].match(/:(.*?);/)[1];
+            var bstr = atob(arr[1]);
+            var n = bstr.length;
+            var u8arr = new Uint8Array(n);
+            while(n--){
+                u8arr[n] = bstr.charCodeAt(n);
+            }
+            //转换成file对象
+            return new File([u8arr], filename, {type:mime});
+            //转换成成blob对象
+            //return new Blob([u8arr],{type:mime});
+        }
+
+    });
+
+</script>
+</body>
+</html>
+

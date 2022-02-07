@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>课程管理</title>
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=0">
+    <link rel="stylesheet" href="/layuiadmin/layui/css/layui.css" media="all">
+    <link rel="stylesheet" href="/layuiadmin/style/admin.css" media="all">
+    <link rel="stylesheet" href="/layuiadmin/modules/layui_ext/dtree/dtree.css">
+    <link rel="stylesheet" href="/layuiadmin/modules/layui_ext/dtree/font/dtreefont.css">
+    <script type="text/javascript" src="../../../../layuiadmin/js/oos-sdk-6.0.min.js"></script>
+    <script type="text/javascript" src="../../../../layuiadmin/js/mimeutil.js"></script>
+    <script type="text/javascript" src="../../../../layuiadmin/js/pinyin/pinyin_dict_notone.js"></script>
+    <script type="text/javascript" src="../../../../layuiadmin/js/pinyin/pinyinUtil.js"></script>
+    <style type="text/css">
+        .layui-table-cell {
+            padding: 0 5px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="layui-fluid">
+    <div class="layui-row layui-col-space5">
+        <div class="layui-col-xs3 layui-col-sm3 layui-col-md3">
+            <div class="layui-card">
+                <div style="height: 550px;overflow: auto;" id="toolbarDiv">
+                    <ul id="majorTree" class="dtree" data-id="0"></ul>
+                </div>
+            </div>
+        </div>
+        <div class="layui-col-xs9 layui-col-sm9 layui-col-md9">
+            <div class="layui-card">
+                <div class="layui-form layui-card-header layuiadmin-card-header-auto">
+                    <div class="layui-form-item">
+                        <div class="layui-inline">
+                            <label class="layui-form-label">课程名称</label>
+                            <div class="layui-input-inline">
+                                <input type="text" name="queryObj.courseName" placeholder="请输入" autocomplete="off" class="layui-input">
+                            </div>
+                        </div>
+                        <!--    <div class="layui-inline">
+                                <label class="layui-form-label">搜索条件2</label>
+                                <div class="layui-input-inline">
+                                    <input type="text" name="queryObj.name" placeholder="请输入" autocomplete="off" class="layui-input">
+                                </div>
+                            </div>-->
+                        <div class="layui-inline">
+                            <button class="layui-btn layuiadmin-btn-comm layui-btn-sm" data-type="reload" lay-submit lay-filter="SocietySchoolCourse-search">
+                                <i class="layui-icon layui-icon-search layuiadmin-button-btn"></i>查询
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                <div class="layui-card-body">
+                    <table id="fileUrl-list" lay-filter="fileUrl-list"></table>
+                    <script type="text/html" id="table-fileUrl-list">
+                        <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del"><i class="layui-icon layui-icon-delete"></i>删除</a>
+                    </script>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script src="/layuiadmin/layui/layui.js"></script>
+<script>
+    layui.config({
+        base: '/layuiadmin/' //静态资源所在路径
+    }).extend({
+        index:'lib/index',
+        common:'common',
+        dtree:'layui_ext/dtree/dtree',
+        ctyun: 'ctyun/index'
+    }).use(['index','table', 'form','common','dtree','ctyun','laytpl','element'], function(exports){
+        var $ = layui.$
+            ,table = layui.table
+            ,common = layui.common
+            ,admin = layui.admin
+            ,dtree = layui.dtree
+            ,element = layui.element
+            ,ctyun  = layui.ctyun
+            ,laytpl = layui.laytpl
+            ,form = layui.form;
+
+        // 查询所有的专业初始化树
+        var headers = layui.admin.getTokenHeader();
+        var majorTree = dtree.render({
+            elem: "#majorTree",
+            scroll:"#toolbarDiv", // 绑定div元素
+            initLevel: "1",
+            type:"all"  ,// 改为全量加载，即取消自动加载
+            headers:headers,
+            url:layui.setter.basePath +'/society/societySchoolCourseNode/cyunVideoList.jsn', //模拟接口
+        });
+
+        // 绑定图标的点击事件
+        dtree.on("changeTree(majorTree)",function(obj){
+            if(obj.show){
+                var nodeId = obj.param.nodeId;
+                //查询专业下面的所有的课程分类
+                admin.req({
+                    url:layui.setter.basePath +'/society/societySchoolCourseNode/cyunVideoListCls.jsn',
+                    data:{'parentId':nodeId},
+                    method:"post",
+                    success:function (data) {
+                        // 调用内置函数，第二个参数为json数组，如果你不想访问默认的url，你可以自己使用ajax访问你的url，然后将data数据传入进来即可。
+                        majorTree.getChild($(obj.dom).parent("div"), data.data);
+                    },
+                });
+            }
+        });
+
+        // 绑定节点点击
+        dtree.on("node('majorTree')" ,function(obj){
+            if(obj.param.parentId=='ROOT'){
+                //查询专业下所有课程
+                table.reload('fileUrl-list', {
+                    where: {'id':obj.param.nodeId},page:{curr:1}
+                });
+            }else {
+                //查询课程分类下所有课程
+                table.reload('fileUrl-list', {
+                    where: {'id':obj.param.nodeId},page:{curr:1}
+                });
+            }
+        });
+
+        defineTable = function () {
+            var headers = layui.admin.getTokenHeader();
+            table.render({
+                elem: '#fileUrl-list' //指定原始表格的选择器（id选择器）
+                ,url:layui.setter.basePath +'/society/societySchoolCourseNode/selectByCyunVideo.jsn' //模拟接口
+                ,headers:headers
+                ,method: 'post'
+                ,height: 500
+                ,parseData: function(res){ //res 即为原始返回的数据
+                    debugger
+                    return {
+                        "code": res.success, //解析接口状态
+                        "msg": res.errMsg, //解析提示文本
+                        "count": res.totalCount, //解析数据长度
+                        "data": res.data //解析数据列表
+                    };
+                }
+                ,response: {
+                    statusCode: true //规定成功的状态码，默认：0
+                }
+                ,cols: [[
+                    {type: 'numbers', fixed: 'left',title: '序号'}
+                    /*,{field: 'createTime',align: 'center', width: 120, title: '创建时间'}*/
+                    ,{field: 'createTime',align: 'center', width: '10%', title: '创建时间',templet: function(d){
+                            return common.DateFormat(d.basicInfo.createTime,"yyyy-MM-dd");},sort: false}
+                    ,{field: 'fileId',align: 'center', width:'19%', title: '视频ID',sort: false}
+                    ,{field: 'classPath',align: 'center', width: '10%', title: '分类路径'
+                        ,templet: function(d){
+                            return d.basicInfo.classPath;
+                        }
+                    }
+                    ,{field: 'className',align: 'center', width:'10%', title: '课程名称',sort: false
+                        ,templet: function(d){
+                            return d.basicInfo.className;
+                        }
+                    }
+                    ,{field: 'mediaUrl',align: 'center', width: '40%', title: '视频地址',sort: false,
+                        templet: function (d) {
+                            return '<a lay-event="previewVo" style="cursor: pointer;\n' +
+                                'text-decoration: none;\n' +
+                                '    border-bottom: 1px solid #01aaed;\n' +
+                                '    color: #01aaed;">' +d.basicInfo.mediaUrl+'</a>';
+                        }
+                    }
+                    ,{title: '操作', width: '8%', align: 'center', fixed: 'right', toolbar: '#table-fileUrl-list'}
+                ]]
+                ,autoSort: false
+                ,page: false
+                ,text: {
+                    none: '暂无相关数据'
+                }
+            });
+
+            //为toolbar添加事件响应
+            table.on('tool(fileUrl-list)', function(obj){ //注：tool是工具条事件名，test是table原始容器的属性 lay-filter="对应的值"
+                /*var data = obj.data;*///获得当前行数据
+                //区分事件
+                switch(obj.event){
+                    case 'del':
+                        del(obj);
+                        break;
+                    case 'previewVo':
+                        previewVo(obj);
+                        break;
+                };
+            });
+        }
+        defineTable();
+
+        //视频预览
+        previewVo = function (obj) {
+            var addr = '<video src="'+obj.data.basicInfo.mediaUrl+'" controls="controls" autoplay="autoplay" width="790" height="550">您的浏览器不支持 video 标签。</video>';
+            layer.open({
+                type: 1
+                ,title: '视频预览'
+                ,maxmin: true
+                ,area: ['800px', '600px']
+                ,content: addr
+            });
+        }
+
+        //删除
+        del = function (obj) {
+            layer.confirm('确定删除此记录吗？', function(index){
+                admin.req({
+                    url:layui.setter.basePath +'/society/societySchoolCourseNode/deleteCyunVideo.jsn',
+                    data:{'ids':obj.data.FileId},
+                    method:"post",
+                    success:function (data) {
+                        layer.close(index);
+                        if(data.success){
+                            table.reload('fileUrl-list',
+                                {page:
+                                        { curr: common.deleteJumpPage(obj) // 执行页面跳转方法
+                                        }
+                                }
+                            );
+                            layer.msg('删除成功', {
+                                icon: 1
+                            });
+                        }
+                    },
+                });
+            });
+        }
+    });
+
+</script>
+</body>
+</html>
+

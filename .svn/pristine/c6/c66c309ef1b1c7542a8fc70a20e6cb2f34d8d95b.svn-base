@@ -1,0 +1,46 @@
+<section class="aui-flexView">
+    <header class="aui-navBar aui-navBar-fixed">
+		<a href="javascript:history.back(-1);" class="aui-navBar-item">
+		    <i class="iconfont icon-fanhui "></i>	
+		</a>
+		<div class="aui-center">
+			<span class="aui-center-title">新闻公告</span>
+		</div>
+		<a href="javascript:;" class="aui-navBar-item" >
+			<!--<i class="icon icon-search0"></i>-->
+		</a>
+	</header>
+    
+    <section class="aui-scrollView">
+        
+          <div class="aui-course-head">
+            <h4>{{article.title}}</h4>
+               <div class="aui-flex" style="padding:.5rem 0px!important;">
+                    <div class="aui-gro-user">
+                        <img ng-src="{{article.mainPhoto}}" alt="">
+                    </div>
+                    <div class="aui-flex-box">
+                        <!--<h6>沐沐20293</h6>-->
+                        <em>{{article.publishTime}}</em><em>{{article.clickNum}} 浏览</em>
+                    </div>
+                    <!--<div class="aui-button-add">
+                        <button>
+                            <i class="icon icon-add"></i>关注
+                        </button>
+                    </div>-->
+                </div>
+                <div class="aui-com-text" ng-bind-html="article.content">
+
+                </div>
+          </div>
+        
+    <div class="blank10"></div>
+    </section>   
+    
+    
+  
+    
+</section>
+
+</body>
+</html>

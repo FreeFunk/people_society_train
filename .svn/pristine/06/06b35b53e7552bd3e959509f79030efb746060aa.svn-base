@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/people-society-train-qt/people-society.iml" filepath="$PROJECT_DIR$/people-society-train-qt/people-society.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/people_society_train.iml" filepath="$PROJECT_DIR$/.idea/people_society_train.iml" />
+      <module fileurl="file://$PROJECT_DIR$/tdp-codegen/tdp-codegen.iml" filepath="$PROJECT_DIR$/tdp-codegen/tdp-codegen.iml" />
+    </modules>
+  </component>
+</project>

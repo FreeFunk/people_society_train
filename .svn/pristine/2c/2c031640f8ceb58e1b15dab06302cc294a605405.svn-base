@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>标题</title>
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=0">
+    <link rel="stylesheet" href="/layuiadmin/layui/css/layui.css" media="all">
+    <link rel="stylesheet" href="/layuiadmin/style/admin.css" media="all">
+</head>
+<body>
+<!--<div class="layui-card" style="margin-bottom: -5px">-->
+<!--<div class="layui-form layui-card-header">-->
+<!--<div class="layui-form-item">-->
+<!--<div class="layui-row layui-col-md12">-->
+<!--<a href="../schoolcourse/SocietySchoolCourseListForMyOpen.html">-->
+<!--<div id="monthCount"  class="layui-col-xs6 layui-col-sm6 layui-col-md6" style="border-right: 1px solid #f0f0f0;text-align: center">-->
+<!--<font class="font-title" style="font-weight:normal;color: #949494;">我的课程</font>-->
+<!--</div>-->
+<!--</a>-->
+<!--<a href="MySocietyNodeResourcesList.html">-->
+<!--<div id="yearCount" class="layui-col-xs6 layui-col-sm6 layui-col-md6" style="text-align: center" >-->
+<!--<font class="font-title" >我的课件</font>-->
+<!--</div>-->
+<!--</a>-->
+<!--</div>-->
+<!--</div>-->
+<!--</div>-->
+<!--</div>-->
+<!--<div class="layui-tab layui-tab-brief" lay-filter="docDemoTabBrief">-->
+    <!--<ul class="layui-tab-title " id="tabTitle">-->
+        <!--<li > <a href="../schoolcourse/SocietySchoolCourseListForMyOpen.html">-->
+            <!--<div   class="layui-col-xs6 layui-col-sm6 layui-col-md6" style="border-right: 1px solid #f0f0f0;text-align: center">-->
+                <!--<font class="font-title" style="font-weight:normal;color: #949494;">我的课程</font>-->
+            <!--</div>-->
+        <!--</a></li>-->
+        <!--<li class="layui-this">-->
+            <!--<a href="MySocietyNodeResourceList.html">-->
+                <!--<div  class="layui-col-xs6 layuiq-col-sm6 layui-col-md6" style="text-align: center" >-->
+                    <!--<font class="font-title" >我的课件</font>-->
+                <!--</div>-->
+            <!--</a></li>-->
+
+    <!--</ul>-->
+<!--</div>-->
+<div class="layui-fluid">
+    <div class="layui-card">
+        <div class="layui-form layui-card-header layuiadmin-card-header-auto">
+            <div class="layui-form-item">
+                <div class="layui-inline">
+                    <label class="layui-form-label">课件名称</label>
+                    <div class="layui-input-inline">
+                        <input type="text" name="queryObj.nodeName" placeholder="请输入" autocomplete="off" class="layui-input">
+                    </div>
+                </div>
+                <!--<div class="layui-inline">-->
+                <!--<label class="layui-form-label">搜索条件2</label>-->
+                <!--<div class="layui-input-inline">-->
+                <!--<input type="text" name="queryObj.name" placeholder="请输入" autocomplete="off" class="layui-input">-->
+                <!--</div>-->
+                <!--</div>-->
+                <div class="layui-inline">
+                    <button class="layui-btn layuiadmin-btn-comm layui-btn-sm" data-type="reload" lay-submit lay-filter="SocietyNodeResources-search">
+                        <i class="layui-icon layui-icon-search layuiadmin-button-btn"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+        <div class="layui-card-body">
+            <!--<div style="padding-bottom: 10px;">-->
+            <!--<button class="layui-btn layuiadmin-btn-comm  layui-btn-sm" data-type="batchdel">删除</button>-->
+            <!--<button class="layui-btn layuiadmin-btn-comm  layui-btn-sm" data-type="add">添加</button>-->
+            <!--</div>-->
+            <table id="SocietyNodeResources-list" lay-filter="SocietyNodeResources-list"></table>
+            <!--<script type="text/html" id="toolbarDemo">-->
+                <!--<div class="layui-btn-container " hidden>-->
+                    <!--<button class="layui-btn layui-btn-sm" lay-event="getCheckData">获取选中行数据</button>-->
+                <!--</div>-->
+            <!--</script>-->
+            <input type="text" hidden id="choseRowData">
+        </div>
+    </div>
+</div>
+<script src="/layuiadmin/layui/layui.js"></script>
+<script>
+    //我的课件
+    layui.config({
+        base: '/layuiadmin/' //静态资源所在路径
+    }).extend({
+        index:'lib/index',
+        common:'common'
+    }).use(['index','table', 'form','common'], function(exports){
+        var $ = layui.$
+            ,table = layui.table
+            ,common = layui.common
+            ,admin = layui.admin
+            ,form = layui.form;
+
+        //查询
+        form.on('submit(SocietyNodeResources-search)', function(data){
+            var field = data.field;
+            //执行重载
+            table.reload('SocietyNodeResources-list', {
+                where: field,page:{curr:1}
+            });
+        });
+
+
+        /*
+        * 定义表格
+        * */
+        defineTable = function () {
+            var headers = layui.admin.getTokenHeader();
+            table.render({
+                elem: '#SocietyNodeResources-list' //指定原始表格的选择器（id选择器）
+                ,url:layui.setter.basePath +'/society/societyNodeResources/getMyOpenResources.jsn' //模拟接口
+                ,headers:headers
+                ,method: 'post'
+                // ,toolbar: '#toolbarDemo'
+                ,parseData: function(res){ //res 即为原始返回的数据
+                    return {
+                        "code": res.success, //解析接口状态
+                        "msg": res.errMsg, //解析提示文本
+                        "count": res.totalCount, //解析数据长度
+                        "data": res.list //解析数据列表
+                    };
+                }
+                ,response: {
+                    statusCode: true //规定成功的状态码，默认：0
+                }
+                ,cols: [[
+                    // {type: 'checkbox', fixed: 'left'}
+                    {type:'radio'},
+                    {field: 'id',align: 'center', width: 200, title: '主键',sort: true,hide:true}
+                    // ,{field: 'createTime',align: 'center', width: 200, title: '创建时间',templet: function(d){
+                    //         return common.DateFormat(d.createTime,"yyyy-MM-dd");},sort: true}
+                    // ,{field: 'createUserId',align: 'center', width: 200, title: '创建人ID',sort: true,hide:true}
+                    // ,{field: 'createUserName',align: 'center', width: 200, title: '创建人',sort: true,hide:true}
+                    // ,{field: 'ownerSchoolId',align: 'center', width: 200, title: '所属学校ID',sort: true,hide:true}
+                    ,{field: 'ownerSchoolName',align: 'center', width: 200, title: '所属学校名',sort: true}
+                    // ,{field: 'ownerMajorId',align: 'center', width: 200, title: '所属专业ID',sort: true,hide:true}
+                    ,{field: 'ownerMajorName',align: 'center', width: 200, title: '所属专业名',sort: true}
+                    // ,{field: 'ownerCourseClsId',align: 'center', width: 200, title: '所属课程分类ID',sort: true,hide:true}
+                    ,{field: 'ownerCourseClsName',align: 'center', width: 200, title: '所属课程分类名',sort: true}
+                    // ,{field: 'ownerCourseId',align: 'center', width: 200, title: '所属课程ID',sort: true,hide:true}
+                    ,{field: 'ownerCourseName',align: 'center', width: 200, title: '课程名称',sort: true}
+                    ,{field: 'nodeName',align: 'center', width: 200, title: '章节名称',sort: true}
+                    ,{field: 'nodeTimeLength',align: 'center', width: 200, title: '章节时长(秒)',sort: true}
+                    ,{field: 'imageUrl',align: 'center', width: 200, title: '视频封面',sort: true}
+                    ,{field: 'fileUrl',align: 'center', width: 200, title: '视频地址',sort: true}
+                    // ,{field: 'questionNum',align: 'center', width: 200, title: '小节节习题数',sort: true}
+                    // ,{field: 'orderNum',align: 'center', width: 200, title: '排序号',sort: true}
+                    // ,{field: 'dataState',align: 'center', width: 200, title: '数据状态',sort: true}
+                    // ,{field: 'fileId',align: 'center', width: 200, title: 'fileId',sort: true}
+                    // ,{field: 'isOpen',align: 'center', width: 200, title: 'isOpen',sort: true}
+                    ,{field: 'applySchoolId',align: 'center', width: 200, title: 'applySchoolId',sort: true,hide:true}
+                    // ,{field: 'ownerNodeResourcesId',align: 'center', width: 200, title: 'ownerNodeResourcesId',sort: true,hide:true}
+                    // ,{field: 'isRelationPublicCourse',align: 'center', width: 200, title: 'isRelationPublicCourse',sort: true,hide:true}
+                    //  ,{title: '操作', minWidth: 150, align: 'center', fixed: 'right', toolbar: '#table-SocietyNodeResources-list'}
+                ]]
+                ,autoSort: false
+                ,page: true
+                ,limit: 10
+                ,limits: [10, 20, 30,40]
+                ,text: {
+                    none: '暂无相关数据'
+                }
+            });
+
+            //为toolbar添加事件响应
+            // table.on('tool(SocietyNodeResources-list)', function(obj){ //注：tool是工具条事件名，test是table原始容器的属性 lay-filter="对应的值"
+            //     /*var data = obj.data;*///获得当前行数据
+            //     var checkStatus =table.checkStatus(obj.config.id);
+            //     //区分事件
+            //     switch(obj.event){
+            //         case 'chose':
+            //             var data = checkStatus.data;
+            //             $("#choseRowData").val(JSON.stringify(data))
+            //             break;
+            //     };
+            // });
+
+
+            table.on('row(SocietyNodeResources-list)', function(obj){
+
+                var data = obj.data;
+                $("#choseRowData").val(JSON.stringify(data))
+
+            });
+
+
+            //监听排序事件
+            table.on('sort(SocietyNodeResources-list)', function(obj){ //注：sort是工具条事件名，LAY-app-province-list是table原始容器的属性 lay-filter="对应的值"
+                var sort = obj.field;
+                //默认排序
+                switch(obj.field){
+                    case 'id':
+                        sort ="ID";
+                        break;
+                    case 'createTime':
+                        sort ="CREATE_TIME";
+                        break;
+                    case 'createUserId':
+                        sort ="CREATE_USER_ID";
+                        break;
+                    case 'createUserName':
+                        sort ="CREATE_USER_NAME";
+                        break;
+                    case 'ownerSchoolId':
+                        sort ="OWNER_SCHOOL_ID";
+                        break;
+                    case 'ownerSchoolName':
+                        sort ="OWNER_SCHOOL_NAME";
+                        break;
+                    case 'ownerMajorId':
+                        sort ="OWNER_MAJOR_ID";
+                        break;
+                    case 'ownerMajorName':
+                        sort ="OWNER_MAJOR_NAME";
+                        break;
+                    case 'ownerCourseClsId':
+                        sort ="OWNER_COURSE_CLS_ID";
+                        break;
+                    case 'ownerCourseClsName':
+                        sort ="OWNER_COURSE_CLS_NAME";
+                        break;
+                    case 'ownerCourseId':
+                        sort ="OWNER_COURSE_ID";
+                        break;
+                    case 'ownerCourseName':
+                        sort ="OWNER_COURSE_NAME";
+                        break;
+                    case 'nodeName':
+                        sort ="NODE_NAME";
+                        break;
+                    case 'nodeTimeLength':
+                        sort ="NODE_TIME_LENGTH";
+                        break;
+                    case 'imageUrl':
+                        sort ="IMAGE_URL";
+                        break;
+                    case 'fileUrl':
+                        sort ="FILE_URL";
+                        break;
+                    case 'questionNum':
+                        sort ="QUESTION_NUM";
+                        break;
+                    case 'orderNum':
+                        sort ="ORDER_NUM";
+                        break;
+                    case 'dataState':
+                        sort ="DATA_STATE";
+                        break;
+                    case 'fileId':
+                        sort ="FILE_ID";
+                        break;
+                    case 'isOpen':
+                        sort ="IS_OPEN";
+                        break;
+                    case 'applySchoolId':
+                        sort ="APPLY_SCHOOL_ID";
+                        break;
+                    case 'ownerNodeResourcesId':
+                        sort ="OWNER_NODE_RESOURCES_ID";
+                        break;
+                    case 'isRelationPublicCourse':
+                        sort ="IS_RELATION_PUBLIC_COURSE";
+                        break;
+                };
+                if(obj.type==null){
+                    return;
+                }
+                //有些时候，你可能需要根据当前排序的字段，重新向服务端发送请求，从而实现服务端排序，如：
+                table.reload('SocietyNodeResources-list', {
+                    initSort: obj//记录初始排序，如果不设的话，将无法标记表头的排序状态。
+                    ,where: { //请求参数（注意：这里面的参数可任意定义，并非下面固定的格式）
+                        orderBy: sort+" "+obj.type //排序字段
+                    }
+                });
+            });
+        }
+        defineTable();
+
+
+
+        //绑定点击事件
+        $('.layui-btn.layuiadmin-btn-comm.layui-btn-sm').on('click', function(){
+            var type = $(this).data('type');
+            active[type] ? active[type].call(this) : '';
+        });
+
+    });
+
+</script>
+</body>
+</html>
+

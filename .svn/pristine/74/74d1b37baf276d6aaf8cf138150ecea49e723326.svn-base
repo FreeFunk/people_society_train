@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>新增</title>
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=0">
+    <link rel="stylesheet" href="/layuiadmin/layui/css/layui.css" media="all">
+    <link rel="stylesheet" href="/layuiadmin/style/app.css" media="all">
+</head>
+<body>
+
+<div class="layui-form" lay-filter="SocietyStudentReplaceFaceImg-form" id="SocietyStudentReplaceFaceImg-form" style="padding: 20px 30px 0 0;">
+    <input id="id" name="id" type="text" hidden>
+    <div class="layui-row">
+        <div class="layui-col-xs6 layui-col-sm6 layui-col-md6">
+            <div class="layui-form-item">
+                <label class="layui-form-label" style="font-size:13px;">原人脸照</label>
+                <div class="layui-upload">
+                    <img onclick="getImg(this)" style="height: 280px;" class="layui-upload-img" id="oldFaceShowImg">
+                    <input type="hidden" id="oldFaceImage" name="oldFaceImage"  class="layui-input">
+                </div>
+            </div>
+        </div>
+        <div class="layui-col-xs6 layui-col-sm6 layui-col-md6">
+            <div class="layui-form-item">
+                <label class="layui-form-label" style="font-size:13px;">人脸照</label>
+                <div class="layui-upload">
+                    <button type="button" class="layui-btn" id="faceUpload">上传图片</button>
+                    <div class="layui-upload-list">
+<!--                        <label class="layui-form-label" style="font-size:13px;">封面图</label>-->
+                        <img onclick="getImg(this)" style="height: 210px;" class="layui-upload-img" id="faceShowImg">
+                        <input type="hidden" id="faceImageUrl" name="faceImageUrl"  class="layui-input">
+                        <!--<p id="demoText"></p>-->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="layui-form-item layui-hide">
+        <input type="button" lay-submit lay-filter="SocietyStudentReplaceFaceImg-form-edit" id="SocietyStudentReplaceFaceImg-form-edit" value="确认添加">
+    </div>
+</div>
+
+<script src="/layuiadmin/layui/layui.js"></script>
+<script>
+    layui.config({
+        base: '/layuiadmin/' //静态资源所在路径
+    }).extend({
+        index: 'lib/index', //主入口模块
+        $tool:'tool',
+        viewer: 'layui_ext/viewer/viewer'
+    }).use(['index', 'form','laydate','$tool','upload','laytpl','viewer'], function(){
+        var $ = layui.$
+            ,laydate = layui.laydate
+            ,admin  = layui.admin
+            ,$tool = layui.$tool
+            ,upload  = layui.upload
+            ,laytpl = layui.laytpl
+            ,viewer = layui.viewer
+            ,form = layui.form;
+
+
+        //人脸上传
+        var headers = layui.admin.getTokenHeader();
+        var uploadFace = upload.render({
+            elem: '#faceUpload'
+            ,url: layui.setter.basePath +'/society/common/uploadTempFile.jsn' //改成您自己的上传接口
+            ,headers:headers
+            ,accept:'images'
+            ,acceptMime:'image/*'
+            ,size:5120*10 //设置文件最大可允许上传的大小，单位 KB
+            ,before: function(obj){
+                //预读本地文件示例，不支持ie8
+                obj.preview(function(index, file, result){
+                    $('#faceShowImg').attr('src', result); //图片链接（base64）
+                });
+            }
+            ,done: function(res){
+                //如果上传失败
+                if(res.code > 0){
+                    return layer.msg('上传失败');
+                }
+                //上传成功
+                $("#faceImageUrl").val(res.data);
+            }
+        });
+
+        //监听提交
+        form.on('submit(SocietyStudentReplaceFaceImg-form-edit)', function(data){
+            // parent.layer.load(1, {shade: [0.1, '#393D49']});
+            var faceImageUrl = $("#faceImageUrl").val();
+            var studentId = $("#id").val();
+            var faceImageUrl = $("#faceImageUrl").val();
+            // var idCardImage = $("#idCardImage").val();
+            if(faceImageUrl==''){
+                return layer.msg('请上传人脸照!');
+            }else {//views/society/schooladmin/schoolclassadmininfo/SocietySchoolClassStudentTrainCountList.html
+                var index = parent.layer.getFrameIndex(window.name); //先得到当前iframe层的索引
+                //提交 Ajax 成功后，关闭当前弹层并重载表格
+                admin.req({
+                    url:layui.setter.basePath +'/society/societyStudent/replaceFaceImg.jsn',
+                    data:{
+                        'faceImageUrl':faceImageUrl,
+                        'studentId':studentId
+                    },
+                    method:"post",
+                    success:function (data) {
+                        if(data.success){
+                            parent.layui.table.reload('SocietyStudent-list'); //重载表格
+                            parent.layer.closeAll(); //再执行关闭
+                            parent.layer.msg('替换成功', {
+                                icon: 1
+                            });
+                        }else{
+                            parent.layer.msg(data.errMsg, {
+                            });
+                        }
+
+                    },
+                });
+            }
+        });
+        //点击图片变大
+        getImg = function (value) {
+            $(value.parentElement.parentElement).viewer();
+        }
+
+    })
+</script>
+</body>
+</html>

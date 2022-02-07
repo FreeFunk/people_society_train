@@ -1,0 +1,1019 @@
+package com.edgedo.society.controller;
+
+
+import java.io.*;
+import java.net.URL;
+import java.net.URLConnection;
+import java.util.*;
+
+import com.edgedo.common.base.BaseController;
+import com.edgedo.common.constant.ThirdPartyType;
+import com.edgedo.common.shiro.User;
+import com.edgedo.common.util.*;
+import com.edgedo.dataenum.SchoolConfigKeyEnum;
+import com.edgedo.society.constant.RedisKeyConstant;
+import com.edgedo.society.entity.*;
+import com.edgedo.society.queryvo.SocietyStudentQuery;
+import com.edgedo.society.queryvo.SocietyStudentView;
+import com.edgedo.society.service.*;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiOperation;
+import jxl.Cell;
+import jxl.Sheet;
+import jxl.Workbook;
+import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.IOUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.ModelAndView;
+
+
+@Api(tags = "SocietyStudent")
+@Controller
+@RequestMapping("/society/societyStudent")
+public class SocietyStudentController extends BaseController{
+
+	@Autowired
+	RedisUtil redisUtil;
+	@Value("${app.faceai.maxfacelength}")
+	private Integer app_faceai_maxfacelength;
+	@Value("${app.faceai.imgcompresswidth}")
+	private Integer app_faceai_imgcompresswidth;
+
+	@Value("${app.globle.faceUrl}")
+	private String globleFaceUrl;
+	@Value("${app.globle.idcardUrl}")
+	private String globleIdcardUrl;
+
+	@Value("${app.server.temFileForder}")
+	private String serverTempfile;
+	@Value("${app.server.fileForder}")
+	private String serverUpfile;
+	@Autowired
+	private SocietyStudentService service;
+	@Autowired
+	private SocietySchoolService schoolService;
+	@Autowired
+	private SocietySchoolClassService schoolClassService;
+	@Autowired
+	private SocietySchoolClassAndStudentService classAndStudentService;
+	@Autowired
+	private SocietySchoolClassAdminService societySchoolClassAdminService;
+	@Autowired
+	private SocietySchoolClassService societySchoolClassService;
+	@Autowired
+	private SocietySchoolConfigService societySchoolConfigService;
+	@Autowired
+	private SocietyStudentUniqueService societyStudentUniqueService;
+
+	
+	/**
+	 * 分页查询
+	 * @param query
+	 * @return
+	 */
+	@ApiOperation(value = "分页查询SocietyStudent", notes = "分页查询SocietyStudent")
+	@ApiImplicitParam(name = "access-token", value = "用户登录秘钥", paramType = "header", required = true, dataType = "String")
+	@RequestMapping(value = "/listpage",method = RequestMethod.POST)
+	public ModelAndView listpage(@ModelAttribute SocietyStudentQuery query){
+		ModelAndView modelAndView = new ModelAndView();
+		service.listPage(query);
+		buildResponse(modelAndView,query);
+		return modelAndView;
+	}
+
+	/**
+	 * 后台人工实名认证功能
+	 * 根据学生id 修改学生的身份证 和 人脸照片
+	 * @param faceImageUrl 人脸照
+	 * @param idCardImage  身份昭
+	 * @param studentId  学生id
+	 * @return
+	 */
+	@RequestMapping(value = "/idaCardAndFaceMatching",method = RequestMethod.POST)
+	public ModelAndView idaCardAndFaceMatching(String faceImageUrl,String idCardImage,String studentId){
+		ModelAndView modelAndView = new ModelAndView();
+		User user = getLoginUser();
+		String schoolId = user.getCompId();
+		SocietySchool school = schoolService.loadById(schoolId);
+		//判断是否存在学校
+		if(school == null){
+			return buildErrorResponse(modelAndView,"未查询到学校信息！");
+		}
+		//查询相关配置
+		String realNameState = societySchoolConfigService.getSchoolConfigValue(schoolId, SchoolConfigKeyEnum.REAL_NAME_STATE+"");
+		if("".equals(realNameState.trim())){
+			//默认停用实名匹配
+			realNameState = "0";
+		}
+		if("0".equals(realNameState)){
+
+			//1.拿到当前学生 查询全局表
+			SocietyStudent student = service.loadById(studentId);
+			SocietyStudentUnique societyStudentUnique =
+					societyStudentUniqueService.loadById(student.getStudentIdCardNum());
+			if(societyStudentUnique==null){
+				societyStudentUnique = service.insertStuUniqueInNull(student);
+			}
+			//根据进来的文件字符串 匹配 相等则复制原先 全局表uniqe 的文件  复制到指定文件夹 同时更新全局uniq表的路径
+			//						若不相等 获取 当前上传的文件路径 作为主路径  同时更新uniq表
+			//uniq 路径/tempfile/2020/07/13/b366f90c431940a1bf78e706fa06f7c6.jpg  前台是E:/
+			String faceUrl = "";
+			String idcardUrl = "";
+			if(societyStudentUnique.getFaceImageUrl() != null){
+				if(faceImageUrl.equals(societyStudentUnique.getFaceImageUrl())){
+					//前台并没有上传 后台也存在 赋值 faceUrl做为复制路径
+					faceUrl = societyStudentUnique.getFaceImageUrl();
+				}//前台上传 后台存在 将后台的uniq表记录覆盖
+			}
+			if(societyStudentUnique.getIdCardImage() != null){
+				if(idCardImage.equals(societyStudentUnique.getIdCardImage())){
+					//前台并没有上传 后台也存在 赋值 idcardUrl做为复制路径
+					idcardUrl = societyStudentUnique.getIdCardImage();
+				}//前台上传 后台存在 将后台的uniq表记录覆盖
+			}
+			/**
+			 * 第一种情况： "" in(人脸临时文件没有或者人脸照被替换。证件照临时文件有，并且证件照没有上传)
+			 * 第二种情况： in ""(人脸照临时文件有，人脸没有上传。证件照临时文件没有或者证件照被替换 )
+			 * 第三种情况： "" ""(临时文件的照片都没有或者都被替换)
+			 * 第四种情况： in in(临时文件都有，都没有上传新的照片)
+			 */
+			// /in ""(人脸没有上传上传了一个  临时文件没有 ) /"" ""(都上传了) /inin(都没有上传,临时 文件有)
+			if (faceUrl.equals("") & idcardUrl.equals("")){//上传了两张照片
+				service.updateGlobleAndStu(student,societyStudentUnique,faceImageUrl,idCardImage,studentId,user);
+			}else {
+				service.updateIdCardAndFaceImgIsOneAndTwo(faceUrl,idcardUrl,student,societyStudentUnique,faceImageUrl,idCardImage,studentId,user);
+			}
+			societyStudentUniqueService.clearStudentCatch(societyStudentUnique);
+			service.clearStudentCatch(student);
+		}
+		return buildResponse(modelAndView);
+	}
+
+	/**
+	 * 替换人脸照片
+	 * @param faceImageUrl
+	 * studentId
+	 * @return
+	 */
+	@RequestMapping(value = "/replaceFaceImg",method = RequestMethod.POST)
+	public ModelAndView replaceFaceImg(String faceImageUrl,String studentId){
+		ModelAndView modelAndView = new ModelAndView();
+		SocietyStudent societyStudent = service.loadById(studentId);
+		SocietyStudentUnique societyStudentUnique =
+				societyStudentUniqueService.loadById(societyStudent.getStudentIdCardNum());
+
+		//1.将图片压缩
+		String face = "";//上传数据库的记录
+		String facePrefix = globleFaceUrl;//路径前缀
+		File fileFce = new File(faceImageUrl);//文件对象
+		try {
+			//压缩人脸
+			//判断如果图片小于40k 就不进行压缩
+			//原有人脸
+			String faceOld = FileUtil.getImageBase64Str(fileFce);
+			int base64Length = faceOld.length();
+			int base64Kb = (int)(base64Length*0.75/1024);
+			if(base64Kb>=app_faceai_maxfacelength){
+				faceOld = FileUtil.compressImg(faceOld,app_faceai_imgcompresswidth);
+			}
+			face = facePrefix + FileUtil.saveBase64Img(faceOld,serverUpfile+facePrefix,true);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		//2.将原有的人脸图片删除
+		String serverFaceUrl = societyStudentUnique.getFaceImageUrl();
+		if (serverFaceUrl.indexOf("/tempfile")==-1){//可能存在临时文件
+			File serverFaceFile = new File(serverUpfile+serverFaceUrl);
+			serverFaceFile.delete();
+		}
+		//3.替换现有的图片 更新所有学生的人脸
+		societyStudentUnique.setFaceImageUrl(face);
+		societyStudentUnique.setHeadPhoto(face);
+		societyStudentUniqueService.update(societyStudentUnique);
+		List<SocietyStudent> list =
+				service.selectByPhoneAndIdCardAll(societyStudentUnique.getStudentPhoneNum(),societyStudentUnique.getStudentIdCardNum());
+		for(SocietyStudent societyStudent1 : list){
+			societyStudent1.setFaceImageUrl(face);
+			societyStudent1.setHeadPhoto(face);
+			service.updateById(societyStudent1);
+		}
+		buildResponse(modelAndView);
+		return modelAndView;
+	}
+
+	/**
+	 * 分页查询
+	 * @param query
+	 * @return
+	 */
+	@ApiOperation(value = "分页查询SocietyStudent", notes = "分页查询SocietyStudent")
+	@ApiImplicitParam(name = "access-token", value = "用户登录秘钥", paramType = "header", required = true, dataType = "String")
+	@RequestMapping(value = "/schoolStudentListpage",method = RequestMethod.POST)
+	public ModelAndView schoolStudentListpage(@ModelAttribute SocietyStudentQuery query){
+		ModelAndView modelAndView = new ModelAndView();
+		User user = getLoginUser();
+		String schoolId = user.getCompId();
+		query.getQueryObj().setOwnerSchoolId(schoolId);
+		service.listPage(query);
+		buildResponse(modelAndView,query);
+		return modelAndView;
+	}
+
+	/**
+	 * 人社查看课后习题统计
+	 * @param query
+	 * @return
+	 */
+	@RequestMapping(value = "/schoolStudentListpageRenShe",method = RequestMethod.POST)
+	public ModelAndView schoolStudentListpageRenShe(@ModelAttribute SocietyStudentQuery query){
+		ModelAndView modelAndView = new ModelAndView();
+		service.listPage(query);
+		buildResponse(modelAndView,query);
+		return modelAndView;
+	}
+
+	@RequestMapping(value = "/schoolClassAdminStudentListpage",method = RequestMethod.POST)
+	public ModelAndView schoolClassAdminStudentListpage(@ModelAttribute SocietyStudentQuery query){
+		ModelAndView modelAndView = new ModelAndView();
+		User user = getLoginUser();
+		String schoolId = user.getCompId();
+		query.getQueryObj().setOwnerSchoolId(schoolId);
+		String classAdminId = societySchoolClassAdminService.selectBySysUserId(user.getUserId());
+		List<String> classId = societySchoolClassService.selectByClassAdminId(classAdminId);
+		if(classId.size()==0){
+			return buildResponse(modelAndView,query);
+		}else {
+			List<String> studentList = classAndStudentService.selectBySchoolIdAndClassId(schoolId,classId);
+			query.setStudentIdList(studentList);
+			service.schoolClassAdminStudentListpage(query);
+			buildResponse(modelAndView,query);
+			return modelAndView;
+		}
+	}
+
+	/**
+	 * 不分页查询
+	 * @param query
+	 * @return
+	 */
+	@ApiOperation(value = "不分页查询SocietyStudent", notes = "不分页查询SocietyStudent")
+	@ApiImplicitParam(name = "access-token", value = "用户登录秘钥", paramType = "header", required = true, dataType = "String")
+	@RequestMapping(value = "/listByObj",method = RequestMethod.POST)
+	public ModelAndView listByObj(@ModelAttribute SocietyStudentQuery query){
+		ModelAndView modelAndView = new ModelAndView();
+		service.listByObj(query);
+		buildResponse(modelAndView,query);
+		return modelAndView;
+	}
+
+	/**
+	 * 不分页查询，学校管理员
+	 * @param query
+	 * @return
+	 */
+	@ApiOperation(value = "不分页查询SocietyStudent", notes = "不分页查询SocietyStudent")
+	@ApiImplicitParam(name = "access-token", value = "用户登录秘钥", paramType = "header", required = true, dataType = "String")
+	@RequestMapping(value = "/schoolStudentlistByObj",method = RequestMethod.POST)
+	public ModelAndView schoolStudentlistByObj(@ModelAttribute SocietyStudentQuery query){
+		ModelAndView modelAndView = new ModelAndView();
+		User user = getLoginUser();
+		String schoolId = user.getCompId();
+		query.getQueryObj().setOwnerSchoolId(schoolId);
+		service.listByObj(query);
+		buildResponse(modelAndView,query);
+		return modelAndView;
+	}
+
+	/**
+	 * 班级分页查询学员列表
+	 * @param query
+	 * @return
+	 */
+	@ApiOperation(value = "分页查询SocietyStudent", notes = "分页查询SocietyStudent")
+	@ApiImplicitParam(name = "access-token", value = "用户登录秘钥", paramType = "header", required = true, dataType = "String")
+	@RequestMapping(value = "/classStudentListpage",method = RequestMethod.POST)
+	public ModelAndView classStudentListpage(@ModelAttribute SocietyStudentQuery query,String classId){
+		ModelAndView modelAndView = new ModelAndView();
+		List<String> studentIdList = classAndStudentService.selectStudentIdByClass(classId);
+		if(studentIdList.size() > 0){
+			query.setStudentIdList(studentIdList);
+			service.classStudentListPage(query);
+		}
+		buildResponse(modelAndView,query);
+		return modelAndView;
+	}
+
+
+	
+
+	/**
+	 * 新增修改
+	 * @param voObj
+	 * @return
+	 */
+	@ApiOperation(value = "新增修改SocietyStudent", notes = "新增修改SocietyStudent")
+	@ApiImplicitParam(name = "access-token", value = "用户登录秘钥", paramType = "header", required = true, dataType = "String")
+	@RequestMapping(value = "/saveOrUpdate",method = RequestMethod.POST)
+	public ModelAndView saveOrUpdate(SocietyStudent voObj){
+		ModelAndView modelAndView = new ModelAndView();
+		String errMsg = "";
+		String id = voObj.getId();
+		if(id==null || id.trim().equals("")){
+			errMsg = service.insert(voObj);
+		}else{
+			errMsg = service.update(voObj);
+		}
+		if(errMsg!=null && !errMsg.equals("")){
+			buildErrorResponse(modelAndView, errMsg);
+		}else{
+			buildResponse(modelAndView);
+		}
+		return modelAndView;
+	}
+
+	@RequestMapping(value = "/saveOrUpdateForSchool",method = RequestMethod.POST)
+	public ModelAndView saveOrUpdateForSchool(SocietyStudent voObj){
+		ModelAndView modelAndView = new ModelAndView();
+		String errMsg = "";
+		String id = voObj.getId();
+		if(id==null || id.trim().equals("")){
+			//获取性别
+			voObj.setStudentSex(IdCardUtil.getGenderByIdCard(voObj.getStudentIdCardNum()));
+			//获取年龄
+			voObj.setStudentAge(IdCardUtil.getAgeByIdCard(voObj.getStudentIdCardNum()));
+			User user = getLoginUser();
+			voObj.setCreateUserId(user.getUserId());
+			voObj.setCreateUserName(user.getUserName());
+			String schoolId = user.getCompId();
+			SocietySchool school = schoolService.loadById(schoolId);
+			if(school == null){
+				return buildErrorResponse(modelAndView,"未查询到学校信息！");
+			}
+			voObj.setOwnerSchoolId(school.getId());
+			voObj.setOwnerSchoolName(school.getSchoolName());
+			voObj.setNickName(voObj.getStudentName());
+			errMsg = service.insert(voObj);
+		}else{
+			voObj.setNickName(voObj.getStudentName());
+			errMsg = service.update(voObj);
+		}
+		if(errMsg!=null && !errMsg.equals("")){
+			modelAndView.addObject("success", false);
+			modelAndView.addObject("code", "0");
+			modelAndView.addObject("modelAndViewData", "1");
+			modelAndView.addObject("errMsg", errMsg);
+			return modelAndView;
+		}else{
+			buildResponse(modelAndView);
+		}
+		return modelAndView;
+	}
+
+	/**
+	 * 管理员新增修改
+	 * @param voObj
+	 * @return
+	 */
+	@ApiOperation(value = "新增修改SocietyStudent", notes = "新增修改SocietyStudent")
+	@ApiImplicitParam(name = "access-token", value = "用户登录秘钥", paramType = "header", required = true, dataType = "String")
+	@RequestMapping(value = "/saveOrUpdateForAdmin",method = RequestMethod.POST)
+	public ModelAndView saveOrUpdateForAdmin(SocietyStudent voObj,String classId){
+		ModelAndView modelAndView = new ModelAndView();
+		String errMsg = "";
+		User user = getLoginUser();
+		String id = voObj.getId();
+		if(id==null || id.trim().equals("")){
+			voObj.setCreateUserId(user.getUserId());
+			voObj.setCreateUserName(user.getUserName());
+			String schoolId = voObj.getOwnerSchoolId();
+			SocietySchool school = schoolService.loadById(schoolId);
+			if(school == null){
+				return buildErrorResponse(modelAndView,"未查询到学校信息！");
+			}
+			voObj.setOwnerSchoolId(school.getId());
+			voObj.setOwnerSchoolName(school.getSchoolName());
+			SocietySchoolClass schoolClass = schoolClassService.loadById(classId);
+			if(schoolClass != null){
+				errMsg = service.insertForClass(voObj,schoolClass);
+			}else{
+				errMsg = service.insert(voObj);
+			}
+		}else{
+			errMsg = service.update(voObj);
+		}
+		if(errMsg!=null && !errMsg.equals("")){
+			buildErrorResponse(modelAndView, errMsg);
+		}else{
+			buildResponse(modelAndView);
+		}
+		return modelAndView;
+	}
+
+	/**
+	 * @Author ZhangCC
+	 * @Description 班级添加学员信息
+	 * @Date 2020/5/4 9:40
+	 **/
+	@ApiOperation(value = "新增修改SocietyStudent", notes = "新增修改SocietyStudent")
+	@ApiImplicitParam(name = "access-token", value = "用户登录秘钥", paramType = "header", required = true, dataType = "String")
+	@RequestMapping(value = "/saveOrUpdateForClass",method = RequestMethod.POST)
+	public ModelAndView saveOrUpdateForClass(SocietyStudent voObj,String classId){
+		ModelAndView modelAndView = new ModelAndView();
+		String errMsg = "";
+		String id = voObj.getId();
+		if(id==null || id.trim().equals("")){
+			User user = getLoginUser();
+			voObj.setCreateUserId(user.getUserId());
+			voObj.setCreateUserName(user.getUserName());
+			SocietySchoolClass schoolClass = schoolClassService.loadById(classId);
+			if(schoolClass == null){
+				return buildErrorResponse(modelAndView,"未查询到班级信息！");
+			}
+			voObj.setOwnerSchoolId(schoolClass.getOwnerSchoolId());
+			voObj.setOwnerSchoolName(schoolClass.getOwnerSchoolName());
+			errMsg = service.insertForClass(voObj,schoolClass);
+		}else{
+			errMsg = service.update(voObj);
+		}
+		if(errMsg!=null && !errMsg.equals("")){
+			buildErrorResponse(modelAndView, errMsg);
+		}else{
+			buildResponse(modelAndView);
+		}
+		return modelAndView;
+	}
+	
+	/**
+	 * 批量删除
+	 * @param ids
+	 * @return
+	 */
+	@ApiOperation(value = "根据ID批量删除SocietyStudent", notes = "根据ID批量删除SocietyStudent")
+	@ApiImplicitParam(name = "access-token", value = "用户登录秘钥", paramType = "header", required = true, dataType = "String")
+	@RequestMapping(value = "/deleteByIds",method = RequestMethod.POST)
+	public ModelAndView delete(String ids){
+		ModelAndView modelAndView = new ModelAndView();
+		String[] arr = ids.split(",");
+		List<String> list = new ArrayList<String>();
+		for(String str : arr){
+			list.add(str);
+		}
+		service.deleteByIds(list);		
+		return buildResponse(modelAndView);
+	}
+
+
+	@RequestMapping(value = "/deleteExcInfo",method = RequestMethod.POST)
+	public ModelAndView deleteExcInfo(String ids){
+		ModelAndView modelAndView = new ModelAndView();
+		String[] arr = ids.split(",");
+		List<String> list = new ArrayList<String>();
+		for(String str : arr){
+			list.add(str);
+		}
+		String err = service.deleteExcInfo(list);
+		if (err!=""){
+			modelAndView.addObject("success", false);
+			modelAndView.addObject("code", "0");
+			modelAndView.addObject("modelAndViewData", "1");
+			return modelAndView;
+		}
+		return buildResponse(modelAndView);
+	}
+
+	/**
+	 * 根据当前id 修改所有的学生的名字 身份证号 手机号
+	 * @return
+	 */
+	@RequestMapping(value = "/updateExceInfo",method = RequestMethod.POST)
+	public ModelAndView updateExceInfo(SocietyStudent voObj){
+		ModelAndView modelAndView = new ModelAndView();
+
+		String err = service.updateExceInfo(voObj);
+		if (err!=""){
+			modelAndView.addObject("success", false);
+			modelAndView.addObject("code", "0");
+			modelAndView.addObject("modelAndViewData", "1");
+			return modelAndView;
+		}
+		return buildResponse(modelAndView);
+	}
+
+	@RequestMapping(value = "/selectByIdCardVoUrl",method = RequestMethod.POST)
+	public ModelAndView selectByIdCardVoUrl(String studentIdCardNum){
+		ModelAndView modelAndView = new ModelAndView();
+
+		SocietyStudentUnique societyStudentUnique = societyStudentUniqueService.loadById(studentIdCardNum);
+
+		return buildResponse(modelAndView,societyStudentUnique);
+	}
+
+
+	/*
+	* 根据id重置学员的密码
+	* */
+	@RequestMapping(value = "/resetPwdById",method = RequestMethod.POST)
+	public ModelAndView resetPwdById(String id){
+		ModelAndView modelAndView = new ModelAndView();
+		service.resetPwdById(id);
+		return buildResponse(modelAndView);
+	}
+
+
+	/**
+	 * 逻辑批量删除
+	 * @param ids
+	 * @return
+	 */
+	@RequestMapping(value = "/logicDeleteByIds",method = RequestMethod.POST)
+	public ModelAndView logicDeleteByIds(String ids){
+		ModelAndView modelAndView = new ModelAndView();
+		String[] arr = ids.split(",");
+		List<String> list = new ArrayList<String>();
+		for(String str : arr){
+			list.add(str);
+		}
+		service.logicDelete(list);
+		return buildResponse(modelAndView);
+	}
+	
+	/**
+	 * 根据主键加载
+	 * @param id
+	 * @return
+	 */
+	@ApiOperation(value = "根据ID加载SocietyStudent", notes = "根据ID加载SocietyStudent")
+	@ApiImplicitParam(name = "access-token", value = "用户登录秘钥", paramType = "header", required = true, dataType = "String")
+	@RequestMapping(value = "/loadById",method = RequestMethod.POST)
+	public ModelAndView  loadById(String id){
+		ModelAndView modelAndView = new ModelAndView();
+		return buildResponse(modelAndView, service.loadById(id));
+	}
+
+	/**
+	 * @Author ZhangCC
+	 * @Description 查询未参加本次班级的学员
+	 * @Date 2020/5/4 20:41
+	 **/
+	@RequestMapping(value = "/addStudentListPage",method = RequestMethod.POST)
+	public ModelAndView addStudentListPage(SocietyStudentQuery query,String classId){
+		ModelAndView modelAndView = new ModelAndView();
+		User user = getLoginUser();
+		List<String> studentIdList = classAndStudentService.selectStudentIdByClass(classId);
+		query.setStudentIdList(studentIdList);
+		String schoolId = user.getCompId();
+		query.getQueryObj().setOwnerSchoolId(schoolId);
+		service.classNotInStudentListPage(query);
+		return buildResponse(modelAndView,query);
+	}
+
+	@RequestMapping(value = "/addStudentLeftListPage",method = RequestMethod.POST)
+	public ModelAndView addStudentLeftListPage(SocietyStudentQuery query,String classId,String ids){
+		ModelAndView modelAndView = new ModelAndView();
+		User user = getLoginUser();
+		List<String> studentIdList = classAndStudentService.selectStudentIdByClass(classId);
+		List<String> lis = Arrays.asList(ids.split(","));
+		studentIdList.addAll(lis);
+		query.setStudentIdList(studentIdList);
+		String schoolId = user.getCompId();
+		query.getQueryObj().setOwnerSchoolId(schoolId);
+		service.classNotInStudentListPage(query);
+		return buildResponse(modelAndView,query);
+	}
+
+
+	@RequestMapping(value = "/addStudentRightListPage",method = RequestMethod.POST)
+	public ModelAndView addStudentRightListPage(SocietyStudentQuery query,String classId,String ids){
+		ModelAndView modelAndView = new ModelAndView();
+		User user = getLoginUser();
+		List<String> studentIdList = classAndStudentService.selectStudentIdByClass(classId);
+		List<String> lis = Arrays.asList(ids.split(","));
+		studentIdList.addAll(lis);
+		query.setStudentIdList(studentIdList);
+		String schoolId = user.getCompId();
+		query.getQueryObj().setOwnerSchoolId(schoolId);
+		service.classYesInStudentListPage(query);
+		return buildResponse(modelAndView,query);
+	}
+
+	@RequestMapping(value = "/addStudentRightVoClassListPage",method = RequestMethod.POST)
+	public ModelAndView addStudentRightVoClassListPage(SocietyStudentQuery query,String classId,String ids){
+		ModelAndView modelAndView = new ModelAndView();
+		User user = getLoginUser();
+		List<String> studentIdList = new ArrayList<>();
+		List<String> lis = Arrays.asList(ids.split(","));
+		studentIdList.addAll(lis);
+		query.setStudentIdList(studentIdList);
+		String schoolId = user.getCompId();
+		query.getQueryObj().setOwnerSchoolId(schoolId);
+		service.classYesInStudentListPage(query);
+		return buildResponse(modelAndView,query);
+	}
+
+
+	@RequestMapping(value = "/addStudentAdminListPage",method = RequestMethod.POST)
+	public ModelAndView addStudentAdminListPage(SocietyStudentQuery query,String classId){
+		ModelAndView modelAndView = new ModelAndView();
+		List<String> studentIdList = classAndStudentService.selectStudentIdByClass(classId);
+		query.setStudentIdList(studentIdList);
+		service.classNotInStudentListPage(query);
+		return buildResponse(modelAndView,query);
+	}
+
+	@RequestMapping(value = "/addStudentAdminLeftListPage",method = RequestMethod.POST)
+	public ModelAndView addStudentAdminLeftListPage(SocietyStudentQuery query,String classId,String ids){
+		ModelAndView modelAndView = new ModelAndView();
+		List<String> studentIdList = classAndStudentService.selectStudentIdByClass(classId);
+		List<String> lis = Arrays.asList(ids.split(","));
+		studentIdList.addAll(lis);
+		query.setStudentIdList(studentIdList);
+		service.classNotInStudentListPage(query);
+		return buildResponse(modelAndView,query);
+	}
+
+
+	@RequestMapping(value = "/addStudentAdminRightListPage",method = RequestMethod.POST)
+	public ModelAndView addStudentAdminRightListPage(SocietyStudentQuery query,String classId,String ids){
+		ModelAndView modelAndView = new ModelAndView();
+		List<String> studentIdList = classAndStudentService.selectStudentIdByClass(classId);
+		List<String> lis = Arrays.asList(ids.split(","));
+		studentIdList.addAll(lis);
+		query.setStudentIdList(studentIdList);
+		service.classYesInStudentListPage(query);
+		return buildResponse(modelAndView,query);
+	}
+
+
+
+	@RequestMapping(value = "/addAdminStudentListPage",method = RequestMethod.POST)
+	public ModelAndView addAdminStudentListPage(SocietyStudentQuery query,String classId){
+		ModelAndView modelAndView = new ModelAndView();
+		User user = getLoginUser();
+		List<String> studentIdList = classAndStudentService.selectStudentIdByClass(classId);
+		query.setStudentIdList(studentIdList);
+		service.classNotInStudentListPage(query);
+		return buildResponse(modelAndView,query);
+	}
+
+
+	/**
+	 *@Author:ZhaoSiDa
+	 *@Description: 学校管理员导入学员 学校下的所有的学生为关联班级
+	 *@DateTime: 2020/5/21 16:50
+	 */
+	@RequestMapping(value = "/excelImportStu",method = RequestMethod.POST)
+	public ModelAndView excelImportStu(MultipartFile file){
+		ModelAndView modelAndView = new ModelAndView();
+		try {
+			User user = getLoginUser();
+			String compId = user.getCompId();
+			String userName = user.getUserName();
+			//解析excel
+			String fileName = file.getOriginalFilename();
+			String fileExtend = fileName.substring(fileName.lastIndexOf(".")+1);
+			if(!fileExtend.equals("xls")){
+				return buildErrorResponse(modelAndView,"请上传.xls格式的文件。");
+			}
+			InputStream inputStream =null;
+			Workbook book = null;
+			Sheet carSheet = null;
+			inputStream = file.getInputStream();
+			if(inputStream.available()==0){
+				return buildErrorResponse(modelAndView,"导入文件中没有任何内容。");
+			}
+			book = Workbook.getWorkbook(inputStream);
+			carSheet = book.getSheet(0);
+			int rows = carSheet.getRows();
+			int columns = carSheet.getColumns();
+			if(rows<2){
+				return buildErrorResponse(modelAndView,"请填写要导入的学员信息。");
+			}
+			List<String> propertyEg = new ArrayList<String>();
+			Cell[] headers = carSheet.getRow(0);
+			for(int i=0;i<headers.length;i++){
+				Cell cell = headers[i];
+				String cellValue = cell.getContents();
+				if(cellValue==null && cellValue.length()==0){
+					propertyEg.add("none");
+					continue;
+				}
+				propertyEg.add(fenxiHeader(cellValue));
+			}
+			List<SocietyStudent> studentList = new ArrayList<SocietyStudent>();//要新增的学生信息
+			List<String> repeatStudentList = new ArrayList<>();//重复的学生信息
+			List<String> isIdCard = new ArrayList<>();//身份证号是否合法
+			for(int i=1;i<rows;i++){
+				Map<String,String> propertyMap= new HashMap<String,String>();
+				Cell[] properties = carSheet.getRow(i);
+				if(properties.length!=0){
+					for(int j=0;j<properties.length;j++){
+						Cell cell = properties[j];
+						String key = propertyEg.get(j);
+						if(key.equals("peopleType")){
+							String peopleType = getPeopleType(cell.getContents().trim());
+							propertyMap.put(key,peopleType);
+						}else {
+							propertyMap.put(key,cell.getContents().trim());
+						}
+					}
+					SocietyStudent student = ObjectUtil.mapToBean(propertyMap,SocietyStudent.class);
+					if(student == null && student.getStudentIdCardNum().equals("") &&
+							student.getStudentPhoneNum().equals("") && student.getStudentName().equals("")){
+						continue;
+					}else {
+						//判断是否重复身份证号和手机号
+						SocietyStudent studentByPhone = service.selectByPhone(student.getStudentPhoneNum(),compId);
+						if(studentByPhone!=null){
+							repeatStudentList.add(student.getStudentName());
+							continue;
+						}
+						SocietyStudent studentByIdCard = service.selectByIdCard(student.getStudentIdCardNum(),compId);
+						if(studentByIdCard!=null){
+							repeatStudentList.add(student.getStudentName());
+							continue;
+						}
+						//判断身份证是否合法
+						boolean isFlag = IdCardUtil.isValidatedAllIdcard(student.getStudentIdCardNum());
+						if(!isFlag){//不合法
+							isIdCard.add(student.getStudentName());
+							continue;
+						}else {
+							SocietySchool societySchool = schoolService.loadById(user.getCompId());
+							student.setId(Guid.guid());
+							student.setCreateTime(new Date());
+							student.setCreateUserId(user.getUserId());
+							student.setCreateUserName(user.getUserName());
+							student.setOwnerSchoolId(societySchool.getId());
+							student.setOwnerSchoolName(societySchool.getSchoolName());
+							student.setDataState("1");
+							student.setIsRealNameAuth("0");
+							studentList.add(student);
+						}
+					}
+				}
+			}
+			Map<String,List<String>> map = service.excelImportStuInsert(studentList);
+
+			repeatStudentList.addAll(map.get("repList"));
+
+			//批量导入学员信息
+			if(repeatStudentList.size()!=0 || isIdCard.size()!=0 || map.get("phoneList").size()!=0){//重复
+				modelAndView.addObject("code", "0");
+				modelAndView.addObject("success", false);
+				modelAndView.addObject("repeatStudentList", repeatStudentList);
+				modelAndView.addObject("phoneList", map.get("phoneList"));
+				modelAndView.addObject("isIdCard", isIdCard);
+				return modelAndView;
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return buildResponse(modelAndView);
+	}
+
+	private String getPeopleType(String peopleName) {
+		if(peopleName.equals("重点学员")){
+			return "IMP_STU";
+		}else if(peopleName.equals("企业学员")){
+			return "COMP_STU";
+		}else {
+			return "ORD_STU";
+		}
+	}
+
+
+	/**
+	 * 班级下的学员导入  必须要关联当前的班级
+	 * 1.如果学员表有重复 班级没有重复的 关联上班级即可 学员表不在插入记录
+	 * 2.如果学员表有重复 班级也重复 就要提示
+	 * 2.如果学员表不存在 班级关联学员表都要新增
+	 * @param file
+	 * @param classId
+	 * @return
+	 */
+	@RequestMapping(value = "/excelImportStuAndClass",method = RequestMethod.POST)
+	public ModelAndView excelImportStuAndClass(MultipartFile file,String classId){
+		ModelAndView modelAndView = new ModelAndView();
+		try {
+			User user = getLoginUser();
+			String compId = user.getCompId();
+			String userName = user.getUserName();
+			//解析excel
+			String fileName = file.getOriginalFilename();
+			String fileExtend = fileName.substring(fileName.lastIndexOf(".")+1);
+			if(!fileExtend.equals("xls")){
+				return buildErrorResponse(modelAndView,"请上传.xls格式的文件。");
+			}
+			InputStream inputStream =null;
+			Workbook book = null;
+			Sheet carSheet = null;
+			inputStream = file.getInputStream();
+			if(inputStream.available()==0){
+				return buildErrorResponse(modelAndView,"导入文件中没有任何内容。");
+			}
+			book = Workbook.getWorkbook(inputStream);
+			carSheet = book.getSheet(0);
+			int rows = carSheet.getRows();
+			int columns = carSheet.getColumns();
+			if(rows<2){
+				return buildErrorResponse(modelAndView,"请填写要导入的学员信息。");
+			}
+			List<String> propertyEg = new ArrayList<String>();
+			Cell[] headers = carSheet.getRow(0);
+			for(int i=0;i<headers.length;i++){
+				Cell cell = headers[i];
+				String cellValue = cell.getContents();
+				if(cellValue==null && cellValue.length()==0){
+					propertyEg.add("none");
+					continue;
+				}
+				propertyEg.add(fenxiHeader(cellValue));
+			}
+			List<SocietyStudent> studentList = new ArrayList<SocietyStudent>();//要新增的学生信息
+			List<SocietyStudent> studentAndClassList = new ArrayList<SocietyStudent>();//只需要关联班级的信息
+			List<String> repeatStudentList = new ArrayList<>();//重复的学生信息
+			List<String> isIdCard = new ArrayList<>();//身份证号是否合法
+			for(int i=1;i<rows;i++){
+				Map<String,String> propertyMap= new HashMap<String,String>();
+				Cell[] properties = carSheet.getRow(i);
+				if(properties.length!=0){
+					for(int j=0;j<properties.length;j++){
+						Cell cell = properties[j];
+						String key = propertyEg.get(j);
+						if(key.equals("peopleType")){
+							String peopleType = getPeopleType(cell.getContents().trim());
+							propertyMap.put(key,peopleType);
+						}else {
+							propertyMap.put(key,cell.getContents().trim());
+						}
+					}
+					SocietyStudent student = ObjectUtil.mapToBean(propertyMap,SocietyStudent.class);
+					if(student == null && student.getStudentIdCardNum().equals("") &&
+							student.getStudentPhoneNum().equals("") && student.getStudentName().equals("")){
+						continue;
+					}else {
+
+						//判断是否重复身份证号和手机号
+						SocietyStudent studentByPhone = service.selectByPhone(student.getStudentPhoneNum(),compId);
+						SocietyStudent studentByIdCard = service.selectByIdCard(student.getStudentIdCardNum(),compId);
+
+						if(studentByPhone==null || studentByIdCard==null){
+							//判断身份证是否合法
+							boolean isFlag = IdCardUtil.isValidatedAllIdcard(student.getStudentIdCardNum());
+							if(!isFlag){//不合法
+								isIdCard.add(student.getStudentName());
+								continue;
+							}else {
+								SocietySchool societySchool = schoolService.loadById(user.getCompId());
+								student.setId(Guid.guid());
+								student.setCreateTime(new Date());
+								student.setCreateUserId(user.getUserId());
+								student.setCreateUserName(user.getUserName());
+								student.setOwnerSchoolId(societySchool.getId());
+								student.setOwnerSchoolName(societySchool.getSchoolName());
+								student.setDataState("1");
+								student.setIsRealNameAuth("0");
+								studentList.add(student);
+							}
+						}else {
+							//学员表存在学员信息
+							//1.查询学员班级关联表
+							String studentOldId =
+									service.selectByPhoneAndIdCard(compId,student.getStudentPhoneNum(),student.getStudentIdCardNum());
+
+							//查询是否在班级下有学生
+							int stuFalg = classAndStudentService.selectBySchoolIdVoClassIdOne(classId,studentOldId);
+							if(stuFalg!=0){//存在
+								repeatStudentList.add(student.getStudentName());
+								continue;
+							}else {
+								//判断身份证是否合法
+								boolean isFlag = IdCardUtil.isValidatedAllIdcard(student.getStudentIdCardNum());
+								if(!isFlag){//不合法
+									isIdCard.add(student.getStudentName());
+									continue;
+								}else {//只需要关联班级
+									SocietyStudent societyStudent = service.loadById(studentOldId);
+									studentAndClassList.add(societyStudent);
+								}
+							}
+						}
+					}
+				}
+			}
+			Map<String,Object> map = service.insertStuListAndStuClassList(studentList,studentAndClassList,classId);//课程重复
+			String err = "";
+			if(map.containsKey("repList")){
+				repeatStudentList.addAll((List<String>) map.get("repList"));
+			}
+			err = (String)map.get("err");
+			if (err.equals("，")){
+				err = "";
+			}
+			List<String> phoneList = new ArrayList<>();
+			if(map.containsKey("phoneList")){
+				phoneList.addAll((List<String>) map.get("phoneList"));
+			}
+
+			//批量导入学员信息
+			if(repeatStudentList.size()!=0 || isIdCard.size()!=0 || !err.equals("") || phoneList.size()!=0){//没有重复
+				modelAndView.addObject("code", "0");
+				modelAndView.addObject("success", false);
+				modelAndView.addObject("repeatStudentList", repeatStudentList);
+				modelAndView.addObject("isIdCard", isIdCard);
+				modelAndView.addObject("phoneList", phoneList);
+				modelAndView.addObject("err", err);
+				return modelAndView;
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return buildResponse(modelAndView);
+	}
+
+	/**
+	 * @Author ZhangCC
+	 * @Description 压缩学员人脸图片
+	 * @Date 2020/7/18 9:40
+	 **/
+	@RequestMapping(value = "/compressStudentFaceImage",method = RequestMethod.POST)
+	public ModelAndView compressStudentFaceImage(String stuId){
+		ModelAndView modelAndView = new ModelAndView();
+		SocietyStudent stu = service.loadById(stuId);
+		String oraFaceImage = stu.getFaceImageUrl();
+		String filePath = serverUpfile + FileUtil.changeWebPathToFilePath(oraFaceImage);
+
+		Map<String,Object> resultMap = new HashMap<>();
+		try{
+			File faceOra = new File(filePath);
+			long length = faceOra.length();
+			long oraFaceImgSize = length/1024;
+			resultMap.put("oraFaceImgSize",oraFaceImgSize);
+			if(oraFaceImgSize>=app_faceai_maxfacelength){
+				String base64File = FileUtil.getImageBase64Str(faceOra);
+				base64File = FileUtil.compressImg(base64File,app_faceai_imgcompresswidth);
+				//进行压缩
+				String relvePath = FileUtil.saveBase64Img(base64File,serverUpfile + File.separator +"tempfile",true);
+				resultMap.put("faceImgSize",new Double((base64File.length()*0.75)/1024).intValue());
+				//获取压缩后的图片
+				String faceImage = "/tempfile" + relvePath;
+				resultMap.put("faceImage",faceImage);
+			}else{
+				resultMap.put("faceImgSize", oraFaceImgSize);
+				resultMap.put("faceImage", oraFaceImage);
+			}
+
+		}catch (Exception e){
+			e.printStackTrace();
+		}
+		return buildResponse(modelAndView,resultMap);
+	}
+
+	@RequestMapping(value = "/saveCompressFaceImg",method = RequestMethod.POST)
+	public ModelAndView saveCompressFaceImg(String stuId,String compFaceImg){
+		ModelAndView modelAndView = new ModelAndView();
+		SocietyStudent stu = service.loadById(stuId);
+		String oraFaceImage = stu.getFaceImageUrl();
+		String oraFilePath = serverUpfile + FileUtil.changeWebPathToFilePath(oraFaceImage);
+		String compFaceImgFilePath = serverUpfile + FileUtil.changeWebPathToFilePath(compFaceImg);
+		Map<String,Object> resultMap = new HashMap<>();
+		try{
+			FileUtils.copyFile(new File(compFaceImgFilePath),new File(oraFilePath));
+		}catch (Exception e){
+			e.printStackTrace();
+		}
+		return buildResponse(modelAndView,resultMap);
+	}
+
+
+
+	/**
+	 * excel头部区域
+	 * @param cellValue
+	 * @return
+	 */
+	private String fenxiHeader(String cellValue){
+		if(cellValue.contains("姓名")) {
+			return "studentName";
+		} else if(cellValue.contains("性别")) {
+			return "studentSex";
+		} else if(cellValue.contains("年龄")) {
+			return "studentAge";
+		} else if(cellValue.contains("联系电话")) {
+			return "studentPhoneNum";
+		} else if(cellValue.contains("身份证号")) {
+			return "studentIdCardNum";
+		}else if(cellValue.contains("学员类型（重点学员，企业学员，普通学员）")){
+			return "peopleType";
+		}
+		return "none;";
+
+	}
+}

@@ -1,0 +1,234 @@
+<div ng-bind="globalSchObj.schoolName" style="width:100%;height: 45px;line-height: 45px;margin:0;background-color: #5d99e5;text-align: center; color: #fff;">
+</div>
+
+<div class="xuexi_l" style="background:#fff;">
+
+    <div   class="aui-course-img" style="position: relative;">
+        <div class="jy" ng-show="lastPlaySecondForSeek>0">
+            <i class="iconfont icon-guanbi- white" ng-click="closeSeekHistory()"></i>
+            <span>您上次观看到<span ng-bind="lastPlaySecondForSeekStr">00:00</span></span>
+            <span class="seek" ng-click="seekVideoOnce(lastPlaySecondForSeek)">跳转播放</span>
+        </div>
+        <div id="id_study_video_con">
+            <video id="id_study_video"
+                   style="width: 100%;object-fit:fill;"
+                   x5-video-player-type="h5-page"
+                   x5-video-player-fullscreen="true"
+                   webkit-playsinline="true"
+                   x-webkit-airplay="true"
+                   playsinline="true"
+            >
+            </video>
+        </div>
+    </div>
+</div>
+<div class="xuexi_r">
+    <div class="aui-tab" data-ydui-tab>
+        <ul class="tab-nav0 tab-web" >
+            <li class="tab-nav-item0 {{currTab=='chapter'?'tab-active':''}}" ng-click="currTab='chapter'">
+                <a href="javascript:;" >
+                    <span>章节</span>
+                </a>
+            </li>
+            <li class="tab-nav-item0 {{currTab=='lessondesc'?'tab-active':''}}" ng-click="currTab='lessondesc'">
+                <a href="javascript:;"  >
+                    <span>详情</span>
+                </a>
+            </li>
+            <li class="tab-nav-item0 {{currTab=='comment'?'tab-active':''}}"  ng-click="currTab='comment'">
+                <a href="javascript:;">
+                    <span>评论</span>
+                </a>
+            </li>
+            <li class="tab-nav-item0 {{currTab=='practise'?'tab-active':''}}" ng-click="currTab='practise'">
+                <a href="javascript:;">
+                    <span>练习</span>
+                </a>
+            </li>
+            <li class="tab-nav-item0">
+                <div id="real_face_display" style="display: none;height: 45px; padding: 2px;padding-left: 15px;">
+                    <img src="" id="real_face_img" style="margin:auto;width: 38px;height:38px; " >
+                </div>
+                <div  ng-show="showPractiseFenxi=='1'&&currTab=='practise'" ng-click="toglePractiseFenxi()" style="height: 45px; padding: 2px;padding-left: 15px;color: blue;">
+                    解析
+                </div>
+            </li>
+        </ul>
+
+    </div>
+    <div class="tab-panel tab-panel0" style="height:calc(100% - 50px)!important">
+        <div class="tab-panel-item {{currTab=='chapter'?'tab-active':''}}"  ng-swipe-left="currTab='lessondesc'">
+            <div class="aui-course-catalog">
+
+                <div class="kc_title" ng-bind="curStuCourse.courseName"></div>
+
+                <div class="kc_ml">
+                    <ul>
+                        <li ng-click="clickPlayCourseNode(node)" ng-repeat="node in curStuCourse.courseNodes track by node.id"
+                            class="{{curStuCourse.currentNode.id==node.id ? 'on' : ''}}"
+                            style="position: relative;{{(node.learnIsFinished=='1'&&curStuCourse.currentNode.id!=node.id)?'color:green;':''}}">
+                            <div style="padding-right: 45px;">
+                                <i class="iconfont icon-bofang  mr10 f8"></i>
+                                <span ng-bind="$index+1"></span>、
+                                <span ng-bind="node.nodeName"></span>
+                                <span ng-show="node.learnIsFinished=='1'">[已学完]</span>
+                                <span ng-show="node.learnIsFinished=='1' && node.questionIsPass!='1'">[请答题]</span>
+                                <span ng-show="node.studyTimeLengthStr==null">[未开始]</span>
+                                <!--<span ng-show="node.learnIsFinished!='1'&&node.studyTimeLengthStr!=null">[计时:<span ng-bind="node.studyTimeLengthStr"></span>]</span>-->
+                            </div>
+                            <div style="position: absolute;right: 0px;top: 8px;font-size: 13px;"><span ng-bind="node.nodeTimeLengthStr"></span></div>
+                        </li>
+                    </ul>
+                </div>
+
+            </div>
+        </div>
+
+        <div class="tab-panel-item {{currTab=='lessondesc'?'tab-active':''}}"   ng-swipe-left="currTab='comment'"  ng-swipe-right="currTab='chapter'">
+            <div class="aui-course-catalog">
+                <div class="kc_con">
+                    <h4 ng-bind="curStuCourse.courseName"></h4>
+                    <div>
+                        <img style="width: 100%;max-height: 300px;" ng-src="{{curStuCourse.courseImage}}">
+                    </div>
+                </div>
+            </div>
+            <div class="hr"></div>
+            <div class="aui-course-catalog">
+                <div class="kc_con" ng-bind-html="curStuCourse.courseDesc">
+                </div>
+            </div>
+        </div>
+
+        <!--  评论 -->
+        <div id="comment_tab_panel_item" infinite-scroll-container class="tab-panel-item {{currTab=='comment'?'tab-active':''}}"   ng-swipe-left="currTab='practise'" ng-swipe-right="currTab='lessondesc'">
+            <div class="aui-course-catalog" >
+                <div class="comment-list" >
+                    <ul>
+                        <li ng-repeat="comment in commentListObj.list track by comment.id">
+                            <div class="user">
+                                <img ng-src="{{comment.stuHeadPhoto}}" onerror="this.src='images/user-img.jpg'">
+                            </div>
+                            <div class="conts">
+                                <!--<em><span>0</span> <i class="iconfont icon-iconfontzhizuobiaozhun023148 ml5"></i></em>-->
+                                <div class="name" ng-bind="comment.stuNickName"></div>
+                                <div class="time" ng-bind="comment.createTime"></div>
+                                <div class="comment-text" >
+                                    <p ng-bind="comment.commentText"></p>
+                                </div>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+
+            </div>
+            <div class="more-data" ng-click="nextCommentPage()" ng-hide="commentListObj.totalPage==commentListObj.currentPage&&commentListObj.totalPage>0" >更多评论</div>
+
+
+        </div>
+
+        <!--  练习答题 -->
+        <div id="practise_tab_panel_item" class="tab-panel-item {{currTab=='practise'?'tab-active':''}}"  ng-swipe-right="currTab='comment'" >
+            <div class="aui-course-catalog">
+                <div class="test clearfix" ng-repeat="que in practiseObj.list track by que.id">
+                    <div class="test_tit">
+                        <span ng-bind="$index+1"></span>、
+                        <span ng-show="que.questionType=='3'">(多选)</span>
+                        <span ng-show="que.questionType=='2'">(判断)</span>
+                        <span  ng-show="que.questionType=='1'">(单选)</span>
+                        <span ng-bind="que.questionName"></span>
+                    </div>
+                    <div class="test_con">
+                        <ul>
+                            <li ng-click="selectOption(que,op)" class="{{op.isSelect=='1'?'on':''}}" ng-repeat="op in que.ops track by op.id">
+                                <i>
+                                    <span ng-bind="op.optionTitle"></span>.
+                                    <span ng-bind="op.optionName"></span>
+                                </i>
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="test_result" ng-show="curStuCourse.currentNode.questionIsFinished=='1'">回答:
+                        <span class="answer_right" ng-show="que.answerState=='1'" >正确</span>
+                        <span class="answer_wrong" ng-show="que.answerState=='-1'" >错误</span>
+                        <span class="answer_wrong" ng-show="que.answerState=='0'" >未答题</span>
+                        <span style="float: right">答案:<span class="right_answer" ng-bind="que.questionAnswer"></span></span>
+                    </div>
+                    <div class="test_result" ng-show="(showPractiseFenxi=='1'&&showPractiseFenxiFlag)||curStuCourse.currentNode.questionIsFinished=='1'">习题解析:
+                        <span ng-bind="que.questionAnalysis" ></span>
+                    </div>
+                </div>
+            </div>
+
+            <div infinite-scroll-parent="practise_tab_panel_item" style="margin-bottom: 0px;" infinite-scroll="nextPractisePage()" infinite-scroll-distance="0"></div>
+            <div  class="more-data" ng-click="nextPractisePage()" ng-hide="practiseObj.totalPage==practiseObj.currentPage&&practiseObj.totalPage>0">更多练习题...</div>
+            <Div style="text-align: right;padding-right: 15px;" ng-show="curStuCourse.currentNode.questionIsFinished!='1' && practiseObj.totalPage==practiseObj.currentPage&&practiseObj.totalPage>0">
+                <!--<a href="###" class="btn_qd">确定</a>-->
+                <span class="btn_cd" style="{{practiseObj.submitWorking?'background-color:#a09e9e':''}}"  ng-click="clickSubmitPractis()">确定提交</span>
+            </Div>
+            <Div ng-show="curStuCourse.currentNode.questionIsFinished=='1'&&practiseObj.list!=null" style="text-align: right;padding-right: 15px;" >
+                    <span>
+                        正确率:<span ng-bind="curStuCourse.currentNode.nodeQuestionScore"></span>%
+                    </span>
+                <span  class="btn_qd"  ng-show="currentNode.questionIsPass!='1'"  ng-click="reTestPractise()">重新答题</span>
+            </Div>
+
+        </div>
+
+    </div>
+
+    <div class="aui-search-box2" ng-show="currTab=='comment'">
+        <input style="width: 20%" type="text" placeholder="说点什么吧" ng-model="commentObj.commentText" maxlength="100" class="fl"/>
+        <span  class="fr btn_fb" style="{{commentObj.submitWorking?'':'color:#027dff;float: none!important;    width: 3%;'}}" id="pay_bsubmitCommenttn_id" ng-click="submitComment()">发布</span>
+    </div>
+</div>
+<!--  人脸签到 -->
+<Div class="mod" style="z-index: 99998;display: none;"  id="face_check_container">
+    <div class="qd_title">人脸识别 <span id="face_error_info" style="color: red;" ></span></div>
+    <div style="width:260px; margin:2rem auto">
+        <div class="renlian" style="width: 260px;">
+            <div style="position: absolute; top:0px; left: 0px; z-index: 0">
+                <img src="images/timg.png" id="face_photoShow" style="width:100%;height: 320px;">
+            </div>
+            <div class="box" style="width: 260px;">
+                <div class="line"></div>
+                <div class="bottom"></div>
+            </div>
+        </div>
+        <form id="face_photo_form" style="display: none;">
+            <input type="hidden" name="face" onChange="checkFaceSubmit()" id="face_photo"/>
+        </form>
+        <input style="display: none;" onChange="uploadImageFile(this,'face_photo',false,500,true)" type="file" id="face_photo_camare" accept="image/*" capture="user">
+        <span class="btn mt20" ng-show="faceCheckObj.faceState=='notpass'" ng-click="takeFacePhoto()" style="width: 100%">点击拍摄</span>
+        <span class="btn mt20" ng-show="faceCheckObj.faceState=='pass'" ng-click="playCourseNodeAfterFace(curStuCourse.currentNode)" style="width: 100%">匹配成功点击继续</span>
+
+    </div>
+</Div>
+
+<Div class="mod" style=" z-index: 99998;display: none;"  id="face_check_container_web">
+    <div class="qd_title">人脸识别 <span id="face_error_info_web" style="color: red;" ></span></div>
+    <div style="width:520px; margin:2rem auto">
+        <div class="renlian" style="width: 520px;height: 400px;">
+            <div style="position: absolute; top:0px; left: 0px; z-index: 0">
+                <canvas id="face_preview_canvas"
+                        style="display:none;margin: auto;" width="520" height="400"></canvas>
+                <video id="face_camare_vedio"
+                       style="width: 520px;height: 400px;background-color: #333333;" muted autoplay></video>
+            </div>
+            <div class="box" ng-click="cutPicker()" style="width: 530px;height: 400px;max-width:530px;max-height: 400px; ">
+                <div class="line"></div>
+                <div class="bottom"></div>
+            </div>
+        </div>
+        <span class="btn mt20" ng-show="faceCheckObj.faceState=='pass'" ng-click="playCourseNodeAfterFace(curStuCourse.currentNode)" style="width: 100%">匹配成功点击继续</span>
+
+    </div>
+</Div>
+
+<!--  人脸签到 -->
+<Div class="mod" style="z-index: 99999;display: none;"  id="loading_msg_container">
+    <div class="qd_title" style="margin-top: 5rem;" id="loading_msg"></div>
+    <div id="loading_img" style="text-align: center; margin-top: 2rem;">
+        <img src="images/loading.gif">
+    </div>
+</Div>

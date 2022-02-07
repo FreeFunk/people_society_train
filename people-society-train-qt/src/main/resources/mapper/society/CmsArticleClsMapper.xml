@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.edgedo.society.mapper.CmsArticleClsMapper" >
+   
+   
+    <resultMap id="BaseResultMap" type="com.edgedo.society.entity.CmsArticleCls" >
+			<id column="ID" property="id"/>
+			<result column="CREATE_TIME" property="createTime"/>
+			<result column="CLS_NAME" property="clsName"/>
+			<result column="SORT_NUM" property="sortNum"/>
+			<result column="CLS_STATE" property="clsState"/>
+			<result column="DATA_STATE" property="dataState"/>
+    </resultMap>
+   
+    <resultMap id="BaseResultViewMap" type="com.edgedo.society.queryvo.CmsArticleClsView" extends="BaseResultMap">
+    
+    </resultMap>
+  
+  
+  <!-- ******* 新增字段请修改这里  ******  -->
+  <sql id="Base_Column_List">
+	 ID, CREATE_TIME, CLS_NAME, SORT_NUM, CLS_STATE, DATA_STATE
+  </sql>
+  
+  <!-- ******* 利用好这里的动态查询条件  ******  -->
+  <sql id="where">
+  	<where>
+		<if test='queryObj != null and  queryObj.id != null and @org.apache.commons.lang3.StringUtils@isNotEmpty(queryObj.id)'>
+		AND  ID = #{queryObj.id}
+		</if>
+		<if test='queryObj != null and  queryObj.createTime != null'>
+			AND  CREATE_TIME = #{queryObj.createTime}
+		</if>
+		<if test='queryObj != null and  queryObj.clsName != null and @org.apache.commons.lang3.StringUtils@isNotEmpty(queryObj.clsName)'>
+		AND  CLS_NAME = #{queryObj.clsName}
+		</if>
+		<if test='queryObj != null and  queryObj.clsState != null and @org.apache.commons.lang3.StringUtils@isNotEmpty(queryObj.clsState)'>
+		AND  CLS_STATE = #{queryObj.clsState}
+		</if>
+		<if test='queryObj != null and  queryObj.dataState != null and @org.apache.commons.lang3.StringUtils@isNotEmpty(queryObj.dataState)'>
+		AND  DATA_STATE = #{queryObj.dataState}
+		</if>
+  	</where>
+  	
+  </sql>
+  
+  <!-- ******* 排序判断  ******  
+  <sql id="orderBy">
+  	<if test="orderBy != null and orderBy!= '' ">
+  		order by  ${orderBy}
+  	</if>
+  </sql>-->
+  
+  
+  <!-- 分页条件查询  -->
+  <select id="listPage" parameterType="com.edgedo.society.queryvo.CmsArticleClsQuery" resultMap="BaseResultViewMap">
+  		select <include refid="Base_Column_List"/> from cms_article_cls 
+  		<include refid="where"/>
+  </select>
+  
+   <!-- 不分页条件查询  -->
+  <select id="listByObj" parameterType="com.edgedo.society.queryvo.CmsArticleClsQuery" resultMap="BaseResultViewMap">
+  		select <include refid="Base_Column_List"/> from cms_article_cls 
+  		<include refid="where"/>
+  </select>
+
+	<!-- 查询所有的分类 -->
+	<select id="selectAllArticleCls" resultMap="BaseResultViewMap">
+		select <include refid="Base_Column_List"/> from cms_article_cls
+		where DATA_STATE='1' and CLS_STATE='1'
+		order by SORT_NUM asc
+	</select>
+  
+</mapper>

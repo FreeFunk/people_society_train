@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.edgedo.society.mapper.SocietySchoolBannerMapper" >
+   
+   
+    <resultMap id="BaseResultMap" type="com.edgedo.society.entity.SocietySchoolBanner" >
+			<id column="ID" property="id"/>
+			<result column="CREATE_TIME" property="createTime"/>
+			<result column="CREATE_USER_ID" property="createUserId"/>
+			<result column="CREATE_USER_NAME" property="createUserName"/>
+			<result column="OWNER_SCHOOL_ID" property="ownerSchoolId"/>
+			<result column="OWNER_SCHOOL_NAME" property="ownerSchoolName"/>
+			<result column="IMAGE_URL" property="imageUrl"/>
+			<result column="ORDER_NUM" property="orderNum"/>
+			<result column="IS_ENABLE" property="isEnable"/>
+			<result column="SH_STATE" property="shState"/>
+    </resultMap>
+   
+    <resultMap id="BaseResultViewMap" type="com.edgedo.society.queryvo.SocietySchoolBannerView" extends="BaseResultMap">
+    
+    </resultMap>
+  
+  
+  <!-- ******* 新增字段请修改这里  ******  -->
+  <sql id="Base_Column_List">
+	 ID, CREATE_TIME, CREATE_USER_ID, CREATE_USER_NAME, OWNER_SCHOOL_ID, OWNER_SCHOOL_NAME, IMAGE_URL, ORDER_NUM, IS_ENABLE, SH_STATE
+  </sql>
+  
+  <!-- ******* 利用好这里的动态查询条件  ******  -->
+  <sql id="where">
+  	<where>
+		<if test='queryObj != null and  queryObj.id != null and @org.apache.commons.lang3.StringUtils@isNotEmpty(queryObj.id)'>
+		AND  ID = #{queryObj.id}
+		</if>
+		<if test='queryObj != null and  queryObj.createTime != null'>
+			AND  CREATE_TIME = #{queryObj.createTime}
+		</if>
+		<if test='queryObj != null and  queryObj.createUserId != null and @org.apache.commons.lang3.StringUtils@isNotEmpty(queryObj.createUserId)'>
+		AND  CREATE_USER_ID = #{queryObj.createUserId}
+		</if>
+		<if test='queryObj != null and  queryObj.createUserName != null and @org.apache.commons.lang3.StringUtils@isNotEmpty(queryObj.createUserName)'>
+		AND  CREATE_USER_NAME = #{queryObj.createUserName}
+		</if>
+		<if test='queryObj != null and  queryObj.ownerSchoolId != null and @org.apache.commons.lang3.StringUtils@isNotEmpty(queryObj.ownerSchoolId)'>
+		AND  OWNER_SCHOOL_ID = #{queryObj.ownerSchoolId}
+		</if>
+		<if test='queryObj != null and  queryObj.ownerSchoolName != null and @org.apache.commons.lang3.StringUtils@isNotEmpty(queryObj.ownerSchoolName)'>
+		AND  OWNER_SCHOOL_NAME = #{queryObj.ownerSchoolName}
+		</if>
+		<if test='queryObj != null and  queryObj.imageUrl != null and @org.apache.commons.lang3.StringUtils@isNotEmpty(queryObj.imageUrl)'>
+		AND  IMAGE_URL = #{queryObj.imageUrl}
+		</if>
+		<if test='queryObj != null and  queryObj.isEnable != null and @org.apache.commons.lang3.StringUtils@isNotEmpty(queryObj.isEnable)'>
+		AND  IS_ENABLE = #{queryObj.isEnable}
+		</if>
+		<if test='queryObj != null and  queryObj.shState != null and @org.apache.commons.lang3.StringUtils@isNotEmpty(queryObj.shState)'>
+		AND  SH_STATE = #{queryObj.shState}
+		</if>
+  	</where>
+  	
+  </sql>
+  
+  <!-- ******* 排序判断  ******  
+  <sql id="orderBy">
+  	<if test="orderBy != null and orderBy!= '' ">
+  		order by  ${orderBy}
+  	</if>
+  </sql>-->
+  
+  
+  <!-- 分页条件查询  -->
+  <select id="listPage" parameterType="com.edgedo.society.queryvo.SocietySchoolBannerQuery" resultMap="BaseResultViewMap">
+  		select <include refid="Base_Column_List"/> from society_school_banner 
+  		<include refid="where"/>
+  </select>
+  
+   <!-- 不分页条件查询  -->
+  <select id="listByObj" parameterType="com.edgedo.society.queryvo.SocietySchoolBannerQuery" resultMap="BaseResultViewMap">
+  		select <include refid="Base_Column_List"/> from society_school_banner 
+  		<include refid="where"/>
+  </select>
+
+	<!-- 查询学校的轮播图片 -->
+	<select id="selectSchoolBannerImg" parameterType="string" resultType="string">
+		select IMAGE_URL from society_school_banner
+		where IS_ENABLE='1'
+		and SH_STATE='1'
+		and OWNER_SCHOOL_ID=#{ownerSchoolId}
+		order by ORDER_NUM desc
+	</select>
+  
+  
+</mapper>

@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>编辑</title>
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=0">
+    <link rel="stylesheet" href="/layuiadmin/layui/css/layui.css" media="all">
+    <link rel="stylesheet" href="/layuiadmin/style/app.css" media="all">
+</head>
+<body>
+
+<div class="layui-fluid">
+    <div class="layui-card">
+        <div class="layui-card-header">
+            <font id="studentNameTitle"></font>
+            <a href="javascript:history.back()" style="    margin-top: 10px;
+    position: absolute;
+    right: 15px;" class="layui-btn layui-btn-normal layui-btn-xs">
+                <i style="position:initial;line-height: inherit" class="layui-icon layui-icon-return"></i>返回</a>
+        </div>
+        <div class="layui-card-body">
+            <table id="societySchoolCourseNodeQuestion-list" lay-filter="societySchoolCourseNodeQuestion-list"></table>
+        </div>
+    </div>
+</div>
+
+<script src="/layuiadmin/layui/layui.js"></script>
+<script>
+    layui.config({
+        base: '/layuiadmin/' //静态资源所在路径
+    }).extend({
+        index: 'lib/index', //主入口模块
+        $tool:'tool'
+    }).use(['index', 'form','$tool','laydate','laytpl','table'], function(){
+
+        var $ = layui.$
+            ,$tool = layui.$tool
+            ,table = layui.table
+            ,laydate = layui.laydate
+            ,admin = layui.admin
+            ,laytpl = layui.laytpl
+            ,form = layui.form;
+
+        var queryArgs = $tool.getQueryParam();//获取查询参数
+        var quersionId = decodeURI(queryArgs['quersionId']);
+        var ownerNodeId = decodeURI(queryArgs['ownerNodeId']);
+        var ownerSchoolId = decodeURI(queryArgs['ownerSchoolId']);
+        var ownerCourseId = decodeURI(queryArgs['ownerCourseId']);
+        var questionName = decodeURI(queryArgs['questionName']);
+        var ownerNodeName = decodeURI(queryArgs['ownerNodeName']);
+        var ownerCourseName = decodeURI(queryArgs['ownerCourseName']);
+
+        var studentNameTitle = ownerCourseName+">"+ownerNodeName+">"+questionName;
+        $("#studentNameTitle")[0].innerText = studentNameTitle;
+
+        defineTable = function () {
+            var headers = layui.admin.getTokenHeader();
+            table.render({
+                elem: '#societySchoolCourseNodeQuestion-list' //指定原始表格的选择器（id选择器）
+                , url: layui.setter.basePath + '/society/societySchoolCourseNodeQuestion/selectByQuesionAllId.jsn' //模拟接口
+                , headers: headers
+                , method: 'post'
+                ,where:{
+                    'queryObj.id':quersionId,
+                    'queryObj.ownerNodeId':ownerNodeId,
+                    'queryObj.ownerSchoolId':ownerSchoolId,
+                    'queryObj.ownerCourseId':ownerCourseId
+                }
+                , parseData: function (res) { //res 即为原始返回的数据
+                    return {
+                        "code": res.success, //解析接口状态
+                        "msg": res.errMsg, //解析提示文本
+                        "count": res.totalCount, //解析数据长度
+                        "data": res.list //解析数据列表
+                    };
+                }
+                , response: {
+                    statusCode: true //规定成功的状态码，默认：0
+                }
+                , cols: [[
+                    // {type: 'radio', fixed: 'left'}
+                    {field: 'questionName', align: 'center', width: '20%', title: '题目名'}
+                    , {field: 'questionType', width: '10.5%', title: '题目类型',
+                        templet: function (d) {
+                            if(d.questionType=='1'){
+                                return '单选';
+                            }else {
+                                return '判断';
+                            }
+                        }
+                    }
+                    , {field: 'questionScore',align: 'center', width: '12%', title: '题目分数'}
+                    , {field: 'ownerCourseName',align: 'center', width: '15%', title: '课程名称'}
+                    , {field: 'ownerNodeName',align: 'center', width: '15%', title: '章节名称'}
+                ]]
+            });
+        }
+        defineTable();
+
+        var active = {
+            //返回上一级页面
+            returnHtml: function(){
+                window.history.back(-1);
+            }
+        }
+
+        //绑定点击事件
+        $('.layui-btn.layui-btn-normal.layui-btn-sm').on('click', function(){
+            var type = $(this).data('type');
+            active[type] ? active[type].call(this) : '';
+        });
+
+    })
+</script>
+</body>
+</html>

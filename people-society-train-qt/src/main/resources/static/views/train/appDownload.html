@@ -1,0 +1,68 @@
+<!doctype html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>手机培训宝下载</title>
+    <meta content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=0" name="viewport"/>
+    <meta content="yes" name="apple-mobile-web-app-capable"/>
+    <meta content="black" name="apple-mobile-web-app-status-bar-style"/>
+    <meta content="telephone=no" name="format-detection"/>
+    <link href="css/global.css" rel="stylesheet" type="text/css"/>
+    <link href="css/main.css" rel="stylesheet" type="text/css"/>
+    <link href="font/iconfont.css" rel="stylesheet" type="text/css"/>
+    <script type="text/javascript" src="js/jquery203.js"></script>
+</head>
+
+<body>
+<section class="aui-flexView">
+
+
+	<section class="aui-scrollView">
+		
+		
+		
+		    <div>          
+
+				<Div id="shadeCon" style="width: 100%; height:100%; background: rgba(0, 0, 0, 0.5); position: fixed; z-index: 999999; top:0px; right: 0px;">
+                    <img src="images/jiantou.png" style="position:absolute; right:0px; top:0px;">
+                    <div style="margin-top:20px;; padding: 30px; color: #fff; font-size:1.1rem; line-height: 2rem">
+                      <p>1、点击右上角“...”</p>
+                      <p>2、选择在“浏览器中打开”</p>
+                    </div>
+                </Div>
+
+		        <div style="margin:150px auto; text-align: center">
+                    <img src="images/logo.png" style="width:70px;border-radius: 10px;">
+                    <p style="text-align: center; font-size: 1rem; font-weight: 700; margin: 20px 0px;">提升专业素质&nbsp;&nbsp;增强能力水平</p>
+                </div> 
+                 <Div style="width:70%; margin: auto"><button class="aui-sign-login" onclick="appDownload()" >下载手机培训宝APP</button>    </Div>
+		
+		    </div>
+		
+       
+	</section>
+
+
+    
+  
+    
+</section>
+</body>
+<script type="text/javascript">
+    $(function(){
+        //判断是否是微信浏览器打开
+        if(!isWx()){
+            //隐藏遮罩层
+            $("#shadeCon").hide();
+        }
+    })
+    //下载APP
+    function appDownload() {
+        window.location.href = "https://studys.heb12328.com:60002/sjpxb_android.apk";
+    }
+    //判断是否是微信浏览器
+    function isWx(){
+        return navigator.userAgent.toLowerCase().indexOf('micromessenger') !== -1
+    }
+</script>
+</html>

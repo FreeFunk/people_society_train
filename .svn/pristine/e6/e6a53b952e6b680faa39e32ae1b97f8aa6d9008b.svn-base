@@ -1,0 +1,36 @@
+server:
+  port: 8199
+  servlet:
+    context-path: /wxplant
+mybatis:
+  mapper-locations: classpath:mapper/sys/*.xml,classpath:mapper/wxcommon/*.xml
+mybatis-plus:
+  global-config:
+    db-config:
+      db-type: MYSQL
+spring:
+  profiles:
+    active: app,redis,timetask
+  datasource:
+    name: datasource
+    url: jdbc:mysql://rm-3xeiiq048flpry9af1o.mysql.rds.aliyuncs.com:3306/train_wx_web_service?useUnicode=true&amp;characterEncoding=UTF-8
+    driver-class-name: com.mysql.jdbc.Driver
+    username: root
+    password: QHD_hl267#$
+    tomcat:
+      max-active: 5
+      min-idle: 2
+      max-idle: 5
+      initial-size: 2
+      test-on-borrow: true
+      test-on-return: false
+      max-wait: 3000
+  aop:
+    proxy-target-class: true
+    auto: true
+  mvc:
+    view:
+      suffix: .html
+      prefix: classpath:/templates/
+
+controller.scanPackage: com.edgedo

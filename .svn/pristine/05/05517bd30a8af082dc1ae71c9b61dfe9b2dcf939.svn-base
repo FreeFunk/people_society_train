@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE properties SYSTEM "http://java.sun.com/dtd/properties.dtd">
+<properties>
+	<!-- 数据库用户名密码 -->
+	<entry key="jdbc.username">people_society_train</entry>
+	<entry key="jdbc.password">people_society_train123</entry>
+	<entry key="jdbc.url">jdbc:mysql://27.128.174.240:3435/people_society_train_dev?useUnicode=true&amp;characterEncoding=UTF-8</entry>
+	<entry key="jdbc.driver">com.mysql.jdbc.Driver</entry>
+</properties>

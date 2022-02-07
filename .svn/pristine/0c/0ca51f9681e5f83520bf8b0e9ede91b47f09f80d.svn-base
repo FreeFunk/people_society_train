@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.edgedo.society.mapper.SocietyStudentTestPaperMapper" >
+   
+   
+    <resultMap id="BaseResultMap" type="com.edgedo.society.entity.SocietyStudentTestPaper" >
+			<id column="ID" property="id"/>
+			<result column="CREATE_TIME" property="createTime"/>
+			<result column="CREATE_USER_ID" property="createUserId"/>
+			<result column="CREATE_USER_NAME" property="createUserName"/>
+			<result column="STUDENT_ID" property="studentId"/>
+			<result column="OWNER_SCHOOL_ID" property="ownerSchoolId"/>
+			<result column="OWNER_SCHOOL_NAME" property="ownerSchoolName"/>
+			<result column="OWNER_COURSE_ID" property="ownerCourseId"/>
+			<result column="OWNER_COURSE_NAME" property="ownerCourseName"/>
+			<result column="OWNER_TEST_PAPER_ID" property="ownerTestPaperId"/>
+			<result column="TEST_PAPER_NAME" property="testPaperName"/>
+			<result column="TEST_PAPER_TIME_LENGTH" property="testPaperTimeLength"/>
+			<result column="TOTAL_QUESTION_NUM" property="totalQuestionNum"/>
+			<result column="TOTAL_SCORE" property="totalScore"/>
+			<result column="PASS_SCORE" property="passScore"/>
+			<result column="OPTION_SCORE" property="optionScore"/>
+			<result column="JUDGE_SCORE" property="judgeScore"/>
+			<result column="GET_SCORE" property="getScore"/>
+			<result column="IS_PASS" property="isPass"/>
+			<result column="IS_FINISHED" property="isFinished"/>
+			<result column="DATA_STATE" property="dataState"/>
+			<result column="STUDENT_NAME" property="studentName"/>
+			<result column="STUDENT_ID_CARD_NUM" property="studentIdCardNum"/>
+			<result column="OPTION_RIGHT_NUM" property="optionRightNum"/>
+			<result column="JUDGE_RIGHT_NUM" property="judgeRightNum"/>
+			<result column="TEST_RIGHT_RATE" property="testRightRate"/>
+    </resultMap>
+   
+    <resultMap id="BaseResultViewMap" type="com.edgedo.society.queryvo.SocietyStudentTestPaperView" extends="BaseResultMap">
+    
+    </resultMap>
+  
+  
+  <!-- ******* 新增字段请修改这里  ******  -->
+  <sql id="Base_Column_List">
+	 ID, CREATE_TIME, CREATE_USER_ID, CREATE_USER_NAME, STUDENT_ID,
+	 OWNER_SCHOOL_ID, OWNER_SCHOOL_NAME, OWNER_COURSE_ID, OWNER_COURSE_NAME,
+	 OWNER_TEST_PAPER_ID, TEST_PAPER_NAME, TEST_PAPER_TIME_LENGTH,
+	 TOTAL_QUESTION_NUM, TOTAL_SCORE, PASS_SCORE, OPTION_SCORE,
+	 JUDGE_SCORE, GET_SCORE, IS_PASS, IS_FINISHED, DATA_STATE,STUDENT_NAME,STUDENT_ID_CARD_NUM,
+	 OPTION_RIGHT_NUM,JUDGE_RIGHT_NUM,TEST_RIGHT_RATE
+  </sql>
+  
+  <!-- ******* 利用好这里的动态查询条件  ******  -->
+  <sql id="where">
+  	<where>
+		DATA_STATE='1'
+		<if test='queryObj != null and  queryObj.studentName != null and queryObj.studentName != ""'>
+			AND  STUDENT_NAME like concat('%',#{queryObj.studentName},'%')
+		</if>
+		<if test='queryObj != null and  queryObj.studentIdCardNum != null and queryObj.studentIdCardNum != ""'>
+			AND  STUDENT_ID_CARD_NUM = #{queryObj.studentIdCardNum}
+		</if>
+		<if test='queryObj != null and  queryObj.ownerSchoolId != null and queryObj.ownerSchoolId != ""'>
+			AND  OWNER_SCHOOL_ID = #{queryObj.ownerSchoolId}
+		</if>
+		<if test='queryObj != null and  queryObj.testRightRateStart != null and queryObj.testRightRateEnd != null'>
+			AND  (TEST_RIGHT_RATE >= #{queryObj.testRightRateStart})
+			AND  (TEST_RIGHT_RATE &lt;= #{queryObj.testRightRateEnd})
+		</if>
+		<if test='queryObj != null and  queryObj.ownerSchoolName != null and queryObj.ownerSchoolName != ""'>
+			AND  OWNER_SCHOOL_NAME Like concat('%',#{queryObj.ownerSchoolName},'%')
+		</if>
+  	</where>
+  	
+  </sql>
+  
+  <!-- ******* 排序判断  ******  
+  <sql id="orderBy">
+  	<if test="orderBy != null and orderBy!= '' ">
+  		order by  ${orderBy}
+  	</if>
+  </sql>-->
+  
+  
+  <!-- 分页条件查询  -->
+  <select id="listPage" parameterType="com.edgedo.society.queryvo.SocietyStudentTestPaperQuery" resultMap="BaseResultViewMap">
+  		select <include refid="Base_Column_List"/> from society_student_test_paper 
+  		<include refid="where"/>
+  </select>
+  
+   <!-- 不分页条件查询  -->
+  <select id="listByObj" parameterType="com.edgedo.society.queryvo.SocietyStudentTestPaperQuery" resultMap="BaseResultViewMap">
+  		select <include refid="Base_Column_List"/> from society_student_test_paper 
+  		<include refid="where"/>
+  </select>
+  <!--根据学员id和试卷id查询-->
+	<select id="loadByStuIdAndTestPaperId" parameterType="string" resultMap="BaseResultViewMap">
+		select <include refid="Base_Column_List"/> from society_student_test_paper
+		WHERE STUDENT_ID = #{studentId}
+		and OWNER_TEST_PAPER_ID = #{testPaperId}
+	</select>
+
+
+
+	<delete id="deleteByStuId" parameterType="string">
+		delete from society_student_test_paper where STUDENT_ID=#{id}
+	</delete>
+
+
+	<update id="updateByStuId" parameterType="map">
+		update society_student_test_paper set STUDENT_NAME=#{stuName},STUDENT_ID_CARD_NUM=#{idcard}
+		where STUDENT_ID=#{stuId}
+	</update>
+
+	<select id="selectByStuIdAndCourseIdAndSchoolId" parameterType="string" resultType="string">
+		select IS_FINISHED isFinished from society_student_test_paper
+		WHERE STUDENT_ID = #{studentId}
+		and OWNER_SCHOOL_ID = #{ownerSchoolId} and OWNER_COURSE_ID = #{courseId} and DATA_STATE='1'
+	</select>
+
+</mapper>

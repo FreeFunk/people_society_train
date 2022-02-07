@@ -1,0 +1,74 @@
+#日志配置
+logging:
+  config: log4j2-spring.xml
+  level:
+    com.edgedo: info
+#是否开启定时任务
+app.scheduling.enable: false
+#定时任务线程数量
+app.scheduling.threadnum: 10
+#是否启用mvc
+app.springmvc.enable: true
+#启用shiro 权限校验
+app.shiro.enable: true
+#登录校验的过滤器类 com.edgedo.common.shiro.JWTFilter
+app.shiro.loginFilter: com.edgedo.common.shiro.JWTFilter
+#微信公共服务的url
+app.commonWxServiceUrl: http://wx.qhd12328.com/wxplant
+#启用mybatis扫描
+app.mybatis.enable: true
+#rsa公钥
+JwtRsaSecKey.rsaPublicKey: MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAk2Enkbj8tyFHKfd3H78c+m5eR4mHKe/e12n3ID89kJ2LHkuPApfiWOzgiU87yyoKrcwPtKdds7KdyLRG0UpRmHgCb2PrbpQ3+cqjwpWY3rXwm4jNutb8aYdaciVhov3Nndtaupuas2SSPsyj55waHpJNR2MHFVnYYldnncxl6cqJZxtZjiTPdkc/kZNpJWpWN8jGZk3/J1tc0FjaLO4EUhsnRy2856DH18LUczS12UxzeBMl1k6L0vEsgI9UEhWzszDraUskzjmc9gu2+MKy6YaqArpHHz92KA4nsPX7HXL7cmaXdg5OEcuTZ7eVgzI7t1KewbggSOmooyW8dCNVgQIDAQAB
+#rsa私钥
+JwtRsaSecKey.rsaPrivateKey: MIIEvgIBADANBgkqhkiG9w0BAQEFAASCBKgwggSkAgEAAoIBAQCTYSeRuPy3IUcp93cfvxz6bl5HiYcp797XafcgPz2QnYseS48Cl+JY7OCJTzvLKgqtzA+0p12zsp3ItEbRSlGYeAJvY+tulDf5yqPClZjetfCbiM261vxph1pyJWGi/c2d21q6m5qzZJI+zKPnnBoekk1HYwcVWdhiV2edzGXpyolnG1mOJM92Rz+Rk2klalY3yMZmTf8nW1zQWNos7gRSGydHLbznoMfXwtRzNLXZTHN4EyXWTovS8SyAj1QSFbOzMOtpSyTOOZz2C7b4wrLphqoCukcfP3YoDiew9fsdcvtyZpd2Dk4Ry5Nnt5WDMju3Up7BuCBI6aijJbx0I1WBAgMBAAECggEASNM5Okiul89Z2uLtekJ1j0n6TF8o6xAcjVVPSB/3y/4NQGsVv7JNpqNmUHNWmI2tuTOcjygkpScd0I9EbybKKw0iJui47WtQPZ5kTUKex24f9rsi7bBOCddYWg8er+u6Lsa1joBVcU/A9EcqtsfsIC8rAJtuZJ6AzhdinBbkRSGOpH17myGIk1UIDwVtQQXfM4M3laiqUiHCjk6x4S1g0/jt2GHmWY/YkHpZ2Xnp8GAyfD0GhtsXNXUr607qdaZ9tpXl3Ec+M+gJgtQ2pCtvG/T5jbMyZK8jVoS9LdL9uNjn82Tih/xut06OETnl8MsvmOQLlGlPVLTLQtzyjdMCAQKBgQDYygEU5C44ALapvax90qD8cHfMR3AbubXyf+FwdCHg1GSMhFwmFUdZtKJm0Swj+U3szoMb/lJvsw1VB8RQdeKx802Mj7t3mUr8QeoHaLnNFs3WO7DqXffwvUfbN7Zxy5Nb9QOCu/YSIW6kI+v197ufMFn68Lpf2kCxdZqdZQSwIwKBgQCuCUaJRpIirX0kuHmrBPmqRghJ3FXLL1JHh/t1fFhD3B5OOplw6bMW3KctOSZkg1RCIx2tOmALzdTn6SZqRxG3Je5GrK7VuCvdlQjyZ8wIrH34Lud23+A/jd9wgDQPzaWwFpT+ngYYHWmKVXCgOBpGvXTPYslbxKKkRYKarGtsCwKBgQCNlZCTRltxM/YYccof+totRH7ZKabsVKOiFybzPMWLguuQYjmUnb0Vt0WBhQchD4d3K4CxXa4VSYlhiUsLiZJeyhpRvOWgvLseeSYRZLJEYapZSm7HAkwWLGiroX1EYMKDAkgisAOL383U4akP4ZXl57w8idAPHgm2XKp4NSuUpQKBgBgaCL6yG0LaK96N/auFgN3n3PX9oZQF9asaVeSrV73uGfRTgTR16Otdm3lT1NFOrriKDG4VC4AW/UkwrLVDKlzmz9zRxVSrsMd7AEYxwbvhx4A7XqrDzlZ+21bFKnCV1kBQoEmysL1eNWOG+ZX2rwzk5+xgjeo7jRqa1b996VKJAoGBAMM2C+TpNRxe8ewfigDs/iIZOKBqIUca0mmeyE+qq0U6jagBkczHTkFI4J5ocAoXqw3hSU+/OwZU38CKBmzPnKsDmAfFo1Dnn18y9e6QU4CLdGf+1ynIquWsUrpCyZ+YjC5+Hhgu2DAtvYT43ijUMWVCloTLy76GIUaHML+EdRNl
+#jwt token秘钥
+JwtRsaSecKey.jwtSecretkey: 30e1747f28324cadb2a92b3800a579f3
+
+#天翼云 oos配置
+app.tcloudDomain: http://train.oos-cn.ctyunapi.cn
+#天翼云BucketName
+app.tcloudBucketName: train
+#天翼云路径前缀
+app.tCloudPrefix: society
+#天翼云EndPoint
+app.tyiYunEndPoint: oos-cn.ctyunapi.cn
+#天翼云AccessKeyId
+app.tyiYunAccessKeyId: 14fd808daaa89ccca91b
+#天翼云AccessKeySecret
+app.tyiYunAccessKeySecret: 6dc6d06677fbec3c515dca13f72bbe7e041bb4dd
+
+#腾讯云配置
+#腾讯云SecretId
+app.TencentSecretId: AKIDPzOXIvCPdcno53KGSR7GF0oX1C5i4LA9
+#腾讯云SecretKey
+app.TencentSecretKey: FFyRiK42sRcW8WrEH2XgIcx75LKAqFMX
+#腾讯云Region
+app.TencentRegion: ap-beijing
+#腾讯云EndPoint
+app.TencentEndPoint: vod.tencentcloudapi.com
+#腾讯云 转码模板id
+app.TencentDefinition: 20
+
+
+
+#临时文件的目录
+app.temFileForder: E:\upfiles\tempfile
+#真实文件的目录
+app.fileForder: E:\upfiles
+
+#服务器临时文件的目录
+app.server.temFileForder: /server/app/people_society_train/upfiles/tempfile
+#服务器真实文件的目录
+app.server.fileForder: /server/app/people_society_train/upfiles
+#点名管理有效时长：20分钟
+app.timeLength: 20
+
+#人脸最大图片kb
+app.faceai.maxfacelength: 50
+#压缩图片的宽度设置
+app.faceai.imgcompresswidth: 400
+
+#服务器人脸路径
+app.globle.faceUrl: /globle/faceimg
+#身份证照
+app.globle.idcardUrl: /globle/idcard

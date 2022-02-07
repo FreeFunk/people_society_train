@@ -1,0 +1,125 @@
+<section class="aui-flexView">
+	<section class="aui-scrollView">
+		<div class="aui-bird-box">
+			<div class="aui-flex" style="padding-bottom: 6px;">
+				<div class="aui-bird-user">
+					<img ng-src="{{curStudent.headPhoto}}" alt="">
+				</div>
+				<div class="aui-flex-box">
+					<h2>{{curStudent.studentName}}</h2>
+					<!--<span>学习时长：<strong>290小时</strong></span> <span>经验：<strong>38473</strong></span>-->
+				</div>
+				
+			</div>
+			<div class="aui-flex" style="padding:0">
+				<div class="aui-flex-box">
+					<div class="geren">
+                      <ul>
+                        <li style="width: 50%;"><p>{{curStudent.certCount}}</p><h2>证书</h2></li>
+                        <li style="width: 50%"><p>{{curStudent.courseCount}}</p><h2>课程</h2></li>
+                        <!--<li><p>309</p><h2>积分</h2></li>-->
+                      </ul>
+                    </div>
+				</div>
+				
+			</div>
+		</div>
+		<div class="aui-mon-list">
+			<!--<a href="javascript:;" class="aui-flex b-line">
+				<div class="aui-cou-img">
+					<img src="images/icon-fl-001.png" alt="">
+				</div>
+				<div class="aui-flex-box">
+					<p>积分抽奖</p>
+				</div>
+				<div class="aui-arrow">
+					<span class="red">好奖随心选</span>
+				</div>
+			</a>-->
+			<!--<a href="javascript:void(0);" ng-click="gotoOrder()" class="aui-flex b-line">
+				<div class="aui-cou-img">
+					<img src="images/icon-fl-002.png" alt="">
+				</div>
+				<div class="aui-flex-box">
+					<p>我的订单</p>
+				</div>
+				<div class="aui-arrow">
+					<span><em class="sz">1</em></span>
+				</div>
+			</a>
+			<a href="javascript:;" class="aui-flex b-line">
+				<div class="aui-cou-img">
+					<img src="images/icon-fl-003.png" alt="">
+				</div>
+				<div class="aui-flex-box">
+					<p>优惠券</p>
+				</div>
+				<div class="aui-arrow">
+					<span><em class="sz">23</em></span>
+				</div>
+			</a>
+			<a href="javascript:;" class="aui-flex b-line">
+				<div class="aui-cou-img">
+					<img src="images/icon-fl-004.png" alt="">
+				</div>
+				<div class="aui-flex-box">
+					<p>手机更换</p>
+				</div>
+				<div class="aui-arrow">
+                    
+				</div>
+			</a>-->
+			<a href="javascript:void(0);" ng-click="gotoEditPage()" class="aui-flex b-line">
+				<div class="aui-cou-img">
+					<img src="images/icon-fl-005.png" alt="">
+				</div>
+				<div class="aui-flex-box">
+					<p>个人信息</p>
+				</div>
+				<div class="aui-arrow">
+				</div>
+			</a>
+            <a href="javascript:void(0);" ng-click="gotoExamListPage()" class="aui-flex b-line">
+				<div class="aui-cou-img">
+					<img src="images/icon-fl-006.png" alt="">
+				</div>
+				<div class="aui-flex-box">
+					<p>我的考试</p>
+				</div>
+				<div class="aui-arrow">
+				</div>
+			</a>
+			<a href="javascript:void(0);" ng-click="gotoCertListPage()" class="aui-flex b-line">
+				<div class="aui-cou-img">
+					<img src="images/cert.png" alt="">
+				</div>
+				<div class="aui-flex-box">
+					<p>我的证书</p>
+				</div>
+				<div class="aui-arrow">
+				</div>
+			</a>
+			<a href="javascript:void(0);" ng-click="gotoEditPwdPage()" class="aui-flex b-line">
+				<div class="aui-cou-img">
+					<img src="images/editPwd.png" alt="">
+				</div>
+				<div class="aui-flex-box">
+					<p>更换密码</p>
+				</div>
+				<div class="aui-arrow">
+
+				</div>
+			</a>
+	
+		</div>
+        
+        <Div style="width: 90%; margin:2rem auto 1rem">
+			<a href="javascript:void(0)" ng-click="gotoLogin()" class="tuichu">退 出</a>
+		</Div>
+		<Div class="blank20"></Div>
+	</section>
+
+	<!-- 底部菜单栏 -->
+	<bottom-nav current-nav="currentNav" change-Menu="changeMenuBar(menu)"></bottom-nav>
+
+</section>

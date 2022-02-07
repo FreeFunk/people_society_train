@@ -1,0 +1,65 @@
+<section class="aui-flexView">
+      <header class="aui-navBar1 aui-navBar-fixed">
+		<a href="javascript:history.back(-1);" class="aui-navBar-item1">
+			 <i class="iconfont icon-fanhui"></i>
+		</a>
+		<div class="aui-center1">
+            <div class="aui-search-box1">
+                <input type="text" ng-model="courseName" placeholder="请输入搜索内容">
+            </div>
+		</div>
+		<a href="javascript:void(0);" class="aui-navBar-item1" ng-click="searchCourseListPage();">
+			<i class="iconfont icon-sousuo"></i>
+		</a>
+	</header>
+    
+    <section id="searchContent" class="aui-scrollView" ng-show="pageInfoObj.total==null">
+        <div class="blank15"></div>
+        <!--<div class="aui-flex b-line">
+			<div class="aui-flex-box">
+				<h5>热门搜索</h5>
+			</div>
+		</div>-->
+        <!--<div class="dh0">
+            <a href="javascript:void(0)">热门</a>
+        </div>-->
+         <div class="aui-flex b-line">
+			<div class="aui-flex-box">
+				<h5>搜索历史 <a href="javascript:void(0)" class="btn_sys fr" ng-click="clearSearchHistory()">清空</a></h5>
+			</div>
+		</div>
+         <div class="dh0">
+            <a href="javascript:void(0)" ng-click="historySearch('{{his}}')" ng-repeat="his in history track by $index">{{his}}</a>
+        </div>
+    </section>
+
+    <!-- 未查询到课程 -->
+    <section id="searchZero" class="aui-scrollView" ng-show="pageInfoObj.total==0">
+        <div class="wss">
+            <img src="images/wss.png">
+            <p>暂时没有相关课程</p>
+        </div>
+    </section>
+
+    <!-- 查询到课程 -->
+    <section class="aui-scrollView" ng-show="pageInfoObj.total>0">
+        <div class="neirong">共找到{{pageInfoObj.total}}个相关内容</div>
+        <div id="course_tab_panel_item" infinite-scroll-container class="aui-sit-list">
+            <a href="javascript:void(0);" class="aui-flex b-line" ng-click="gotoCourDetail(course.id)" ng-repeat="course in pageInfoObj.list track by course.id">
+                <div class="aui-git-img">
+                    <img ng-src="{{course.courseImage}}" alt="">
+                </div>
+                <div class="aui-flex-box">
+                    <div class="wzbhh" ng-bind="course.courseDesc"></div>
+                    <div class="aui-coin-ing"><em>{{courseClsName}}</em><em>{{course.totalStudentNum}}人学习</em></div>
+                </div>
+                <!--<div class="aui-flex-box0">
+                    <i class="iconfont icon-gouwuchekong font30"></i>
+                </div>-->
+            </a>
+        </div>
+        <div infinite-scroll-parent="course_tab_panel_item" style="margin-bottom: 0px;" infinite-scroll="nextCoursePage()" infinite-scroll-distance="0"></div>
+
+    </section>
+
+</section>

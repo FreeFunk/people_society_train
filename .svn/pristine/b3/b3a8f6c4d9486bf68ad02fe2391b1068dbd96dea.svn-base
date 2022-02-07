@@ -1,0 +1,219 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.edgedo.society.mapper.SocietySchoolCourseNodeQuestionMapper" >
+
+
+    <resultMap id="BaseResultMap" type="com.edgedo.society.entity.SocietySchoolCourseNodeQuestion" >
+			<id column="ID" property="id"/>
+			<result column="CREATE_TIME" property="createTime"/>
+			<result column="CREATE_USER_ID" property="createUserId"/>
+			<result column="CREATE_USER_NAME" property="createUserName"/>
+			<result column="OWNER_SCHOOL_ID" property="ownerSchoolId"/>
+			<result column="OWNER_SCHOOL_NAME" property="ownerSchoolName"/>
+			<result column="OWNER_MAJOR_ID" property="ownerMajorId"/>
+			<result column="OWNER_MAJOR_NAME" property="ownerMajorName"/>
+			<result column="OWNER_COURSE_CLS_ID" property="ownerCourseClsId"/>
+			<result column="OWNER_COURSE_CLS_NAME" property="ownerCourseClsName"/>
+			<result column="OWNER_COURSE_ID" property="ownerCourseId"/>
+			<result column="OWNER_COURSE_NAME" property="ownerCourseName"/>
+			<result column="OWNER_NODE_ID" property="ownerNodeId"/>
+			<result column="OWNER_NODE_NAME" property="ownerNodeName"/>
+			<result column="QUESTION_NAME" property="questionName"/>
+			<result column="QUESTION_TYPE" property="questionType"/>
+			<result column="QUESTION_ANSWER" property="questionAnswer"/>
+			<result column="QUESTION_SCORE" property="questionScore"/>
+			<result column="QUESTION_ANALYSIS" property="questionAnalysis"/>
+			<result column="ORDER_NUM" property="orderNum"/>
+    </resultMap>
+   
+    <resultMap id="BaseResultViewMap" type="com.edgedo.society.queryvo.SocietySchoolCourseNodeQuestionView" extends="BaseResultMap">
+    
+    </resultMap>
+  
+  
+  <!-- ******* 新增字段请修改这里  ******  -->
+  <sql id="Base_Column_List">
+	 ID, CREATE_TIME, CREATE_USER_ID, CREATE_USER_NAME, OWNER_SCHOOL_ID, OWNER_SCHOOL_NAME, OWNER_MAJOR_ID, OWNER_MAJOR_NAME, OWNER_COURSE_CLS_ID,
+	 OWNER_COURSE_CLS_NAME, OWNER_COURSE_ID, OWNER_COURSE_NAME, OWNER_NODE_ID, OWNER_NODE_NAME, QUESTION_NAME, QUESTION_TYPE, QUESTION_SCORE,
+	 QUESTION_ANALYSIS, ORDER_NUM, QUESTION_ANSWER
+  </sql>
+  
+  <!-- ******* 利用好这里的动态查询条件  ******  -->
+  <sql id="where">
+  	<where>
+		<if test='queryObj != null and  queryObj.id != null and @org.apache.commons.lang3.StringUtils@isNotEmpty(queryObj.id)'>
+		AND  ID = #{queryObj.id}
+		</if>
+		<if test='queryObj != null and  queryObj.createTime != null'>
+			AND  CREATE_TIME = #{queryObj.createTime}
+		</if>
+		<if test='queryObj != null and  queryObj.createUserId != null and @org.apache.commons.lang3.StringUtils@isNotEmpty(queryObj.createUserId)'>
+		AND  CREATE_USER_ID = #{queryObj.createUserId}
+		</if>
+		<if test='queryObj != null and  queryObj.createUserName != null and @org.apache.commons.lang3.StringUtils@isNotEmpty(queryObj.createUserName)'>
+		AND  CREATE_USER_NAME = #{queryObj.createUserName}
+		</if>
+		<if test='queryObj != null and  queryObj.ownerSchoolId != null and @org.apache.commons.lang3.StringUtils@isNotEmpty(queryObj.ownerSchoolId)'>
+		AND  OWNER_SCHOOL_ID = #{queryObj.ownerSchoolId}
+		</if>
+		<if test='queryObj != null and  queryObj.ownerSchoolName != null and @org.apache.commons.lang3.StringUtils@isNotEmpty(queryObj.ownerSchoolName)'>
+		AND  OWNER_SCHOOL_NAME = #{queryObj.ownerSchoolName}
+		</if>
+		<if test='queryObj != null and  queryObj.ownerMajorId != null and @org.apache.commons.lang3.StringUtils@isNotEmpty(queryObj.ownerMajorId)'>
+		AND  OWNER_MAJOR_ID = #{queryObj.ownerMajorId}
+		</if>
+		<if test='queryObj != null and  queryObj.ownerMajorName != null and @org.apache.commons.lang3.StringUtils@isNotEmpty(queryObj.ownerMajorName)'>
+		AND  OWNER_MAJOR_NAME = #{queryObj.ownerMajorName}
+		</if>
+		<if test='queryObj != null and  queryObj.ownerCourseClsId != null and @org.apache.commons.lang3.StringUtils@isNotEmpty(queryObj.ownerCourseClsId)'>
+		AND  OWNER_COURSE_CLS_ID = #{queryObj.ownerCourseClsId}
+		</if>
+		<if test='queryObj != null and  queryObj.ownerCourseClsName != null and @org.apache.commons.lang3.StringUtils@isNotEmpty(queryObj.ownerCourseClsName)'>
+		AND  OWNER_COURSE_CLS_NAME = #{queryObj.ownerCourseClsName}
+		</if>
+		<if test='queryObj != null and  queryObj.ownerCourseId != null and @org.apache.commons.lang3.StringUtils@isNotEmpty(queryObj.ownerCourseId)'>
+		AND  OWNER_COURSE_ID = #{queryObj.ownerCourseId}
+		</if>
+		<if test='queryObj != null and  queryObj.ownerCourseName != null and @org.apache.commons.lang3.StringUtils@isNotEmpty(queryObj.ownerCourseName)'>
+		AND  OWNER_COURSE_NAME = #{queryObj.ownerCourseName}
+		</if>
+		<if test='queryObj != null and  queryObj.ownerNodeId != null and @org.apache.commons.lang3.StringUtils@isNotEmpty(queryObj.ownerNodeId)'>
+		AND  OWNER_NODE_ID = #{queryObj.ownerNodeId}
+		</if>
+		<if test='queryObj != null and  queryObj.ownerNodeName != null and @org.apache.commons.lang3.StringUtils@isNotEmpty(queryObj.ownerNodeName)'>
+		AND  OWNER_NODE_NAME = #{queryObj.ownerNodeName}
+		</if>
+		<if test='queryObj != null and  queryObj.questionName != null and @org.apache.commons.lang3.StringUtils@isNotEmpty(queryObj.questionName)'>
+		AND  QUESTION_NAME = #{queryObj.questionName}
+		</if>
+		<if test='queryObj != null and  queryObj.questionType != null and @org.apache.commons.lang3.StringUtils@isNotEmpty(queryObj.questionType)'>
+		AND  QUESTION_TYPE = #{queryObj.questionType}
+		</if>
+		<if test='queryObj != null and  queryObj.questionScore != null and @org.apache.commons.lang3.StringUtils@isNotEmpty(queryObj.questionScore)'>
+			AND  QUESTION_SCORE = #{queryObj.questionScore}
+		</if>
+		<if test='queryObj != null and  queryObj.questionAnalysis != null and @org.apache.commons.lang3.StringUtils@isNotEmpty(queryObj.questionAnalysis)'>
+		AND  QUESTION_ANALYSIS = #{queryObj.questionAnalysis}
+		</if>
+  	</where>
+  	
+  </sql>
+
+	<sql id="where1">
+		<where>
+			<if test='queryObj != null and  queryObj.ownerSchoolId != null '>
+				AND  OWNER_SCHOOL_ID = #{queryObj.ownerSchoolId}
+			</if>
+			<if test='queryObj != null and  queryObj.ownerCourseId != null '>
+				AND  OWNER_COURSE_ID = #{queryObj.ownerCourseId}
+			</if>
+			<if test='queryObj != null and  queryObj.ownerNodeId != null '>
+				AND  OWNER_NODE_ID = #{queryObj.ownerNodeId}
+			</if>
+			<if test='queryObj != null and  queryObj.id != null '>
+				AND  ID = #{queryObj.id}
+			</if>
+			<if test='queryObj != null and  queryObj.questionType != null and @org.apache.commons.lang3.StringUtils@isNotEmpty(queryObj.questionType)'>
+				AND  QUESTION_TYPE = #{queryObj.questionType}
+			</if>
+		</where>
+	</sql>
+
+	<sql id="where2">
+		<where>
+			<if test='queryObj != null and  queryObj.ownerSchoolId != null '>
+				AND  OWNER_SCHOOL_ID = #{queryObj.ownerSchoolId}
+			</if>
+			<if test='queryObj != null and  queryObj.ownerCourseId != null '>
+				AND  OWNER_COURSE_ID = #{queryObj.ownerCourseId}
+			</if>
+		</where>
+	</sql>
+
+  <!-- ******* 排序判断  ******  
+  <sql id="orderBy">
+  	<if test="orderBy != null and orderBy!= '' ">
+  		order by  ${orderBy}
+  	</if>
+  </sql>-->
+  
+  
+  <!-- 分页条件查询  -->
+  <select id="listPage" parameterType="com.edgedo.society.queryvo.SocietySchoolCourseNodeQuestionQuery" resultMap="BaseResultViewMap">
+  		select <include refid="Base_Column_List"/> from society_school_course_node_question 
+  		<include refid="where"/>
+  </select>
+  
+   <!-- 不分页条件查询  -->
+  <select id="listByObj" parameterType="com.edgedo.society.queryvo.SocietySchoolCourseNodeQuestionQuery" resultMap="BaseResultViewMap">
+  		select <include refid="Base_Column_List"/> from society_school_course_node_question 
+  		<include refid="where"/>
+  </select>
+
+<!--	查询所有相关的小节的题目-->
+	<select id="selectByQuesionAllIdlistPage" parameterType="com.edgedo.society.queryvo.SocietySchoolCourseNodeQuestionQuery" resultMap="BaseResultViewMap">
+		select <include refid="Base_Column_List"/> from society_school_course_node_question
+		<include refid="where1"/>
+		order by ORDER_NUM asc
+	</select>
+
+	<!--根据课程id与习题类型随从查询n条记录，试卷管理生成试题使用-->
+	<select id="selectQuestionsForRound" parameterType="map" resultMap="BaseResultViewMap">
+		select <include refid="Base_Column_List"/> from society_school_course_node_question
+		where OWNER_COURSE_ID=#{courseId} and QUESTION_TYPE=#{questionType}
+		ORDER BY RAND() LIMIT #{num}
+	</select>
+
+	<select id="selectByCourseIdAndNodeId" parameterType="map" resultType="Integer">
+		select count(1) from society_school_course_node_question
+		where OWNER_SCHOOL_ID = #{ownerSchoolId} AND  OWNER_COURSE_ID = #{ownerCourseId}
+		AND  OWNER_NODE_ID = #{nodeId}
+	</select>
+
+	<!--统计小节下面习题数量-->
+	<select id="countQuestionNumByNodeId" parameterType="string" resultType="int">
+		select count(1) from society_school_course_node_question
+		where OWNER_NODE_ID=#{nodeId}
+	</select>
+
+	<!--根据小节ID查询小节下面的所有的习题-->
+	<select id="listByNodeId" parameterType="string" resultMap="BaseResultViewMap">
+		select <include refid="Base_Column_List"/> from society_school_course_node_question
+		where OWNER_NODE_ID = #{nodeId}
+	</select>
+
+	<select id="selectQuestionNum" parameterType="string" resultType="integer">
+		select count(1) from society_school_course_node_question
+		where OWNER_NODE_ID = #{ownerNodeId}
+	</select>
+
+	<select id="selectByCourseIdAndNodeIdList" parameterType="map" resultMap="BaseResultViewMap">
+		select <include refid="Base_Column_List"/> from society_school_course_node_question
+		where OWNER_SCHOOL_ID = #{schoolId}
+		and OWNER_NODE_ID = #{arrId}
+		and OWNER_COURSE_ID = #{courseIdOld} order by ORDER_NUM asc
+	</select>
+
+	<update id="updateByMajorId" parameterType="string">
+		update society_school_course_node_question set OWNER_MAJOR_NAME=#{majorName}
+		where OWNER_MAJOR_ID=#{majorId}
+	</update>
+
+	<update id="updateByClsId" parameterType="string">
+		update society_school_course_node_question
+		set OWNER_COURSE_CLS_NAME=#{clsName},OWNER_MAJOR_NAME=#{majorName},OWNER_MAJOR_ID=#{majorId}
+		where OWNER_COURSE_CLS_ID=#{clsId}
+	</update>
+
+	<update id="updateByNodeIdAndNodeName" parameterType="string">
+		update society_school_course_node_question
+		set OWNER_NODE_NAME=#{nodeName}
+		where OWNER_NODE_ID=#{nodeId}
+	</update>
+
+	<update id="updateByCourseIdAndCourseName" parameterType="map">
+		update society_school_course_node_question
+		set OWNER_COURSE_NAME=#{courseName}
+		where OWNER_COURSE_ID=#{courseId}
+	</update>
+</mapper>

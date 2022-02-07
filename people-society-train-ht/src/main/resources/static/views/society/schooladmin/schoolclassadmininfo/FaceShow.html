@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>新增</title>
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=0">
+    <link rel="stylesheet" href="/layuiadmin/layui/css/layui.css" media="all">
+    <link rel="stylesheet" href="/layuiadmin/style/app.css" media="all">
+</head>
+<style>
+    .imgDiv{
+        width: 49.5%;
+        height:360px;
+        border:1px solid lightgray;
+        text-align: center;
+    }
+    .imgSpan{
+        display: inline-block;
+        margin-top: 20px;
+    }
+    .imgBtn{
+        float: right;
+        margin-top: 10px;
+        margin-right: 57px;
+    }
+    .imgShow{
+        height: 72%;
+        width: 74%;
+        margin-top: 3%;
+    }
+</style>
+<body>
+
+<div class="layui-form" lay-filter="FaceShow-form" id="FaceShow-form" style="padding: 20px 10px 10px 10px;">
+    <div class="layui-row">
+        <input type="hidden" id="stuId" name="stuId"/>
+        <input type="hidden" id="faceImageUrl"/>
+        <input type="hidden" id="compFaceImageUrl"/>
+        <div class="imgDiv" style="float: left;">
+            <span class="imgSpan">压缩前（<label id="oraFaceImgSize"></label>）</span><br/>
+            <img onclick="getImg(this)" class="imgShow" id="faceShowImg"/><br>
+            <button type="button" class="layui-btn layuiadmin-btn-comm  layui-btn-sm imgBtn" onclick="compressStudentFaceImg()">开始压缩</button>
+        </div>
+        <div class="imgDiv"  style="float: right;">
+            <span class="imgSpan">压缩后（<label id="faceImgSize"></label>）</span><br/>
+            <img onclick="getImg(this)" class="imgShow" id="faceCompressShowImg"/><br>
+            <button type="button" class="layui-btn layuiadmin-btn-comm  layui-btn-sm imgBtn" onclick="coverFaceImage()">保存图片</button>
+        </div>
+    </div>
+</div>
+
+<script src="/layuiadmin/layui/layui.js"></script>
+<script>
+    layui.config({
+        base: '/layuiadmin/' //静态资源所在路径
+    }).extend({
+        index: 'lib/index', //主入口模块
+        $tool:'tool',
+        viewer: 'layui_ext/viewer/viewer'
+    }).use(['index', 'form','laydate','$tool','upload','laytpl','viewer'], function(){
+        var $ = layui.$
+            ,laydate = layui.laydate
+            ,admin  = layui.admin
+            ,$tool = layui.$tool
+            ,upload  = layui.upload
+            ,laytpl = layui.laytpl
+            ,viewer = layui.viewer
+            ,form = layui.form;
+
+        //压缩图片
+        compressStudentFaceImg = function(){
+
+            var stuId = $("#stuId").val();
+            admin.req({
+                url: layui.setter.basePath + "/society/societyStudent/compressStudentFaceImage.jsn",
+                data:{"stuId":stuId},
+                method:"post",
+                success:function(data){
+                    if(data.success){
+                        var oraFaceImgSize = data.data.oraFaceImgSize;
+                        $("#oraFaceImgSize").html(oraFaceImgSize + " KB");
+                        var faceImgSize = data.data.faceImgSize;
+                        $("#faceImgSize").html(faceImgSize + " KB");
+                        var facePath = data.data.faceImage;
+                        $("#compFaceImageUrl").val(facePath);
+                        facePath = layui.setter.ImgPath + facePath;
+                        $("#faceCompressShowImg").attr("src",facePath);
+                    }else{
+                        layer.msg(data.errMsg, {
+                            icon: 1
+                        });
+                    }
+                }
+            });
+        }
+
+        //覆盖线上图片
+        coverFaceImage = function(){
+            var compFaceImage = $("#compFaceImageUrl").val();
+            var faceImageUrl = $("#faceImageUrl").val();
+            var stuId = $("#stuId").val();
+            admin.req({
+                url: layui.setter.basePath + "/society/societyStudent/saveCompressFaceImg.jsn",
+                data:{"compFaceImg":compFaceImage,"stuId":stuId},
+                method:"post",
+                success:function(data){
+                    if(data.success){
+                        layer.msg("操作成功！", {
+                            icon: 1
+                        });
+                    }else{
+                        layer.msg(data.errMsg, {
+                            icon: 1
+                        });
+                    }
+                }
+            });
+        }
+
+        //点击图片变大
+        getImg = function (value) {
+            $(value.parentElement.parentElement).viewer();
+        }
+
+    })
+</script>
+</body>
+</html>

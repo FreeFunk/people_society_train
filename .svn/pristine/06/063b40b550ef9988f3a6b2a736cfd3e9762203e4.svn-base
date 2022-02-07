@@ -1,0 +1,45 @@
+<section class="aui-flexView">
+    <header class="aui-navBar aui-navBar-fixed">
+		<a href="javascript:void(0);" class="aui-navBar-item">
+		</a>
+		<div class="aui-center">
+			<span class="aui-center-title">新闻列表</span>
+		</div>
+		<a href="javascript:;" class="aui-navBar-item" >
+			<!--<i class="icon icon-search0"></i>-->
+		</a>
+	</header>
+    
+    <section class="aui-scrollView">
+		<div class="aui-head-blue">
+			<div class="fenlei">
+				<ul>
+					<li ng-click="freshNewsList('')" class="{{articleClsId==''?'on':''}}">全部</li>
+					<li style="font-size: 14px;" ng-click="freshNewsList(cls.id)" class="{{articleClsId==cls.id?'on':''}}" ng-repeat="cls in articleClsList track by cls.id">{{cls.clsName}}</li>
+					<li ng-click="gotoCommonServe()">公共服务</li>
+				</ul>
+			</div>
+		</div>
+
+        <div id="article_panel_item" infinite-scroll-container class="aui-sit-list" >
+			<a href="javascript:void(0);" ng-click="gotoDetailPage(article.id)" class="aui-flex b-line" ng-repeat="article in pageInfoObj.list track by article.id">
+				<div class="aui-git-img">
+					<img ng-src="{{article.mainPhoto}}" alt="">
+				</div>
+				<div class="aui-flex-box">
+					<div class="wzbhh">{{article.title}}</div>
+					<div class="aui-coin-ing"><em>{{article.publishTime}}</em><em>{{article.clickNum}} 浏览</em></div>
+				</div>
+			</a>
+		</div>
+		<div infinite-scroll-parent="article_panel_item" style="margin-bottom: 0px;" infinite-scroll="nextArticlePage()" infinite-scroll-distance="0"></div>
+
+    </section>
+
+	<!-- 底部菜单栏 -->
+	<bottom-nav current-nav="currentNav" change-Menu="changeMenuBar(menu)"></bottom-nav>
+
+</section>
+
+</body>
+</html>

@@ -1,0 +1,17 @@
+package com.edgedo.society.queryvo;
+
+import com.edgedo.society.entity.SocietyStudentAndNode;
+
+public class SocietyStudentAndNodeView extends SocietyStudentAndNode {
+
+    private Integer rightNum;
+
+
+    public Integer getRightNum() {
+        return rightNum;
+    }
+
+    public void setRightNum(Integer rightNum) {
+        this.rightNum = rightNum;
+    }
+}

@@ -1,0 +1,146 @@
+package com.edgedo.timetask.demo;
+
+import com.edgedo.common.util.Guid;
+import com.edgedo.society.entity.*;
+import com.edgedo.society.mapper.SocietySchoolCourseNodeMapper;
+import com.edgedo.society.mapper.SocietyStudentAndCourseMapper;
+import com.edgedo.society.queryvo.*;
+import com.edgedo.society.service.*;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Scheduled;
+import org.springframework.stereotype.Component;
+
+import java.math.BigDecimal;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+//@Component
+public class task {
+
+
+    @Autowired
+    private SocietySchoolCourseService societySchoolCourseService;
+    @Autowired
+    private SocietySchoolCourseNodeService societySchoolCourseNodeService;
+    @Autowired
+    private SocietySchoolCourseNodeQuestionService societySchoolCourseNodeQuestionService;
+    @Autowired
+    private SocietySchoolClassService societySchoolClassService;
+    @Autowired
+    private SocietySchoolClassAndCourseService societySchoolClassAndCourseService;
+    @Autowired
+    private SocietySchoolClassAndStudentService societySchoolClassAndStudentService;
+    @Autowired
+    private SocietyStudentAndCourseService societyStudentAndCourseService;
+    @Autowired
+    private SocietyStudentAndNodeService societyStudentAndNodeService;
+    @Autowired
+    private SocietyStudentCertificateService societyStudentCertificateService;
+    @Autowired
+    private SocietyStudentPractiseQuestionService societyStudentPractiseQuestionService;
+    @Autowired
+    private SocietyStudentPractiseQuestOptionService societyStudentPractiseQuestOptionService;
+    @Autowired
+    private SocietyStudentStudyProcessService societyStudentStudyProcessService;
+    @Autowired
+    private SocietyStudentStudyProcessFaceService societyStudentStudyProcessFaceService;
+    boolean flag = true;
+
+
+    //    society_school_class 专业名 专业id
+//    society_school_class_and_course 课程id
+//    society_school_class_and_student 专业名专业id
+//    society_student_and_course课程id 专业id
+//    society_student_and_node  课程id 章节id
+//    society_student_certificate 专业id  专业名  课程id 课程名
+//    society_student_practise_question 课程id 名字 章节id 章节名 题目id 题目名
+//    society_student_practise_quest_option 章节id 章节名字
+//    society_student_study_process 课程章节id 名字
+//    society_student_study_process_face 课程章节id 名字
+
+//    @Scheduled(cron = "0/5 * * * * ?")//半小时执行一次
+    public void test() throws Exception {
+        if(flag){
+            flag = false;
+            String courseId = "222aab3740eb48c48637503c4ffdd937";
+            SocietySchoolCourse societySchoolCourse = societySchoolCourseService.loadById(courseId);//课程
+//        List<SocietySchoolCourseNodeView> nodeList = societySchoolCourseNodeService.selectByCourseId(courseId);//章节
+
+            Map<String,String> map = new HashMap<>();
+            map.put("majorId",societySchoolCourse.getOwnerMajorId());
+            map.put("majorName",societySchoolCourse.getOwnerMajorName());
+            map.put("courseClsId",societySchoolCourse.getCourseClsId());
+            map.put("courseClsName",societySchoolCourse.getCourseClsName());
+            map.put("courseId",societySchoolCourse.getId());
+            map.put("courseName",societySchoolCourse.getCourseName());
+
+            String corseIdOld = "4d242d6c-d9ca-4d36-9bdd-6c0bd2b9a8c8";
+            SocietySchoolCourse societySchoolCourseOld =
+                    societySchoolCourseService.loadById(corseIdOld);
+            map.put("majorIdOld",societySchoolCourseOld.getOwnerMajorId());
+            map.put("majorNameOld",societySchoolCourseOld.getOwnerMajorName());
+            map.put("courseClsIdOld",societySchoolCourseOld.getCourseClsId());
+            map.put("courseClsNameOld",societySchoolCourseOld.getCourseClsName());
+            map.put("courseIdOld",societySchoolCourseOld.getId());
+            map.put("courseNameOld",societySchoolCourseOld.getCourseName());
+            //@Transactional(propagation = Propagation.REQUIRED,rollbackFor=Exception.class)
+            //    society_school_class 专业名 专业id
+//            societySchoolClassService.updateByCourseId(map);
+//            //    society_school_class_and_course 课程id
+//            societySchoolClassAndCourseService.updateByCourseId(map);
+//            //    society_school_class_and_student 专业名专业id
+//            societySchoolClassAndStudentService.updateByCourseId(map);
+            String classId = "03cb3888b4aa4bf2bc4018de1b35cb8f";
+            List<SocietyStudentAndCourseView> list = societyStudentAndCourseService.selectByClassId(classId);
+            for(SocietyStudentAndCourseView societyStudentAndCourseView : list){
+                //    society_student_and_course课程id 专业id
+//                societyStudentAndCourseView.setOwnerMajorId(map.get("majorId"));
+//                societyStudentAndCourseView.setOwnerMajorId(map.get("majorName"));
+//                societyStudentAndCourseView.setCourseId(map.get("courseId"));
+//                societyStudentAndCourseView.setCourseName(map.get("courseName"));
+//                societyStudentAndCourseService.update(societyStudentAndCourseView);
+//                //    society_student_and_node  课程id 章节id
+                List<SocietyStudentStudyProcess> studyList =
+                        societyStudentStudyProcessService.selectByStuCouId(societyStudentAndCourseView.getId());
+                if(studyList.size()!=0){
+                    for(SocietyStudentStudyProcess societyStudentStudyProcessView : studyList){
+                        String nodeId =
+                                societyStudentAndNodeService.selectNodeName(societyStudentAndCourseView.getId(),societyStudentStudyProcessView.getOwnerNodeName());
+                        societyStudentStudyProcessView.setOwnerCourseId(map.get("courseId"));
+                        societyStudentStudyProcessView.setOwnerCourseName(map.get("courseName"));
+                        societyStudentStudyProcessView.setOwnerNodeId(nodeId);
+
+                    }
+                    societyStudentStudyProcessService.updateByListId(studyList);
+                }
+
+                //    society_student_study_process_face 课程章节id 名字
+                List<SocietyStudentStudyProcessFace> faceList =
+                        societyStudentStudyProcessFaceService.selectByStuCouId(societyStudentAndCourseView.getId());
+                if(faceList.size()!=0){
+                    for(SocietyStudentStudyProcessFace societyStudentStudyProcessFaceView : faceList){
+                        String nodeId =
+                                societyStudentAndNodeService.selectNodeName(societyStudentAndCourseView.getId(),societyStudentStudyProcessFaceView.getOwnerNodeName());
+                        societyStudentStudyProcessFaceView.setOwnerCourseId(map.get("courseId"));
+                        societyStudentStudyProcessFaceView.setOwnerCourseName(map.get("courseName"));
+                        societyStudentStudyProcessFaceView.setOwnerNodeId(nodeId);
+
+                    }
+                    societyStudentStudyProcessFaceService.updateByListId(faceList);
+                }
+                //    society_student_certificate 专业id  专业名  课程id 课程名 societyStudentAndCourseView
+//                SocietyStudentCertificateView societyStudentCertificateView =
+//                        societyStudentCertificateService.selectByStuId(societyStudentAndCourseView.getStudentId());
+//                if(societyStudentCertificateView!=null){
+//                    societyStudentCertificateView.setCourseId(map.get("courseId"));
+//                    societyStudentCertificateView.setCourseName(map.get("courseName"));
+//                    societyStudentCertificateView.setOwnerMajorId(map.get("majorId"));
+//                    societyStudentCertificateView.setOwnerMajorName(map.get("majorName"));
+//                    societyStudentCertificateService.update(societyStudentCertificateView);
+//                }
+            }
+            flag = true;
+        }
+    }
+}

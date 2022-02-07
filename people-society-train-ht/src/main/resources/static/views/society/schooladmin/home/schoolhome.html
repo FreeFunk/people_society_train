@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>课程培训统计</title>
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=0">
+    <link rel="stylesheet" href="/layuiadmin/layui/css/layui.css" media="all">
+    <link rel="stylesheet" href="/layuiadmin/style/admin.css" media="all">
+</head>
+<body>
+
+<div class="layui-fluid">
+    <div style=" background-color: #F2F2F2;">
+        <div class="layui-row " >
+            <div class="layui-col-md2" style="width: 19.9999992%">
+                <div class="layui-card"  style="margin: 0px 10px 5px 0px;">
+                    <div class="layui-card-header" style="font-weight: bold">专业统计
+                        <i class="layui-icon layui-icon-read" style="font-size: 22px; color: #4876FF;margin-top: -13px;"></i>
+                    </div>
+                    <div class="layui-card-body">
+                        <span id="zy" style="font-size: 36px;"></span>
+
+                    </div>
+                </div>
+            </div>
+            <div class="layui-col-md2" style="width: 19.9999992%">
+                <div class="layui-card" style="margin-right: 10px;">
+                    <div class="layui-card-header" style="font-weight: bold">班级统计
+                        <i class="layui-icon layui-icon-layouts" style="font-size: 22px; color: #4876FF;margin-top: -13px;"></i>
+                    </div>
+                    <div class="layui-card-body">
+                        <span id="bj" style="font-size: 36px; "></span>
+
+                    </div>
+                </div>
+            </div>
+            <div class="layui-col-md2" style="width: 19.9999992%">
+                <div class="layui-card" style="margin-right: 10px;">
+                    <div class="layui-card-header" style="font-weight: bold">课程统计
+                        <i class="layui-icon layui-icon-video" style="font-size: 22px; color: #4876FF;margin-top: -13px;"></i>
+                    </div>
+                    <div class="layui-card-body">
+                        <span id="kc" style="font-size: 36px;"></span>
+
+                    </div>
+                </div>
+            </div>
+            <div class="layui-col-md2" style="width: 19.9999992%">
+                <div class="layui-card" style="margin-right: 10px;">
+                    <div class="layui-card-header" style="font-weight: bold">课程学习人次
+                        <i class="layui-icon layui-icon-cellphone" style="font-size: 22px; color: #4876FF;margin-top: -13px;"></i>
+                    </div>
+                    <div class="layui-card-body">
+                        <span id="kcStuNum" style="font-size: 36px;"></span>
+
+                    </div>
+                </div>
+            </div>
+            <div class="layui-col-md2" style="width: 19.9999992%">
+                <div class="layui-card">
+                    <div class="layui-card-header" style="font-weight: bold">学员统计
+                        <i class="layui-icon layui-icon-user" style="font-size: 22px; color: #4876FF;margin-top: -13px;"></i>
+                    </div>
+                    <div class="layui-card-body">
+                        <span id="xy" style="font-size: 36px;"></span>
+
+                    </div>
+                </div>
+            </div>
+            <div class="layui-col-md12">
+                <div class="layui-card">
+                    <div class="layui-card-header" style="font-weight: bold">班级培训统计</div>
+                    <div class="layui-card-body">
+                        <table id="SocietySchoolClass-list" lay-filter="SocietySchoolClass-list"></table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script src="/layuiadmin/layui/layui.js"></script>
+<script>
+    layui.config({
+        base: '/layuiadmin/' //静态资源所在路径
+    }).extend({
+        index:'lib/index',
+        common:'common'
+    }).use(['index','table', 'form','common'], function(exports){
+        var $ = layui.$
+                ,table = layui.table
+                ,common = layui.common
+                ,admin = layui.admin
+                ,form = layui.form;
+
+        //统计card查询
+        selectCardList();
+        function selectCardList(){
+            admin.req({
+                url:layui.setter.basePath + "/society/societySchool/listForSchoolHome.jsn",
+                data:{},
+                method:'post',
+                success:function(data){
+                    if(data.success){
+                        $('#zy').html(data.data.zy);
+                        $('#bj').html(data.data.bj);
+                        $('#kc').html(data.data.kc);
+                        $('#xy').html(data.data.xy);
+                        $('#kcStuNum').html(data.data.kcStuNum);
+                    }
+                }
+            })
+        }
+
+        /*
+         * 定义表格
+         * */
+        defineTable = function () {
+            var headers = layui.admin.getTokenHeader();
+            table.render({
+                elem: '#SocietySchoolClass-list' //指定原始表格的选择器（id选择器）
+                , url: layui.setter.basePath + '/society/societySchoolClass/listpageforcount.jsn' //模拟接口
+                , headers: headers
+                , method: 'post'
+                , parseData: function (res) { //res 即为原始返回的数据
+                    return {
+                        "code": res.success, //解析接口状态
+                        "msg": res.errMsg, //解析提示文本
+                        "count": res.totalCount, //解析数据长度
+                        "data": res.list //解析数据列表
+                    };
+                }
+                , response: {
+                    statusCode: true //规定成功的状态码，默认：0
+                }
+                , cols: [[
+                    /* {type: 'checkbox', fixed: 'left'}*/
+                    , {field: 'id', align: 'center', width: 200, title: '主键', sort: true, hide: true}
+                    /* ,{field: 'createTime',align: 'center', width: 120, title: '创建时间',templet: function(d){
+                     return common.DateFormat(d.createTime,"yyyy-MM-dd");},sort: true}*/
+                    , {field: 'className', align: 'center', width: '20%', title: '班级名称', sort: false}
+                    , {field: 'ownerMajorName', align: 'center', width: '20%', title: '所属专业', sort: false}
+                    /*,{field: 'classStartTime',align: 'center', width: '10%', title: '培训开始时间',templet: function(d){
+                     return common.DateFormat(d.classStartTime,"yyyy-MM-dd");},sort: true}
+                     ,{field: 'classEndTime',align: 'center', width: '10%', title: '培训结束时间',templet: function(d){
+                     return common.DateFormat(d.classEndTime,"yyyy-MM-dd");},sort: true}
+                     ,{field: 'personInCharge',align: 'center', width: '10%', title: '负责人',sort: false}
+                     ,{field: 'personInChargePhoneNum',align: 'center', width: '10%', title: '负责人电话',sort: false}*/
+                    , {field: 'totalLessons', align: 'center', width: '20%', title: '总课时数', sort: false}
+                    , {field: 'classPersonNum', align: 'center', width: '20%', title: '培训人数', sort: false}
+                    , {field: 'finishedPersonNum', align: 'center', title: '已完成数', sort: false}
+                    /*, {field: 'notFinishedPersonNum', align: 'center', width: '15%', title: '未完成数', sort: false}*/
+                ]]
+                , autoSort: false
+                , page: true
+                , limit: 50
+                , limits: [10, 20, 30, 40,50]
+                , text: {
+                    none: '暂无相关数据'
+                }
+            });
+        }
+        defineTable();
+
+    });
+
+</script>
+</body>
+</html>
+

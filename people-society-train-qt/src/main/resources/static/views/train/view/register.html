@@ -1,0 +1,67 @@
+<section class="aui-flexView">
+    <header class="aui-navBar0 aui-navBar-fixed b-line">
+        <a href="javascript:history.back(-1);" class="aui-navBar-item">
+            <i class="iconfont icon-fanhui "></i>
+        </a>
+        <div class="aui-center">
+            <span class="aui-center-title">学员注册</span>
+        </div>
+        <!--<a href="javascript:history.back(-1);" class="aui-navBar-item">
+            <i class="icon icon-more"></i>
+            <span class="badge badge-hollow">9+</span>
+        </a>-->
+    </header>
+
+    <section class="aui-scrollView" style="padding: 1rem">
+        <form action="" method="post" id="studentRealNameForm">
+            <div class="aui-sign-form" style="padding: 0">
+                <div class="aui-flex" style="margin: 0 0 1rem 0;">
+                    <label>手&nbsp;机&nbsp;号：</label>
+                    <div class="aui-flex-box">
+                        <input type="text" id="studentPhoneNum" name="studentPhoneNum" autocomplete="off" placeholder="请输入手机号">
+                    </div>
+                </div>
+                <div class="aui-flex" style="margin: 0 0 1rem 0;">
+                    <label>密&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;码：</label>
+                    <div class="aui-flex-box">
+                        <input type="password" id="password" name="password" autocomplete="off" placeholder="请输入密码">
+                    </div>
+                </div>
+                <div class="aui-flex" style="margin: 0 0 1rem 0;">
+                    <label>确认密码：</label>
+                    <div class="aui-flex-box">
+                        <input type="password" id="conPassword" name="conPassword" autocomplete="off" placeholder="请再次输入密码">
+                    </div>
+                </div>
+            </div>
+            <div style="width: 90%; margin: auto" >
+                <div class="rz"  >
+                    <input type="hidden" id="idCardImage" name="idCardImage"/>
+                    <input type="hidden" id="idCardImageParam" name="idCardImageParam"/>
+                    <img id="idCardImageShow" src="images/zhengmian.png" ng-click="updateLoadIdCard()">
+                    <input onChange="uploadImageFile(this,'idCardImage',false,1200,false)" type="file" id="uploadIdCardImage" accept="image/*" style="display: none"/>
+                </div>
+                <div class="ts">身份证正面上传</div>
+            </div>
+
+            <div class="blank10"></div>
+
+            <div style="width: 90%; margin: auto">
+                <div class="rz" >
+                    <input type="hidden" id="faceImageUrl" name="faceImageUrl" />
+                    <input type="hidden" id="faceImageUrlParam" name="faceImageUrlParam" />
+                    <img id="faceImageUrlShow" style="width:215px;height: 255px;" src="images/renlian.png" ng-click="updateLoadFacePhoto()">
+                    <input onChange="uploadImageFile(this,'faceImageUrl',false,800,true)" type="file" id="uploadFaceImageUrl" accept="image/*" style="display: none" capture="user"/>
+                </div>
+                <div class="ts">人脸拍照</div>
+            </div>
+        </form>
+        <div style="color: red;width: 90%;margin: auto;margin-top: 10px;" ng-bind="realNameObj.failReason"></div>
+
+       <div class="blank10"></div>
+       <Div style="width: 90%; margin: auto">
+           <button class="aui-sign-login" ng-show="checkCount==10&&realNameState!='pass'" ng-click="studentSubmitRealName()">立即提交</button>
+       </Div>
+
+    </section>
+</section>

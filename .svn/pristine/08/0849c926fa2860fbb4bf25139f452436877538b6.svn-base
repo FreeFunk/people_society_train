@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>学员课程进度统计,学校管理员页面</title>
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=0">
+    <link rel="stylesheet" href="/layuiadmin/layui/css/layui.css" media="all">
+    <link rel="stylesheet" href="/layuiadmin/style/admin.css" media="all">
+    <style type="text/css">
+        .layui-table td{
+            border:1px solid black;
+            padding-right: 0px;
+            padding-left: 0px;
+        }
+        body,td,th {color: black;}
+        .layui-table-cell {
+            padding: 0 5px;
+        }
+        .bodyDiv{
+            width: 57%;
+            text-align: center;
+            margin-left: 18%;
+            padding-top: 2%;
+            page-break-before:left;
+        }
+        .bodyTitle{
+            padding-bottom: 6%;
+            font-size: 14px;
+            font-family: auto;
+            font-weight: 500;
+        }
+        .bodyTitleStyInfoDiv{
+            font-size: 18px;
+            font-family: monospace;
+            font-weight: 700;
+        }
+        .bodyTitleStuInfo{
+            text-align: left;
+            margin-bottom: 2%;
+        }
+        .printDetailIsOverP{
+            font-size: 21px;
+            font-family: auto;
+            padding-right: 10%;
+        }
+        .isTimeStrP{
+            font-size: 14px;
+            font-family: auto;
+        }
+    </style>
+</head>
+<body>
+
+<div class="layui-fluid">
+    <div class="layui-inline " style="left: 91%;position: fixed">
+        <button type="button" class="layui-btn layuiadmin-btn-comm layui-btn-sm" onclick="exportData()">
+            <i class="layui-icon layui-icon-export layuiadmin-button-btn"></i>导出
+        </button>
+    </div>
+    <div class="layui-card bodyDiv" >
+
+        <div>
+            <div class="bodyTitle">
+                <span id="formNameInfo" style="position: absolute;left: 24.6%;"></span>
+                <span id="codeFile" style="position: absolute;right: 27%;"></span>
+            </div>
+            <div class="bodyTitleStyInfoDiv">
+                <div style="margin-left: 12%;">
+                    <span class="printDetailIsOverP">结算确认单</span>
+                    <span id="isTimeStrP" class="isTimeStrP"></span>
+                </div>
+                <div style="width: 77%;padding-left: 11%;padding-bottom: 2%;">
+                    <table class="layui-table" style="text-align: left;">
+                        <tr>
+                            <td colspan="1" style="width: 14%;text-align: center;font-family: auto;">付款单位</td>
+                            <td colspan="3" id="paymentSchoolName"></td>
+                            <td colspan="1" style="width: 14%;text-align: center;font-family: auto;">收款单位</td>
+                            <td colspan="3" id="collectionSchoolName"></td>
+                        </tr>
+                        <tr>
+                            <td colspan="1" style="width: 14%;text-align: center;font-family: auto;">付款金额</td>
+                            <td colspan="3" id="paymentMoney"></td>
+                            <td colspan="1" style="width: 14%;text-align: center;font-family: auto;">收款账号</td>
+                            <td colspan="3"><p id="moneyHone" ></p><p id="moneyCode" ></p></td>
+                        </tr>
+                        <tr>
+                            <td colspan="8" style="text-align: center;padding: 10px;font-family: auto;">结算信息</td>
+                        </tr>
+                    </table>
+                    <table class="layui-table" id="detailInfo" style="margin-top: -1.5%;">
+
+                    </table>
+                    <table class="layui-table" style="margin-top: -1.5%;">
+                        <tr>
+                            <td colspan="4" style="width: 47.8%;font-family: auto;">合计</td>
+                            <td colspan="4" id="totalMoney" style="font-family: auto;"></td>
+                        </tr>
+                        <tr>
+                            <td colspan="4" style="padding: 22px 0;text-align: left;">
+                                <p id="paymentSchoolNameP" style="font-family: auto;"></p>
+                                <p style="font-family: auto;">经办人签字：</p>
+                            </td>
+                            <td colspan="4" style="padding: 22px 0;text-align: left;">
+                                <p id="collectionSchoolNameP" style="font-family: auto;"></p>
+                                <p style="font-family: auto;">经办人签字：</p>
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<script src="/layuiadmin/layui/layui.js"></script>
+<!--<script src="https://cdn.bootcdn.net/ajax/libs/exif-js/2.3.0/exif.js"></script>-->
+<script>
+    layui.config({
+        base: '/layuiadmin/' //静态资源所在路径
+    }).extend({
+        index:'lib/index',
+        common:'common',
+        $tool:'tool',
+        html2canvas: 'layui_ext/html2canvas/html2canvas',
+        jspdf: 'layui_ext/jspdf/jspdf.debug'
+    }).use(['index','common','excel','$tool','html2canvas','jspdf'], function(exports){
+        var $ = layui.$
+            ,common = layui.common
+            ,$tool = layui.$tool
+            ,html2canvas = layui.html2canvas
+            ,jspdf = layui.jspdf
+            ,admin = layui.admin;
+
+        var queryArgs = $tool.getQueryParam();//获取查询参数
+        var moneyHone = decodeURI(getQueryVariable("moneyHone"));
+        var moneyCode = decodeURI(getQueryVariable("moneyCode"));
+        var subsidyMoney = queryArgs['subsidyMoney'];
+        var ownerCourseId = queryArgs['ownerCourseId'];
+        var ownerSchoolId = queryArgs['ownerSchoolId'];
+        var schoolName;
+
+        //动态赋值
+        function init(){
+
+            var loadIndex =  parent.layer.load(1, {shade: [0.1, '#393D49']});
+            admin.req({
+                url:layui.setter.basePath +'/society/societySchoolCourse/printDetailedInfoPDF.jsn',
+                data:{
+                    'subsidyMoney':subsidyMoney,
+                    'ownerCourseId':ownerCourseId,
+                    'ownerSchoolId':ownerSchoolId
+                },
+                async:false,
+                method:"post",
+                success:function (data) {
+                    console.log(data.data);
+                    //第一部分
+                    firstData(data.data);
+
+                    parent.layer.close(loadIndex);
+                }
+            });
+        }
+        init();
+
+
+        function firstData(data){
+            //formNameInfo
+            $('#formNameInfo').html(data.fileIdentification);
+            // codeFile
+            $('#codeFile').html(data.id);
+            // isTimeStrP
+            $('#isTimeStrP').html(data.isTimeStr);
+            // paymentSchoolName
+            schoolName=data.paymentSchoolName;
+            $('#paymentSchoolName').html(data.paymentSchoolName);
+            // collectionSchoolName
+            $('#collectionSchoolName').html(data.collectionSchoolName);
+            // paymentMoney
+            $('#paymentMoney').html(data.paymentMoney);
+            // moneyHone
+            $('#moneyHone').html('开户银行：'+moneyHone);
+            // moneyCode
+            $('#moneyCode').html('银行账号：'+moneyCode);
+            $('#totalMoney').html(data.totalMoney);
+            // moneyHone
+            $('#paymentSchoolNameP').html('付款单位盖章：'+data.paymentSchoolName);
+            // moneyCode
+            $('#collectionSchoolNameP').html('收款单位盖章：'+data.collectionSchoolName);
+
+            var classCourseList = data.classCourseList;
+            var html = '<tr>\n' +
+                '          <td colspan="1" style="width: 12%;font-family: auto;">培训工种/级别</td>\n' +
+                '          <td colspan="2" style="width: 18%;font-family: auto;">合同约定比例</td>\n' +
+                '          <td colspan="1" style="width: 14.1%;font-family: auto;">班级名称</td>\n' +
+                '          <td colspan="1" style="width: 12%;font-family: auto;">补贴标准（元/人）</td>\n' +
+                '          <td colspan="1" style="width: 12%;font-family: auto;">培训人数</td>\n' +
+                '          <td colspan="1" style="width: 12%;font-family: auto;">平台技术服务费（元）</td>\n' +
+                '          <td colspan="1" style="width: 12%;font-family: auto;">线上课程服务费（元）</td>\n' +
+                '      </tr>';
+            $.each(classCourseList, function(i,val){
+                html = html+'<tr>' +
+                    '          <td colspan="1">'+val.courseName+'</td>\n' +
+                    '          <td colspan="2">'+val.contractRegulations+'</td>\n' +
+                    '          <td colspan="1">'+val.className+'</td>\n' +
+                    '          <td colspan="1">'+val.subsidyStandard+'</td>\n' +
+                    '          <td colspan="1">'+val.classStudyNum+'</td>\n' +
+                    '          <td colspan="1">'+val.technologyMoney+'</td>\n' +
+                    '          <td colspan="1">'+val.serviceMoney+'</td>\n' +
+                    '</tr>';
+            });
+            $('#detailInfo').html(html);
+        }
+
+        exportData = function () {
+            var index = layer.confirm('请核对开户银行、银行账号、相关金额等信息！', function(index) {
+                window.pageYOffset = 0;
+                document.documentElement.scrollTop = 0;
+                document.body.scrollTop = 0;
+                var pdf = new jsPDF('l', 'pt', 'a5');
+                var flag1 = false;
+                var pageData1;
+                var imgHeight1;
+                html2canvas(document.getElementsByClassName('layui-card bodyDiv')[0],{useCORS:true,allowTaint : false, taintTest: true,scale: 2}).then(function (canvas) {
+                    var contentWidth = canvas.width;
+                    var contentHeight = canvas.height;
+                    imgHeight1 = 592.28/contentWidth * contentHeight;
+                    pageData1 = canvas.toDataURL('image/jpeg', 1.0);
+                    flag1 = true;
+                })
+
+                var downLoadPdf = setInterval(function () {
+                    if(flag1){
+                        pdf.addImage(pageData1, 'JPEG', 0, 0, 595.28, imgHeight1 );
+                        pdf.save(new Date().toLocaleString()+'结算清单——'+schoolName+'.pdf');
+                        clearInterval(downLoadPdf);
+                    }
+                },300)
+                layer.close(index);
+            });
+        }
+    });
+
+</script>
+</body>
+</html>
+

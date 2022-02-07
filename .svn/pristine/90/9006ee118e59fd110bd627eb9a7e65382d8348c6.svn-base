@@ -1,0 +1,1129 @@
+package com.edgedo.society.service;
+		
+import java.io.*;
+import java.util.*;
+
+import com.edgedo.common.base.BusinessException;
+import com.edgedo.common.constant.ThirdPartyType;
+import com.edgedo.common.shiro.User;
+import com.edgedo.common.util.*;
+import com.edgedo.society.constant.RedisKeyConstant;
+import com.edgedo.society.entity.*;
+import com.edgedo.society.mapper.SocietySchoolClassAndStudentMapper;
+import com.edgedo.society.mapper.SocietyStudentMapper;
+import com.edgedo.society.queryvo.SocietyStudentQuery;
+import com.edgedo.society.queryvo.SocietyStudentView;
+import org.apache.commons.io.IOUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
+
+
+@Service
+@Transactional(propagation = Propagation.REQUIRED,rollbackFor=Exception.class)
+public class SocietyStudentService {
+	@Autowired
+	RedisUtil redisUtil;
+	
+	@Autowired
+	private SocietyStudentMapper societyStudentMapper;
+	@Autowired
+	private SocietySchoolClassService schoolClassService;
+	@Autowired
+	private SocietySchoolClassAndStudentService classAndStudentService;
+	@Autowired
+	private SocietySchoolClassAndCourseService classAndCourseService;
+	@Autowired
+	private SocietyStudentAndCourseService studentAndCourseService;
+	@Autowired
+	private SocietySchoolCourseService schoolCourseService;
+	@Autowired
+	private SocietyStudentService societyStudentService;
+	@Autowired
+	private SocietyStudentUniqueService societyStudentUniqueService;
+	@Autowired
+	private SocietyStudentAndNodeService societyStudentAndNodeService;
+
+	@Value("${app.faceai.maxfacelength}")
+	private Integer app_faceai_maxfacelength;
+	@Value("${app.faceai.imgcompresswidth}")
+	private Integer app_faceai_imgcompresswidth;
+
+	@Value("${app.globle.faceUrl}")
+	private String globleFaceUrl;
+	@Value("${app.globle.idcardUrl}")
+	private String globleIdcardUrl;
+
+	@Value("${app.server.temFileForder}")
+	private String serverTempfile;
+	@Value("${app.server.fileForder}")
+	private String serverUpfile;
+
+	@Autowired
+	private SocietyStudentPractiseQuestionService societyStudentPractiseQuestionService;
+	@Autowired
+	private SocietyStudentPractiseQuestOptionService societyStudentPractiseQuestOptionService;
+	@Autowired
+	private SocietyStudentTestPaperService societyStudentTestPaperService;
+	@Autowired
+	private SocietyStudentTestPaperQuestionService societyStudentTestPaperQuestionService;
+	@Autowired
+	private SocietyStudentTestPaperQuestionOptionService societyStudentTestPaperQuestionOptionService;
+	@Autowired
+	private SocietyStudentCertificateService societyStudentCertificateService;
+
+	public List<SocietyStudentView> listPage(SocietyStudentQuery societyStudentQuery){
+		List list = societyStudentMapper.listPage(societyStudentQuery);
+		societyStudentQuery.setList(list);
+		return list;
+	}
+
+	public List<SocietyStudentView> listByObj(SocietyStudentQuery societyStudentQuery){
+		List list = societyStudentMapper.listByObj(societyStudentQuery);
+		societyStudentQuery.setList(list);
+		return list;
+	}
+
+	/***
+	 * 统计数量
+	 * @return
+	 */
+	public Integer count(SocietyStudentQuery query) {
+		int num = societyStudentMapper.count(query);
+		return num;
+	}
+
+	/**
+	 * @Author ZhangCC
+	 * @Description 班级学员列表
+	 * @Date 2020/5/4 9:33
+	 **/
+	public List<SocietyStudentView> classStudentListPage(SocietyStudentQuery societyStudentQuery){
+		List list = societyStudentMapper.classStudentListPage(societyStudentQuery);
+		societyStudentQuery.setList(list);
+		return list;
+	}
+
+	public List<SocietyStudentView> schoolClassAdminStudentListpage(SocietyStudentQuery societyStudentQuery){
+		List list = societyStudentMapper.classStudentListPage(societyStudentQuery);
+		societyStudentQuery.setList(list);
+		return list;
+	}
+
+	/**
+	 * @Author ZhangCC
+	 * @Description 查询不在班级里面的学员
+	 * @Date 2020/5/5 8:51
+	 **/
+	public List<SocietyStudentView> classNotInStudentListPage(SocietyStudentQuery query){
+		List list = societyStudentMapper.classNotInStudentListPage(query);
+		query.setList(list);
+		return list;
+	}
+
+	public List<SocietyStudentView> classYesInStudentListPage(SocietyStudentQuery query){
+		List list = societyStudentMapper.classYesInStudentListPage(query);
+		query.setList(list);
+		return list;
+	}
+	
+	/***
+	 * 新增方法
+	 * @return
+	 */
+	@Transactional(propagation = Propagation.REQUIRED,rollbackFor=Exception.class)
+	public String insert(SocietyStudent societyStudent) {
+		societyStudent.setId(Guid.guid());
+		societyStudent.setCreateTime(new Date());
+		societyStudent.setDataState("1");
+		String schoolId = societyStudent.getOwnerSchoolId();
+		//手机号唯一
+		String phoneNum = societyStudent.getStudentPhoneNum();
+		SocietyStudent studentByPhone = societyStudentMapper.selectVoByPhoneNum(phoneNum,schoolId);
+		if(studentByPhone != null){
+			return "手机号已经存在！";
+		}
+		//身份证号唯一
+		String idCardNum = societyStudent.getStudentIdCardNum();
+		SocietyStudent studentByIdCard = societyStudentMapper.selectVoByIdCardNum(idCardNum,schoolId);
+		if(studentByIdCard != null){
+			return "身份证号已经存在！";
+		}
+
+		//初始化密码为123456
+		String stuId = societyStudent.getId();
+		String password = "123456";
+		String pwd = MD5.encode(MD5.encode(password)+stuId);
+		societyStudent.setPassword(pwd);
+		societyStudent.setIsRealNameAuth("0");
+		//先执行全局表的插入
+		String esg = insertStuUnique(societyStudent);
+		if(!esg.equals("")){
+			return esg;
+		}
+		return "";
+	}
+	@Transactional(propagation = Propagation.REQUIRED,rollbackFor=Exception.class)
+	public String insertStuUnique(SocietyStudent stu) {
+		String idCard = stu.getStudentIdCardNum();
+		String stuPhoneNum = stu.getStudentPhoneNum();
+		SocietyStudentUnique stuOraUnique = societyStudentUniqueService.loadById(idCard);
+		if(stuOraUnique==null){
+			SocietyStudentUnique stuUnique = new SocietyStudentUnique();
+			stuUnique.setId(stu.getStudentIdCardNum());
+			stuUnique.setIsRealNameAuth(stu.getIsRealNameAuth());
+			stuUnique.setFaceImageUrl(stu.getFaceImageUrl());
+			stuUnique.setIdCardImage(stu.getIdCardImage());
+			stuUnique.setAccessToken(stu.getAccessToken());
+			stuUnique.setHeadPhoto(stu.getHeadPhoto());
+			stuUnique.setIsUpPwd("0");
+			stuUnique.setNickName(stu.getNickName());
+			//默认密码123456
+			String stuId = stuUnique.getId();
+			String encodePwd = MD5.encode(MD5.encode("123456") + stuId);
+			stuUnique.setPassword(encodePwd);
+			stuUnique.setWxOpenId(stu.getWxOpenId());
+			stuUnique.setAbcOpenId(stu.getAbcOpenId());
+			stuUnique.setCreateTime(new Date());
+			stuUnique.setCreateUserId(stu.getCreateUserId());
+			stuUnique.setCreateUserName(stu.getCreateUserName());
+			stuUnique.setRealNameOperId(stu.getRealNameOperId());
+			stuUnique.setRealNameOperName(stu.getRealNameOperName());
+			stuUnique.setRealNameTime(stu.getRealNameTime());
+			stuUnique.setRealNameType(stu.getRealNameType());
+			stuUnique.setStudentAge(stu.getStudentAge());
+			stuUnique.setStudentIdCardNum(stu.getStudentIdCardNum());
+			stuUnique.setStudentPhoneNum(stu.getStudentPhoneNum());
+			stuUnique.setStudentName(stu.getStudentName());
+			societyStudentUniqueService.insertStuAndUnique(stuUnique);
+			societyStudentMapper.insert(stu);
+			return "";
+		}else{
+			//存在将全局表中的信息覆盖到新增的学生信息中
+			String oraPhone = stuOraUnique.getStudentPhoneNum();
+			//判断手机号是否一致
+			if(!oraPhone.equals(stuPhoneNum)){//系统内已存在将手机号修改过来
+				//手机号不一致提示 手机不一致
+				return stuOraUnique.getStudentName()+"("+oraPhone+")";
+			}else {//一致
+				stu.setStudentName(stuOraUnique.getStudentName());
+				stu.setStudentSex(stuOraUnique.getStudentSex());
+				stu.setStudentAge(stuOraUnique.getStudentAge());
+				stu.setStudentPhoneNum(stuOraUnique.getStudentPhoneNum());
+				stu.setStudentIdCardNum(stuOraUnique.getStudentIdCardNum());
+				stu.setIsRealNameAuth(stuOraUnique.getIsRealNameAuth());
+				stu.setWxOpenId(stuOraUnique.getWxOpenId());
+				stu.setIdCardImage(stuOraUnique.getIdCardImage());
+				stu.setFaceImageUrl(stuOraUnique.getFaceImageUrl());
+				stu.setHeadPhoto(stuOraUnique.getHeadPhoto());
+				stu.setNickName(stuOraUnique.getNickName());
+				stu.setAccessToken(stuOraUnique.getAccessToken());
+				stu.setRealNameTime(stuOraUnique.getRealNameTime());
+				stu.setRealNameType(stuOraUnique.getRealNameType());
+				stu.setRealNameOperName(stuOraUnique.getRealNameOperName());
+				stu.setRealNameOperId(stuOraUnique.getRealNameOperId());
+				societyStudentMapper.insert(stu);
+				return "";
+			}
+		}
+	}
+
+	@Transactional(propagation = Propagation.REQUIRED,rollbackFor=Exception.class)
+	public SocietyStudentUnique insertStuUniqueInNull(SocietyStudent stu) {
+		SocietyStudentUnique stuUnique = new SocietyStudentUnique();
+		stuUnique.setId(stu.getStudentIdCardNum());
+		stuUnique.setIsRealNameAuth(stu.getIsRealNameAuth());
+		stuUnique.setFaceImageUrl("");
+		stuUnique.setIdCardImage("");
+		stuUnique.setAccessToken(stu.getAccessToken());
+		stuUnique.setHeadPhoto(stu.getHeadPhoto());
+		stuUnique.setIsUpPwd("0");
+		stuUnique.setNickName(stu.getNickName());
+		//默认密码123456
+		String stuId = stuUnique.getId();
+		String encodePwd = MD5.encode(MD5.encode("123456") + stuId);
+		stuUnique.setPassword(encodePwd);
+		stuUnique.setWxOpenId(stu.getWxOpenId());
+		stuUnique.setAbcOpenId(stu.getAbcOpenId());
+		stuUnique.setCreateTime(new Date());
+		stuUnique.setCreateUserId(stu.getCreateUserId());
+		stuUnique.setCreateUserName(stu.getCreateUserName());
+		stuUnique.setRealNameOperId(stu.getRealNameOperId());
+		stuUnique.setRealNameOperName(stu.getRealNameOperName());
+		stuUnique.setRealNameTime(stu.getRealNameTime());
+		stuUnique.setRealNameType(stu.getRealNameType());
+		stuUnique.setStudentAge(stu.getStudentAge());
+		stuUnique.setStudentIdCardNum(stu.getStudentIdCardNum());
+		stuUnique.setStudentPhoneNum(stu.getStudentPhoneNum());
+		stuUnique.setStudentName(stu.getStudentName());
+		societyStudentUniqueService.insertStuAndUnique(stuUnique);
+		return stuUnique;
+	}
+
+	/***
+	 * 班级新增学员方法
+	 * @return
+	 */
+	@Transactional(propagation = Propagation.REQUIRED,rollbackFor=Exception.class)
+	public String insertForClass(SocietyStudent societyStudent, SocietySchoolClass schoolClass) {
+		String errMsg = "";
+		errMsg = insert(societyStudent);
+		if(errMsg == null || errMsg.equals("")){
+			//插入学员和班级的关联
+			SocietySchoolClassAndStudent classAndStudent = new SocietySchoolClassAndStudent();
+			classAndStudent.setOwnerSchoolId(schoolClass.getOwnerSchoolId());
+			classAndStudent.setOwnerSchoolName(schoolClass.getOwnerSchoolName());
+			classAndStudent.setOwnerMajorId(schoolClass.getOwnerMajorId());
+			classAndStudent.setOwnerMajorName(schoolClass.getOwnerMajorName());
+			classAndStudent.setStudentName(societyStudent.getStudentName());
+			classAndStudent.setStudentIdCardNum(societyStudent.getStudentIdCardNum());
+			classAndStudent.setClassId(schoolClass.getId());
+			classAndStudent.setStudentId(societyStudent.getId());
+			classAndStudentService.insert(classAndStudent);
+			//更新班级培训人数和未完成人数
+			Integer classPersonNum = schoolClass.getClassPersonNum();
+			if(classPersonNum == null){
+				classPersonNum = 1;
+			}else{
+				classPersonNum++;
+			}
+			schoolClass.setClassPersonNum(classPersonNum);
+			Integer notFinishedPersonNum = schoolClass.getNotFinishedPersonNum();
+			if(notFinishedPersonNum == null){
+				notFinishedPersonNum = 1;
+			}else{
+				notFinishedPersonNum++;
+			}
+			schoolClass.setNotFinishedPersonNum(notFinishedPersonNum);
+			schoolClassService.update(schoolClass);
+			//插入学员与课程的关联
+			String classId = schoolClass.getId();
+			SocietyStudentAndCourse studentAndCourse = new SocietyStudentAndCourse();
+			studentAndCourse.setOwnerSchoolId(societyStudent.getOwnerSchoolId());
+			studentAndCourse.setClassId(classId);
+			studentAndCourse.setStudentId(societyStudent.getId());
+			studentAndCourse.setStudentName(societyStudent.getStudentName());
+			studentAndCourse.setStudentIdCardNum(societyStudent.getStudentIdCardNum());
+			List<String> courseIdList = classAndCourseService.selectCourseIdByClass(classId);
+			for(int i =0;i<courseIdList.size();i++){
+				SocietySchoolCourse course = schoolCourseService.loadById(courseIdList.get(i));
+				if(course != null){
+					studentAndCourse.setCourseId(course.getId());
+					studentAndCourse.setCourseName(course.getCourseName());
+					studentAndCourse.setCourseImage(course.getCourseImage());
+					studentAndCourseService.insert(studentAndCourse);
+				}
+			}
+
+		}
+		return errMsg;
+	}
+	
+	/***
+	 * 动态修改方法
+	 * @param
+	 * @return
+	 */
+	@Transactional(propagation = Propagation.REQUIRED,rollbackFor=Exception.class)
+	public String update(SocietyStudent societyStudent) {
+		//校验身份证唯一
+		String id = societyStudent.getId();
+		SocietyStudent oraStudent = societyStudentMapper.selectById(id);
+		/*//实名认证后不能修改姓名和身份证号
+		String isRealNameAuth = oraStudent.getIsRealNameAuth();
+		if("1".equals(isRealNameAuth)){
+			societyStudent.setStudentName(null);
+			societyStudent.setStudentIdCardNum(null);
+		}*/
+		String oraIdCard = oraStudent.getStudentIdCardNum();
+		String newIdCard = societyStudent.getStudentIdCardNum();
+		if(newIdCard != null && !newIdCard.equals(oraIdCard)){
+			//修改身份证号的情况
+			SocietyStudent checkStudent = societyStudentMapper.selectVoByIdCardNum(newIdCard,societyStudent.getOwnerSchoolId());
+			if(checkStudent != null){
+				return "身份证号已经存在！";
+			}
+		}
+		String oraPhone = oraStudent.getStudentPhoneNum();
+		String newPhone = societyStudent.getStudentPhoneNum();
+		if(newPhone != null && !newPhone.equals(oraPhone)){
+			//修改手机号的情况
+			SocietyStudent checkStudent = societyStudentMapper.selectVoByPhoneNum(newPhone,societyStudent.getOwnerSchoolId());
+			if(checkStudent != null){
+				return "手机号已经存在！";
+			}
+		}
+
+		//全局表
+
+		SocietyStudentUnique societyStudentUniqueOld =
+				societyStudentUniqueService.loadById(oraStudent.getStudentIdCardNum());
+		if(societyStudentUniqueOld==null){
+			societyStudentMapper.updateById(societyStudent);
+			SocietyStudent stu = loadById(societyStudent.getId());
+			SocietyStudentUnique stuUnique = new SocietyStudentUnique();
+			stuUnique.setId(stu.getStudentIdCardNum());
+			stuUnique.setIsRealNameAuth(stu.getIsRealNameAuth());
+			stuUnique.setFaceImageUrl(stu.getFaceImageUrl());
+			stuUnique.setIdCardImage(stu.getIdCardImage());
+			stuUnique.setAccessToken(stu.getAccessToken());
+			stuUnique.setHeadPhoto(stu.getHeadPhoto());
+			stuUnique.setIsUpPwd("0");
+			stuUnique.setNickName(stu.getNickName());
+			//默认密码123456
+			String stuId = stuUnique.getId();
+			String encodePwd = MD5.encode(MD5.encode("123456") + stuId);
+			stuUnique.setPassword(encodePwd);
+			stuUnique.setWxOpenId(stu.getWxOpenId());
+			stuUnique.setAbcOpenId(stu.getAbcOpenId());
+			stuUnique.setCreateTime(new Date());
+			stuUnique.setCreateUserId(stu.getCreateUserId());
+			stuUnique.setCreateUserName(stu.getCreateUserName());
+			stuUnique.setRealNameOperId(stu.getRealNameOperId());
+			stuUnique.setRealNameOperName(stu.getRealNameOperName());
+			stuUnique.setRealNameTime(stu.getRealNameTime());
+			stuUnique.setRealNameType(stu.getRealNameType());
+			stuUnique.setStudentAge(stu.getStudentAge());
+			stuUnique.setStudentIdCardNum(stu.getStudentIdCardNum());
+			stuUnique.setStudentPhoneNum(stu.getStudentPhoneNum());
+			stuUnique.setStudentName(stu.getStudentName());
+			societyStudentUniqueService.insertStuAndUnique(stuUnique);
+		}else {
+			String uniqIdCardOld = societyStudentUniqueOld.getStudentIdCardNum();
+			String uniqIdCardNew = societyStudent.getStudentIdCardNum();
+			if(uniqIdCardNew != null && !uniqIdCardNew.equals(uniqIdCardOld)){
+				//修改身份证号的情况
+				SocietyStudentUnique checkStudent = societyStudentUniqueService.loadById(uniqIdCardNew);
+				if(checkStudent != null){
+					return "身份证号已经存在！";
+				}else {
+					societyStudentUniqueOld.setStudentIdCardNum(uniqIdCardNew);
+				}
+			}
+			String uniqPhoneOld = societyStudentUniqueOld.getStudentPhoneNum();
+			String uniqPhoneNew = societyStudent.getStudentPhoneNum();
+			if(uniqPhoneNew != null && !uniqPhoneNew.equals(uniqPhoneOld)){
+				//修改手机号的情况
+				SocietyStudentUnique checkStudent = societyStudentUniqueService.selectByPhone(newPhone);
+				if(checkStudent != null){
+					return "手机号已经存在！";
+				}else {
+					societyStudentUniqueOld.setStudentPhoneNum(uniqPhoneNew);
+				}
+			}
+
+			societyStudentUniqueOld.setStudentName(societyStudent.getStudentName());
+			societyStudentUniqueOld.setStudentSex(societyStudent.getStudentSex());
+			societyStudentUniqueOld.setStudentAge(societyStudent.getStudentAge());
+			societyStudentMapper.updateById(societyStudent);
+			societyStudentUniqueService.updateByAllId(societyStudentUniqueOld);
+		}
+
+		return "";
+	}
+	
+	/***
+	 * 全修改
+	 * @param
+	 * @return
+	 */
+	@Transactional(propagation = Propagation.REQUIRED,rollbackFor=Exception.class)
+	public String updateAll(SocietyStudent societyStudent) {
+		societyStudentMapper.updateAllColumnById(societyStudent);
+		return "";
+	}
+	
+	
+	
+	/**
+	 * 单个删除
+	 * @param id
+	 */
+	@Transactional(propagation = Propagation.REQUIRED,rollbackFor=Exception.class)
+	public int delete(String id) {
+		
+		return societyStudentMapper.deleteById(id);
+	}
+	
+	/**
+	 * society_student
+	 * society_student_unique
+	 * society_school_class_and_student
+	 * society_student_and_course
+	 * society_student_and_node
+	 * society_student_certificate
+	 * society_student_practise_quest_option
+	 * society_student_practise_question
+	 * society_student_test_paper
+	 * society_student_test_paper_question
+	 * society_student_test_paper_question_option
+	 * 批量删除
+	 * @param ids
+	 */
+	@Transactional(propagation = Propagation.REQUIRED,rollbackFor=Exception.class)
+	public String deleteExcInfo(List<String> ids) {
+		//1.进行判断  是否实名
+		for (String stuId : ids){
+			SocietyStudent societyStudent = loadById(stuId);
+			SocietyStudentUnique societyStudentUnique =
+					societyStudentUniqueService.loadById(societyStudent.getStudentIdCardNum());
+			if(societyStudent.getIsRealNameAuth().equals("1")){
+				return societyStudent.getStudentName();
+			}
+			if(societyStudentUnique.getIsRealNameAuth().equals("1")){
+				return societyStudentUnique.getStudentName();
+			}
+			clearStudentCatch(societyStudent);
+			societyStudentUniqueService.clearStudentCatch(societyStudentUnique);
+			//根据id删除society_student_and_node 学生章节关联表
+			societyStudentAndNodeService.deleteByStuId(societyStudent.getId());
+			//根据学生id删除课程关联
+			studentAndCourseService.deleteByStuId(societyStudent.getId());
+			//根据学生id 删除相关习题
+			societyStudentPractiseQuestionService.deleteByStuId(societyStudent.getId());
+			//根据学生id 删除相关习题选项
+			societyStudentPractiseQuestOptionService.deleteByStuId(societyStudent.getId());
+			//根据学生id 删除相关考试卷
+			societyStudentTestPaperService.deleteByStuId(societyStudent.getId());
+			//根据学生id 删除相关考试卷 题目
+			societyStudentTestPaperQuestionService.deleteByStuId(societyStudent.getId());
+			//根据学生id 删除相关考试卷 选项
+			societyStudentTestPaperQuestionOptionService.deleteByStuId(societyStudent.getId());
+			//根据学生id 删除相关证书
+			societyStudentCertificateService.deleteByStuId(societyStudent.getId());
+			//根据学生id 删除学生班级关联
+			classAndStudentService.deleteByStuId(societyStudent.getId());
+			//还有学生表的信息删除
+			societyStudentMapper.deleteByStuId(societyStudent.getId());
+			//最后将全局表中的学生信息删除
+			societyStudentUniqueService.deleteByStuId(societyStudent.getStudentIdCardNum());
+		}
+		return "";
+	}
+
+
+	/**
+	 * society_student
+	 * society_student_unique
+	 * society_school_class_and_student
+	 * society_student_and_course
+	 * society_student_and_node
+	 * society_student_certificate
+	 * society_student_practise_quest_option
+	 * society_student_practise_question
+	 * society_student_test_paper
+	 * society_student_test_paper_question
+	 * society_student_test_paper_question_option
+	 * 批量修改
+	 * @param voObj
+	 */
+	@Transactional(propagation = Propagation.REQUIRED,rollbackFor=Exception.class)
+	public String updateExceInfo(SocietyStudent voObj) {
+		SocietyStudent societyStudent = loadById(voObj.getId());
+
+		SocietyStudentUnique societyStudentUnique =
+				societyStudentUniqueService.loadById(societyStudent.getStudentIdCardNum());
+
+		if(societyStudent.getIsRealNameAuth().equals("1")){
+			return societyStudent.getStudentName();
+		}
+		if(societyStudentUnique.getIsRealNameAuth().equals("1")){
+			return societyStudentUnique.getStudentName();
+		}
+
+		Map<String,String> map = new HashMap<>();
+		map.put("stuId",voObj.getId());
+		map.put("stuName",voObj.getStudentName());
+		map.put("idcard",voObj.getStudentIdCardNum());
+		map.put("phone",voObj.getStudentPhoneNum());
+		map.put("uniqeIdCard",societyStudent.getStudentIdCardNum());
+		//根据学生id 修改所有的身份证号 手机号 姓名
+		societyStudentAndNodeService.updateByStuId(map);
+		//根据学生id删除课程关联
+		studentAndCourseService.updateByStuId(map);
+		//根据学生id 删除相关习题
+		societyStudentPractiseQuestionService.updateByStuId(map);
+		//根据学生id 删除相关习题选项
+//		societyStudentPractiseQuestOptionService.updateByStuId(map);
+		//根据学生id 删除相关考试卷
+		societyStudentTestPaperService.updateByStuId(map);
+		//根据学生id 删除相关考试卷 题目
+//		societyStudentTestPaperQuestionService.updateByStuId(map);
+		//根据学生id 删除相关考试卷 选项
+//		societyStudentTestPaperQuestionOptionService.updateByStuId(map);
+		//根据学生id 删除相关证书
+		societyStudentCertificateService.updateByStuId(map);
+		//根据学生id 删除学生班级关联
+		classAndStudentService.updateByStuId(map);
+		//还有学生表的信息删除
+		societyStudentMapper.updateByStuId(map);
+		//最后将全局表中的学生信息删除
+		societyStudentUniqueService.updateByStuId(map);
+		return "";
+	}
+
+
+	/**
+	 *
+	 * @param ids
+	 * @return
+	 */
+	@Transactional(propagation = Propagation.REQUIRED,rollbackFor=Exception.class)
+	public int deleteByIds(List<String> ids) {
+
+		return societyStudentMapper.deleteBatchIds(ids);
+	}
+
+
+
+	/**
+	 * 加载单个
+	 * @param id
+	 */
+	public SocietyStudent loadById(String id) {
+		return societyStudentMapper.selectById(id);
+	}
+
+	public void logicDelete(List<String> list){
+		societyStudentMapper.logicDelete(list);
+	}
+
+	//学员统计
+	public int countStudentAllNum() {
+		return societyStudentMapper.countStudentAllNum();
+	}
+
+	//* 根据id重置学员的密码
+	public void resetPwdById(String id) {
+		SocietyStudent societyStudent = loadById(id);
+		String password = "123456";
+		String pwd = MD5.encode(MD5.encode(password)+id);
+		societyStudent.setPassword(pwd);
+		societyStudentMapper.updateById(societyStudent);
+	}
+	@Transactional(propagation = Propagation.REQUIRED,rollbackFor=Exception.class)
+	public void excelImportStu(List<SocietyStudent> studentList) {
+		Map<String,String> map = new HashMap<>();
+		for (SocietyStudent s:studentList){
+			String schoolId = s.getOwnerSchoolId();
+			String studentName = s.getStudentName();
+   			if(studentName==null || studentName.equals("")){
+				continue;
+			}
+			String phoneNum = s.getStudentPhoneNum();
+			if(phoneNum==null || phoneNum.equals("")){
+				continue;
+			}
+			String idCardNum = s.getStudentIdCardNum();
+			if(idCardNum==null || idCardNum.equals("") || !IdCardUtil.isValidatedAllIdcard(idCardNum)){
+				continue;
+			}
+			//性别
+			String studentSex = s.getStudentSex();
+			if(studentSex==null || studentSex.equals("")){
+				//根据身份证号获取
+				s.setStudentSex(IdCardUtil.getGenderByIdCard(idCardNum));
+			}
+			//年龄
+			Integer studentAge = s.getStudentAge();
+			if(studentAge==null || studentAge == 0){
+				//根据身份证号获取
+				s.setStudentAge(IdCardUtil.getAgeByIdCard(idCardNum));
+			}
+			/*map.put("schoolId",schoolId);
+			map.put("phoneNum",phoneNum);
+			map.put("idCardNum",idCardNum);
+			//同一学校手机号和身份证号不重复不能导入
+			int count = societyStudentMapper.countByPhoneNumOrIdCardNum(map);
+			if(count>0){
+				continue;
+			}*/
+			String password = "123456";
+			String pwd = MD5.encode(MD5.encode(password)+s.getId());
+			s.setPassword(pwd);
+			//设置昵称
+			s.setNickName(s.getStudentName());
+			insertStuUnique(s);
+			societyStudentMapper.insert(s);
+		}
+	}
+
+
+
+	@Transactional(propagation = Propagation.REQUIRED,rollbackFor=Exception.class)
+	public Map<String,List<String>> excelImportStuInsert(List<SocietyStudent> studentList) {
+		Map<String,List<String>> map = new HashMap<>();
+		List<String> repList = new ArrayList<>();
+		List<String> phoneList = new ArrayList<>();
+		for (SocietyStudent s:studentList){
+			String schoolId = s.getOwnerSchoolId();
+			String studentName = s.getStudentName();
+			if(studentName==null || studentName.equals("")){
+				continue;
+			}
+			String phoneNum = s.getStudentPhoneNum();
+			SocietyStudent studentByPhone = societyStudentMapper.selectVoByPhoneNum(phoneNum,schoolId);
+			if(studentByPhone != null){
+				repList.add(s.getStudentName());
+				continue;
+			}
+			//身份证号唯一
+			String idCardNum = s.getStudentIdCardNum();
+			SocietyStudent studentByIdCard = societyStudentMapper.selectVoByIdCardNum(idCardNum,schoolId);
+			if(studentByIdCard != null){
+				repList.add(s.getStudentName());
+				continue;
+			}
+			//性别
+			String studentSex = s.getStudentSex();
+			if(studentSex==null || studentSex.equals("")){
+				//根据身份证号获取
+				s.setStudentSex(IdCardUtil.getGenderByIdCard(idCardNum));
+			}
+			//年龄
+			Integer studentAge = s.getStudentAge();
+			if(studentAge==null || studentAge == 0){
+				//根据身份证号获取
+				s.setStudentAge(IdCardUtil.getAgeByIdCard(idCardNum));
+			}
+			/*map.put("schoolId",schoolId);
+			map.put("phoneNum",phoneNum);
+			map.put("idCardNum",idCardNum);
+			//同一学校手机号和身份证号不重复不能导入
+			int count = societyStudentMapper.countByPhoneNumOrIdCardNum(map);
+			if(count>0){
+				continue;
+			}*/
+			if(s.getPeopleType()==null || "".equals(s.getPeopleType())){
+				s.setPeopleType("ORD_STU");
+			}
+			String password = "123456";
+			String pwd = MD5.encode(MD5.encode(password)+s.getId());
+			s.setPassword(pwd);
+			//设置昵称
+			s.setNickName(s.getStudentName());
+			String esgPhone = insertStuUnique(s);
+			if(!esgPhone.equals("")){
+				phoneList.add(esgPhone);
+			}
+		}
+		map.put("repList",repList);
+		map.put("phoneList",phoneList);
+		return map;
+	}
+
+	@Transactional(propagation = Propagation.REQUIRED,rollbackFor=Exception.class)
+	public Map<String,Object> excelImportStuAndClassInsert(List<SocietyStudent> studentList) {
+		Map<String,Object> map = new HashMap<>();
+		List<String> list = new ArrayList<>();
+		List<String> phoneList = new ArrayList<>();
+		List<SocietyStudent> stuList = new ArrayList<>();
+		for (SocietyStudent s:studentList){
+			String schoolId = s.getOwnerSchoolId();
+			String studentName = s.getStudentName();
+			if(studentName==null || studentName.equals("")){
+				continue;
+			}
+			String phoneNum = s.getStudentPhoneNum();
+			SocietyStudent studentByPhone = societyStudentMapper.selectVoByPhoneNum(phoneNum,schoolId);
+			if(studentByPhone != null){
+				list.add(s.getStudentName());
+				continue;
+			}
+			//身份证号唯一
+			String idCardNum = s.getStudentIdCardNum();
+			SocietyStudent studentByIdCard = societyStudentMapper.selectVoByIdCardNum(idCardNum,schoolId);
+			if(studentByIdCard != null){
+				list.add(s.getStudentName());
+				continue;
+			}
+			//性别
+			String studentSex = s.getStudentSex();
+			if(studentSex==null || studentSex.equals("")){
+				//根据身份证号获取
+				s.setStudentSex(IdCardUtil.getGenderByIdCard(idCardNum));
+			}
+			//年龄
+			Integer studentAge = s.getStudentAge();
+			if(studentAge==null || studentAge == 0){
+				//根据身份证号获取
+				s.setStudentAge(IdCardUtil.getAgeByIdCard(idCardNum));
+			}
+			/*map.put("schoolId",schoolId);
+			map.put("phoneNum",phoneNum);
+			map.put("idCardNum",idCardNum);
+			//同一学校手机号和身份证号不重复不能导入
+			int count = societyStudentMapper.countByPhoneNumOrIdCardNum(map);
+			if(count>0){
+				continue;
+			}*/
+			if(s.getPeopleType()==null || "".equals(s.getPeopleType())){
+				s.setPeopleType("ORD_STU");
+			}
+			String password = "123456";
+			String pwd = MD5.encode(MD5.encode(password)+s.getId());
+			s.setPassword(pwd);
+			//设置昵称
+			s.setNickName(s.getStudentName());
+			String esg = insertStuUnique(s);
+			if(!esg.equals("")){
+				phoneList.add(esg);
+			}else {
+				stuList.add(s);
+			}
+		}
+		map.put("list",list);
+		map.put("stuList",stuList);
+		map.put("phoneList",phoneList);
+		return map;
+	}
+
+
+	public int selectVoPhoneAndCard(String ownerSchoolId, String studentPhoneNum, String studentIdCardNum) {
+		Map<String,String> map = new HashMap<>();
+		map.put("schoolId",ownerSchoolId);
+		map.put("phoneNum",studentPhoneNum);
+		map.put("idCardNum",studentIdCardNum);
+		return societyStudentMapper.selectVoPhoneAndCard(map);
+	}
+
+	public String selectByPhoneAndIdCard(String compId,String studentPhoneNum, String studentIdCardNum) {
+		return societyStudentMapper.selectByPhoneAndIdCard(compId,studentPhoneNum,studentIdCardNum);
+	}
+
+	/**
+	 * 根据list判断插入  和关联记录
+	 * @param studentList  需要新增的学生记录
+	 * @param studentAndClassList  需要新增的班级学生记录
+	 * @param classId 班级id
+	 */
+	@Transactional(propagation = Propagation.REQUIRED,rollbackFor=Exception.class)
+    public Map<String,Object> insertStuListAndStuClassList(List<SocietyStudent> studentList, List<SocietyStudent> studentAndClassList, String classId) {
+		Map<String,Object> map = new HashMap<>();
+		String errStu = "";
+		String errStuAndClass = "";
+		if(studentList.size()>0){
+			//批量导入学员信息
+			Map<String,Object> mapStu = societyStudentService.excelImportStuAndClassInsert(studentList);
+			//关联班级
+			errStu = classAndStudentService.relationStuAndClass((List<SocietyStudent>) mapStu.get("stuList"),classId);
+			map.put("phoneList",mapStu.get("phoneList"));
+			map.put("repList",mapStu.get("list"));
+		}
+		//只需要关联班级信息
+		if(studentAndClassList.size()>0){
+			//关联班级
+			errStuAndClass = classAndStudentService.relationStuAndClass(studentAndClassList,classId);
+		}
+
+		map.put("err",errStu+"，"+errStuAndClass);
+
+		return map;
+    }
+
+	/**
+	 * 根据学生id 更新人脸照和身份照图
+	 * @param societyStudent
+	 */
+	@Transactional(propagation = Propagation.REQUIRED,rollbackFor=Exception.class)
+	public void updateIdCardAndFaceImg(SocietyStudent societyStudent) {
+		societyStudentMapper.updateById(societyStudent);
+	}
+
+	//根据手机号  身份证号  查出表中多个学校的同一个学生
+	public List<SocietyStudent> selectByPhoneAndIdCardAll(String studentPhoneNum, String studentIdCardNum) {
+		return societyStudentMapper.selectByPhoneAndIdCardAll(studentPhoneNum,studentIdCardNum);
+	}
+
+	public SocietyStudent selectByPhone(String studentPhoneNum, String schoolId) {
+		return societyStudentMapper.selectVoByPhoneNum(studentPhoneNum,schoolId);
+	}
+
+	public SocietyStudent selectByIdCard(String studentIdCardNum, String schoolId) {
+		return societyStudentMapper.selectVoByIdCardNum(studentIdCardNum,schoolId);
+	}
+
+
+	/**
+	 * 根据实名当前的学生信息，动态去补充全局的实名信息
+	 * 之后根据当前学生的身份证和手机号查出所有的学生信息
+	 * 全部补充实名情况 以免再次实名
+	 * @param student
+	 * @param societyStudentUnique
+	 * @param faceImageUrl
+	 * @param idCardImage
+	 * @param studentId
+	 * @param user
+	 */
+	@Transactional(propagation = Propagation.REQUIRED,rollbackFor=Exception.class)
+	public void updateGlobleAndStu(SocietyStudent student, SocietyStudentUnique societyStudentUnique,
+								   String faceImageUrl, String idCardImage, String studentId, User user) {
+
+		//全局表未实名 把当前的照片补充上
+		String idCard = "";//上传数据库的记录
+		String face = "";//上传数据库的记录
+		String idCardPrefix = globleIdcardUrl;//路径前缀
+		String facePrefix = globleFaceUrl;//路径前缀
+		File fileIdcard = new File(idCardImage);//文件对象
+		File fileFce = new File(faceImageUrl);//文件对象
+		try {
+			idCard = idCardPrefix+ FileUtil.saveFile(fileIdcard, serverTempfile+idCardPrefix,true);
+			//压缩人脸
+			//判断如果图片小于40k 就不进行压缩
+			//原有人脸
+			String faceOld = FileUtil.getImageBase64Str(fileFce);
+			int base64Length = faceOld.length();
+			int base64Kb = (int)(base64Length*0.75/1024);
+			if(base64Kb>=app_faceai_maxfacelength){
+				faceOld = FileUtil.compressImg(faceOld,app_faceai_imgcompresswidth);
+			}
+			face = facePrefix + FileUtil.saveBase64Img(faceOld,serverTempfile+facePrefix,true);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		societyStudentUnique.setFaceImageUrl(face);
+		societyStudentUnique.setIdCardImage(idCard);
+		societyStudentUnique.setHeadPhoto(face);
+		societyStudentUnique.setIsRealNameAuth("1");
+		societyStudentUnique.setRealNameTime(new Date());
+		societyStudentUnique.setRealNameOperId(user.getUserId());
+		societyStudentUnique.setRealNameOperName(user.getUserName());
+		societyStudentUnique.setRealNameType("1");
+		societyStudentUniqueService.updateById(societyStudentUnique);
+		//将该学生在的所有学校遍历实名一遍
+		List<SocietyStudent> studentList = selectByPhoneAndIdCardAll(societyStudentUnique.getStudentPhoneNum(),
+				societyStudentUnique.getStudentIdCardNum());
+		for(int i = 0;i<studentList.size();i++){
+			SocietyStudent societyStudent = studentList.get(i);
+			societyStudent.setFaceImageUrl(face);
+			societyStudent.setIdCardImage(idCard);
+			societyStudent.setHeadPhoto(face);
+			societyStudent.setIsRealNameAuth("1");
+			societyStudent.setRealNameTime(new Date());
+			societyStudent.setRealNameOperId(user.getUserId());
+			societyStudent.setRealNameOperName(user.getUserName());
+			societyStudent.setRealNameType("1");
+			updateIdCardAndFaceImg(societyStudent);
+		}
+	}
+
+	/**
+	 * @Author Qiutianzhu
+	 * @Description 获取人脸照 身份证照  路径
+	 * @param prefix 路径前缀
+	 * @param faceImageUrl 从前台传来的url
+	 * @param idCardImage 从前台传来的url
+	 * @Date 2020/7/16 10:40
+	 **/
+	public Map<String,String> getFaceAndIdCardUrl(String prefix,String faceImageUrl,String idCardImage){
+		String idCard = "";//上传数据库的记录
+		String face = "";//上传数据库的记录
+		String idCardPrefix = "/"+prefix+"/idcard";//路径前缀
+		String facePrefix = "/"+prefix+"/faceimg";//路径前缀
+		File fileIdcard = new File(idCardImage);//文件对象
+		File fileFce = new File(faceImageUrl);//文件对象
+		try {
+			idCard = idCardPrefix+ FileUtil.saveFile(fileIdcard, serverTempfile+idCardPrefix,true);
+			//压缩人脸
+			String base64StuFile = FileUtil.compressImg(FileUtil.getImageBase64Str(fileFce),270);
+			face = facePrefix + FileUtil.saveBase64Img(base64StuFile,serverTempfile+facePrefix,true);
+			//face = facePrefix+ FileUtil.saveFile(fileFce, fileForder+facePrefix,true);
+			//删除临时文件
+			fileIdcard.delete();
+			fileFce.delete();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		Map<String,String> map = new HashMap<>();
+		map.put("idCard",idCard);
+		map.put("face",face);
+		return map;
+	}
+
+
+	/**
+	 * @Author WangZhen
+	 * @Description 清理缓存中的用户
+	 * @Date 2020/5/20 15:48
+	 **/
+	public void clearStudentCatch(SocietyStudent student){
+		String schoolId = student.getOwnerSchoolId();
+		String openId = student.getWxOpenId();
+		String accessToken = student.getAccessToken();
+		//清空缓存
+		String key1 = RedisKeyConstant.selectByOpenIdAndTypeSchoolSimple
+				+ schoolId + "_" + ThirdPartyType.wechat + "_" + openId;
+		String key2 = RedisKeyConstant.selectByOpenIdAndTypeSchoolSimple
+				+ schoolId + "_" + ThirdPartyType.aboc + "_" + openId;
+		String key3 = RedisKeyConstant.selectByAccessTokenAndSchSimple + accessToken + "_" + schoolId;
+		redisUtil.del(key1,key2,key3);
+	}
+
+
+	/**
+	 * 根据传来的 faceUrl和idcardUrl
+	 * 判断是否前台传了一个 或者都没传
+	 * @param faceUrl
+	 * @param idcardUrl
+	 * @param student
+	 * @param societyStudentUnique
+	 * @param faceImageUrl
+	 * @param idCardImage
+	 * @param studentId
+	 * @param user
+	 */
+	@Transactional(propagation = Propagation.REQUIRED,rollbackFor=Exception.class)
+	public void updateIdCardAndFaceImgIsOneAndTwo(String faceUrl, String idcardUrl,
+												  SocietyStudent student, SocietyStudentUnique societyStudentUnique,
+												  String faceImageUrl, String idCardImage, String studentId, User user) {
+		if(faceUrl.equals("") & !idcardUrl.equals("")){//传人脸 没传身份证照
+			//全局表未实名 把当前的照片补充上
+			String face = "";//上传数据库的记录
+			String facePrefix = globleFaceUrl;//路径前缀
+			File fileFce = new File(faceImageUrl);//文件对象
+			try {
+				//压缩人脸
+				//判断如果图片小于40k 就不进行压缩
+				//原有人脸
+				String faceOld = FileUtil.getImageBase64Str(fileFce);
+				int base64Length = faceOld.length();
+				int base64Kb = (int)(base64Length*0.75/1024);
+				if(base64Kb>=app_faceai_maxfacelength){
+					faceOld = FileUtil.compressImg(faceOld,app_faceai_imgcompresswidth);
+				}
+				face = facePrefix + FileUtil.saveBase64Img(faceOld,serverTempfile+facePrefix,true);
+//				String base64File = FileUtil.compressImg(FileUtil.getImageBase64Str(fileFce),270);
+//				face = facePrefix + FileUtil.saveBase64Img(base64File,fileForder+facePrefix,true);
+				//face = facePrefix+ FileUtil.saveFile(fileFce, fileForder+facePrefix,true);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+			String lastIdcardUrl = copyFaceAndIdCardUrlOnce(idcardUrl,globleIdcardUrl);
+			societyStudentUnique.setFaceImageUrl(face);
+			societyStudentUnique.setIdCardImage(lastIdcardUrl);
+			societyStudentUnique.setHeadPhoto(face);
+			societyStudentUnique.setIsRealNameAuth("1");
+			societyStudentUnique.setRealNameTime(new Date());
+			societyStudentUnique.setRealNameOperId(user.getUserId());
+			societyStudentUnique.setRealNameOperName(user.getUserName());
+			societyStudentUnique.setRealNameType("1");
+			societyStudentUniqueService.updateById(societyStudentUnique);
+			//将该学生在的所有学校遍历实名一遍
+			List<SocietyStudent> studentList = selectByPhoneAndIdCardAll(societyStudentUnique.getStudentPhoneNum(),
+					societyStudentUnique.getStudentIdCardNum());
+			for(int i = 0;i<studentList.size();i++){
+				SocietyStudent societyStudent = studentList.get(i);
+				societyStudent.setFaceImageUrl(face);
+				societyStudent.setIdCardImage(lastIdcardUrl);
+				societyStudent.setHeadPhoto(face);
+				societyStudent.setIsRealNameAuth("1");
+				societyStudent.setRealNameTime(new Date());
+				societyStudent.setRealNameOperId(user.getUserId());
+				societyStudent.setRealNameOperName(user.getUserName());
+				societyStudent.setRealNameType("1");
+				updateIdCardAndFaceImg(societyStudent);
+			}
+		}else if(!faceUrl.equals("") & idcardUrl.equals("")){//没传人脸 传身份证照
+			//全局表未实名 把当前的照片补充上
+			String idCard = "";//上传数据库的记录
+			String idCardPrefix = globleIdcardUrl;//路径前缀
+			File fileIdcard = new File(idCardImage);//文件对象
+			try {
+				idCard = idCardPrefix+ FileUtil.saveFile(fileIdcard, serverTempfile+idCardPrefix,true);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+			String lastFaceImgUrl = copyFaceAndIdCardUrlOnce(faceUrl,globleFaceUrl);
+			societyStudentUnique.setFaceImageUrl(lastFaceImgUrl);
+			societyStudentUnique.setIdCardImage(idCard);
+			societyStudentUnique.setHeadPhoto(lastFaceImgUrl);
+			societyStudentUnique.setIsRealNameAuth("1");
+			societyStudentUnique.setRealNameTime(new Date());
+			societyStudentUnique.setRealNameOperId(user.getUserId());
+			societyStudentUnique.setRealNameOperName(user.getUserName());
+			societyStudentUnique.setRealNameType("1");
+			societyStudentUniqueService.updateById(societyStudentUnique);
+			//将该学生在的所有学校遍历实名一遍
+			List<SocietyStudent> studentList = selectByPhoneAndIdCardAll(societyStudentUnique.getStudentPhoneNum(),
+					societyStudentUnique.getStudentIdCardNum());
+			for(int i = 0;i<studentList.size();i++){
+				SocietyStudent societyStudent = studentList.get(i);
+				societyStudent.setFaceImageUrl(lastFaceImgUrl);
+				societyStudent.setIdCardImage(idCard);
+				societyStudent.setHeadPhoto(lastFaceImgUrl);
+				societyStudent.setIsRealNameAuth("1");
+				societyStudent.setRealNameTime(new Date());
+				societyStudent.setRealNameOperId(user.getUserId());
+				societyStudent.setRealNameOperName(user.getUserName());
+				societyStudent.setRealNameType("1");
+				updateIdCardAndFaceImg(societyStudent);
+			}
+		}else {//都没传
+			//全部从临时文件复制过来
+			String lastFaceImgUrl = copyFaceAndIdCardUrlOnce(faceUrl,globleFaceUrl);
+			String lastidCardImgUrl = copyFaceAndIdCardUrlOnce(idcardUrl,globleIdcardUrl);
+			societyStudentUnique.setFaceImageUrl(lastFaceImgUrl);
+			societyStudentUnique.setIdCardImage(lastidCardImgUrl);
+			societyStudentUnique.setHeadPhoto(lastFaceImgUrl);
+			societyStudentUnique.setIsRealNameAuth("1");
+			societyStudentUnique.setRealNameTime(new Date());
+			societyStudentUnique.setRealNameOperId(user.getUserId());
+			societyStudentUnique.setRealNameOperName(user.getUserName());
+			societyStudentUnique.setRealNameType("1");
+			societyStudentUniqueService.updateById(societyStudentUnique);
+			//将该学生在的所有学校遍历实名一遍
+			List<SocietyStudent> studentList = selectByPhoneAndIdCardAll(societyStudentUnique.getStudentPhoneNum(),
+					societyStudentUnique.getStudentIdCardNum());
+			for(int i = 0;i<studentList.size();i++){
+				SocietyStudent societyStudent = studentList.get(i);
+				societyStudent.setFaceImageUrl(lastFaceImgUrl);
+				societyStudent.setIdCardImage(lastidCardImgUrl);
+				societyStudent.setHeadPhoto(lastFaceImgUrl);
+				societyStudent.setIsRealNameAuth("1");
+				societyStudent.setRealNameTime(new Date());
+				societyStudent.setRealNameOperId(user.getUserId());
+				societyStudent.setRealNameOperName(user.getUserName());
+				societyStudent.setRealNameType("1");
+				updateIdCardAndFaceImg(societyStudent);
+			}
+		}
+	}
+
+	/**
+	 * 复制文件 url 被复制路径 prefix复制的文件路径
+	 **/
+	public String copyFaceAndIdCardUrlOnce(String url, String prefix){
+		//服务器上临时文件路径
+		File fileServerUrl = new File(serverTempfile+url);//文件对象
+		//复制去往的路径
+		String lastUrl = url.replace("/tempfile",prefix);
+		File fileLasUrl = new File(serverUpfile+lastUrl);//文件对象
+		if (!fileLasUrl.getParentFile().exists()) {
+			fileLasUrl.getParentFile().mkdirs();
+		}
+		InputStream fis = null;
+		FileOutputStream fos = null;
+		try {
+			//复制
+			fis = new FileInputStream(fileServerUrl);
+			fos = new FileOutputStream(fileLasUrl);
+			IOUtils.copyLarge(fis, fos);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}finally {
+			try {
+				if (fis!=null){fis.close();}
+				if (fos!=null){fos.close();}
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
+		return lastUrl;
+	}
+	@Transactional(propagation = Propagation.REQUIRED,rollbackFor=Exception.class)
+	public void updateById(SocietyStudent societyStudent) {
+		societyStudentMapper.updateById(societyStudent);
+	}
+}

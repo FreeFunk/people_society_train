@@ -1,0 +1,398 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>学员课程进度统计,学校管理员页面</title>
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=0">
+    <link rel="stylesheet" href="/layuiadmin/layui/css/layui.css" media="all">
+    <link rel="stylesheet" href="/layuiadmin/style/admin.css" media="all">
+    <style type="text/css">
+        .layui-table-cell {
+            padding: 0 5px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="layui-fluid">
+    <div class="layui-card">
+        <div class="layui-form layui-card-header layuiadmin-card-header-auto">
+            <div class="layui-form-item">
+                <div class="layui-inline">
+                    <label class="layui-form-label">学员姓名</label>
+                    <div class="layui-input-inline">
+                        <input type="text" name="queryObj.studentName" placeholder="请输入" autocomplete="off" class="layui-input">
+                    </div>
+                </div>
+                <div class="layui-inline">
+                    <label class="layui-form-label">身份证号</label>
+                    <div class="layui-input-inline">
+                        <input type="text" name="queryObj.studentIdCardNum" placeholder="请输入" autocomplete="off" class="layui-input">
+                    </div>
+                </div>
+                <!--<div class="layui-inline">
+                    <label class="layui-form-label">专业名称</label>
+                    <div class="layui-input-inline">
+                        <input type="text" name="queryObj.ownerMajorName" placeholder="请输入专业名称" autocomplete="off" class="layui-input">
+                    </div>
+                </div>-->
+                <div class="layui-inline">
+                    <label class="layui-form-label">班级名称</label>
+                    <div class="layui-input-inline">
+                        <input type="text" name="queryObj.className" placeholder="请输入班级名称" autocomplete="off" class="layui-input">
+                    </div>
+                </div>
+                <div class="layui-inline">
+                    <label class="layui-form-label">课程名称</label>
+                    <div class="layui-input-inline">
+                        <input type="text" name="queryObj.courseName" placeholder="请输入课程名称" autocomplete="off" class="layui-input">
+                    </div>
+                </div>
+                <!--<div class="layui-inline">
+                    <label class="layui-form-label">是否实名</label>
+                    <div class="layui-input-inline">
+                        <select id="isRealNameAuth" name="isRealNameAuth">
+                            <option value=""></option>
+                            <option value="1">是</option>
+                            <option value="0">否</option>
+                        </select>
+                    </div>
+                </div>-->
+                <div class="layui-inline">
+                    <label class="layui-form-label" style="width: 98px;">学习进度%</label>
+                    <div class="layui-input-inline" style="left: 6%;">
+                        <button id="subtractionCourseProgressStart" style="width: 21%;height: 100%;position: absolute;right: 95%;" type="button" class="layui-btn layui-btn-primary layui-btn-sm">
+                            <i class="layui-icon layui-icon-subtraction" style="left: 27%;top: 42%;"></i>
+                        </button>
+                        <input style="text-align: center;width: 58%" value="0" id="courseProgressInputStartId" type="text" name="queryObj.courseProgressStart" placeholder="输入数值" autocomplete="off" class="layui-input">
+                        <button id="addCourseProgressStart" style="width: 21%;height: 100%;position: absolute;left: 58%;top: 1%;" type="button" class="layui-btn layui-btn-primary layui-btn-sm">
+                            <i class="layui-icon layui-icon-addition" style="right: 22%;top: 42%;"></i>
+                        </button>
+                    </div>
+                    <div style="position: absolute;left: 59.5%;">至</div>
+                    <div class="layui-input-inline" style="left: 7%;">
+                        <button id="subtractionCourseProgressEnd" style="width: 21%;height: 100%;position: absolute;right: 95%;" type="button" class="layui-btn layui-btn-primary layui-btn-sm">
+                            <i class="layui-icon layui-icon-subtraction" style="left: 27%;top: 42%;"></i>
+                        </button>
+                        <input style="text-align: center;width: 58%" value="100" id="courseProgressInputEndId" type="text" name="queryObj.courseProgressEnd" placeholder="输入数值" autocomplete="off" class="layui-input">
+                        <button id="addCourseProgressEnd" style="width: 21%;height: 100%;position: absolute;left: 58%;top: 1%;" type="button" class="layui-btn layui-btn-primary layui-btn-sm">
+                            <i class="layui-icon layui-icon-addition" style="right: 22%;top: 42%;"></i>
+                        </button>
+                    </div>
+                </div>
+                <div style="padding-left: 1%;">
+                    <div class="layui-inline" style="left: 2%;">
+                        <button class="layui-btn layuiadmin-btn-comm layui-btn-sm" data-type="reload" lay-submit lay-filter="SocietySchoolCourse-search">
+                            <i class="layui-icon layui-icon-search layuiadmin-button-btn"></i>查询
+                        </button>
+                    </div>
+                    <div class="layui-inline " style="left: 2%;">
+                        <button type="button" class="layui-btn layuiadmin-btn-comm layui-btn-sm" onclick="exportData()">
+                            <i class="layui-icon layui-icon-export layuiadmin-button-btn"></i>导出
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="layui-card-body">
+            <!--<div style="padding-bottom: 10px;">
+                <button class="layui-btn layuiadmin-btn-comm  layui-btn-sm" data-type="batchdel">删除</button>
+                <button class="layui-btn layuiadmin-btn-comm  layui-btn-sm" data-type="add">添加</button>
+            </div>-->
+            <table id="SocietySchoolCourse-list" lay-filter="SocietySchoolCourse-list"></table>
+            <script type="text/html" id="table-SocietySchoolCourse-list">
+                <a class="layui-btn layui-btn-normal layui-btn-xs" lay-event="nodeInfo">章节详情</a>
+<!--                <a class="layui-btn layui-btn-normal layui-btn-xs" lay-event="studentStudyArchives">学员学习档案</a>-->
+               <a class="layui-btn layui-btn-normal layui-btn-xs" lay-event="edit"><i class="layui-icon layui-icon-edit"></i>编辑</a>
+                <!--  <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del"><i class="layui-icon layui-icon-delete"></i>删除</a>-->
+            </script>
+        </div>
+    </div>
+</div>
+<!--进度条模板-->
+<script type="text/html" id="studentLeranTpl">
+    {{#  if(d.courseProgress>=0 && d.courseProgress<=30){ }}
+    <div style="margin-top: 12px;" class="layui-progress" lay-showpercent="yes">
+        <div  class="layui-progress-bar layui-bg-red" lay-percent="{{d.courseProgress}}%"></div>
+    </div>
+    {{#  }else if(d.courseProgress==null) { }}
+    <div style="margin-top: 12px;" class="layui-progress" lay-showpercent="yes">
+        <div  class="layui-progress-bar layui-bg-blue" lay-percent="{{0}}%"></div>
+    </div>
+    {{#  }else if(d.courseProgress<=70) { }}
+    <div style="margin-top: 12px;" class="layui-progress" lay-showpercent="yes">
+        <div  class="layui-progress-bar layui-bg-blue" lay-percent="{{d.courseProgress}}%"></div>
+    </div>
+    {{#  } else { }}
+    <div style="margin-top: 12px;" class="layui-progress" lay-showpercent="yes">
+        <div  class="layui-progress-bar " lay-percent="{{d.courseProgress}}%"></div>
+    </div>
+    {{#  } }}
+</script>
+<script src="/layuiadmin/layui/layui.js"></script>
+<script>
+        layui.config({
+            base: '/layuiadmin/' //静态资源所在路径
+        }).extend({
+            index:'lib/index',
+            common:'common',
+            $tool:'tool'
+        }).use(['index','table', 'form','common','element','excel','$tool'], function(exports){
+            var $ = layui.$
+                ,table = layui.table
+                ,common = layui.common
+                ,element = layui.element
+                ,$tool = layui.$tool
+                ,admin = layui.admin
+                ,excel = layui.excel
+                ,form = layui.form;
+
+
+            //减1%
+            $("#subtractionCourseProgressStart").click(function(){
+                var testRightRate = $("#courseProgressInputStartId").val();
+                if(testRightRate=='0'){//禁用按钮
+                    $("#courseProgressInputStartId").val('0');
+                }else {
+                    var num = Number(testRightRate);
+                    var s = (num-1).toString();
+                    $("#courseProgressInputStartId").val(s);
+                }
+            });
+            //加1
+            $("#addCourseProgressStart").click(function(){
+                var testRightRate = $("#courseProgressInputStartId").val();
+                if(testRightRate=='100'){//禁用按钮
+                    $("#courseProgressInputStartId").val('100');
+                }else {
+                    var num = Number(testRightRate);
+                    var s = (num+1).toString();
+                    $("#courseProgressInputStartId").val(s);
+                }
+            });
+
+            //减1%
+            $("#subtractionCourseProgressEnd").click(function(){
+                var testRightRate = $("#courseProgressInputEndId").val();
+                if(testRightRate=='0'){//禁用按钮
+                    $("#courseProgressInputEndId").val('0');
+                }else {
+                    var num = Number(testRightRate);
+                    var s = (num-1).toString();
+                    $("#courseProgressInputEndId").val(s);
+                }
+            });
+            //加1
+            $("#addCourseProgressEnd").click(function(){
+                var testRightRate = $("#courseProgressInputEndId").val();
+                if(testRightRate=='100'){//禁用按钮
+                    $("#courseProgressInputEndId").val('100');
+                }else {
+                    var num = Number(testRightRate);
+                    var s = (num+1).toString();
+                    $("#courseProgressInputEndId").val(s);
+                }
+            });
+
+
+            //查询
+            form.on('submit(SocietySchoolCourse-search)', function(data){
+                var field = data.field;
+                var startNum = Number(field["queryObj.courseProgressStart"]);
+                var endNum = Number(field["queryObj.courseProgressEnd"]);
+                if (startNum<0 || endNum<0){
+                    return layer.msg('搜索数值不能小于0');
+                }
+                if(startNum>100 || endNum>100){
+                    return layer.msg('搜索数值不能大于100');
+                }
+                if(startNum>endNum){
+                    return layer.msg('开始进度不能大于结束进度');
+                }
+                field["queryObj.courseProgressStart"] = Number(field["queryObj.courseProgressStart"]);
+                field["queryObj.courseProgressEnd"] = Number(field["queryObj.courseProgressEnd"]);
+                field.isRealNameAuth = $("#isRealNameAuth").val();
+
+                //执行重载
+                table.reload('SocietySchoolCourse-list', {
+                    where: field,page:{curr:1}
+                });
+            });
+
+            /*
+            * 定义表格
+            * */
+            defineTable = function () {
+                var headers = layui.admin.getTokenHeader();
+                table.render({
+                    elem: '#SocietySchoolCourse-list' //指定原始表格的选择器（id选择器）
+                    ,url:layui.setter.basePath +'/society/societyStudentAndCourse/listpageByStuCou.jsn' //模拟接口
+                    ,headers:headers
+                    ,height:390
+                    ,method: 'post'
+                    ,parseData: function(res){ //res 即为原始返回的数据
+                        return {
+                            "code": res.success, //解析接口状态
+                            "msg": res.errMsg, //解析提示文本
+                            "count": res.totalCount, //解析数据长度
+                            "data": res.list //解析数据列表
+                        };
+                    }
+                    ,response: {
+                        statusCode: true //规定成功的状态码，默认：0
+                    }
+                    ,cols: [[
+                        {type: 'numbers', fixed: 'left', title:'序号'}
+                        ,{field: 'id',align: 'center', width: 200, title: '主键',sort: true,hide:true}
+                        ,{field: 'studentName',align: 'center', width:  '7%', title: '姓名'}
+                        ,{field: 'studentIdCardNum',align: 'center', width: '13%', title: '身份证号'}
+                        // ,{field: 'stuPhone',align: 'center', width: '8%', title: '手机号'}
+                        ,{field: 'className',align: 'center', width: '14%', title: '班级名称'}
+                        ,{field: 'courseName',align: 'center', width: '12%', title: '课程名称'}
+                        /*,{field: 'isRealName',align: 'center', width: '7%', title: '是否实名',
+                            templet: function (d) {
+                                if(d.isRealName=='1'){
+                                    return "是";
+                                }else {
+                                    return "否";
+                                }
+                            }
+                        }*/
+                        ,{field: 'totalLessons',align: 'center', width:  '7%', title: '总课时'}
+                        ,{field: 'finishNodeNum',align: 'center', width: '8%', title: '已完成课时'}
+                         ,{field: 'courseProgress',align: 'center', title: '学习进度',templet:"#studentLeranTpl",sort: true}
+                        ,{title: '操作', width: '14%', align: 'center', fixed: 'right', toolbar: '#table-SocietySchoolCourse-list'}
+                    ]]
+                    ,autoSort: false
+                    ,page: true
+                    ,limit: 50
+                    ,limits: [10, 20, 30,40,50]
+                    ,text: {
+                    none: '暂无相关数据'
+                    }
+                    ,done:function () {
+                        element.init();
+                    }
+            });
+
+                //为toolbar添加事件响应
+                table.on('tool(SocietySchoolCourse-list)', function(obj){ //注：tool是工具条事件名，test是table原始容器的属性 lay-filter="对应的值"
+                    /*var data = obj.data;*///获得当前行数据
+                    //区分事件
+                    switch(obj.event){
+                        case 'nodeInfo':
+                            nodeInfo(obj);
+                            break;
+                        case 'edit':
+                            edit(obj);
+                            break;
+                    };
+                });
+            }
+            defineTable();
+
+            //编辑
+            editVo = function (obj) {
+                layer.open({
+                    type: 2
+                    ,title: '修改学生课程信息'
+                    ,skin: 'demo-class'
+                    ,content: 'SocietySchoolClassEditSecond.html'
+                    ,area: ['550px', '350px']
+                    ,btn: ['添加学员','保存','取消']
+                    ,success: function(layero, index){
+                        var s = layero.find('iframe');
+                        $("id",s[0].contentWindow.document).val(obj.data.id);
+                        //给iframe元素赋值
+                        var othis = layero.find('iframe').contents().find("#SocietySchoolClassEditSecond-form").click();
+
+                        othis.find('input[name="id"]').val(obj.data.id);
+                        othis.find('input[name="createTime"]').val(obj.data.createTime);
+                        othis.find('input[name="createUserId"]').val(obj.data.createUserId);
+                        othis.find('input[name="createUserName"]').val(obj.data.createUserName);
+                        othis.find('input[name="ownerSchoolId"]').val(obj.data.ownerSchoolId);
+                        othis.find('input[name="ownerSchoolName"]').val(obj.data.ownerSchoolName);
+                        othis.find('input[id="ownerMajorId"]').val(obj.data.ownerMajorId);
+                        othis.find('input[name="ownerMajorName"]').val(obj.data.ownerMajorName);
+                        othis.find('input[name="personInCharge"]').val(obj.data.personInCharge);
+                        othis.find('input[name="personInChargePhoneNum"]').val(obj.data.personInChargePhoneNum);
+                        othis.find('input[name="className"]').val(obj.data.className);
+                        othis.find('input[name="classCode"]').val(obj.data.classCode);
+                        othis.find('input[name="classStartTime"]').val(common.DateFormat(obj.data.classStartTime,"yyyy-MM-dd"));
+                        othis.find('input[name="classEndTime"]').val(common.DateFormat(obj.data.classEndTime,"yyyy-MM-dd"));
+                        othis.find('input[name="classPersonNum"]').val(obj.data.classPersonNum);
+                        othis.find('input[name="totalLessons"]').val(obj.data.totalLessons);
+                        othis.find('input[name="finishedPersonNum"]').val(obj.data.finishedPersonNum);
+                        othis.find('input[name="notFinishedPersonNum"]').val(obj.data.notFinishedPersonNum);
+                        othis.find('input[name="dataState"]').val(obj.data.dataState);
+                        othis.find('input[name="classAdminInputId"]').val(obj.data.classAdminId);
+                    }
+                    ,yes: function(index, layero){
+                        //点击确认触发 iframe 内容中的按钮提交
+                        var submit = layero.find('iframe').contents().find("#SocietySchoolClass-next-edit");
+                        submit.click();
+                        var dataAll = $("#dataAll").val();
+                        var dataAllFlag = $("#dataAllFlag").val();
+                        if(dataAllFlag){
+                            var str = dataAll.split(",");
+                            //添加学生
+                            layer.open({
+                                type: 2
+                                ,title: '添加学生'
+                                ,skin: 'demo-class-student'
+                                ,content: 'SocietySchoolClassAndStudentVoClass.html?classId='+str[0]+'&ownerMajorId='+str[1]
+                                ,area: ['1171px', '569px']
+                                ,btn: ['完成']
+                                ,success:function(layero,index){
+
+                                }
+                                ,yes: function(index, layero){
+                                    //点击确认触发 iframe 内容中的按钮提交
+                                    var submit = layero.find('iframe').contents().find("#SocietySchoolClassAndStudent-form-submit");
+                                    submit.click();
+                                    $("#dataAll").val('');
+                                    $("#dataAllFlag").val('');
+                                    $('#courseId').val('');
+                                }
+                            });
+                        }
+                    }
+                    ,btn2: function(index, layero){
+                        var submit = layero.find('iframe').contents().find("#SocietySchoolClass-form-edit");
+                        submit.trigger('click');
+                        $("#dataAll").val('');
+                        $("#dataAllFlag").val('');
+                        $('#courseId').val('');
+                    }
+                    ,btn3: function(index, layero){
+                        layer.closeAll();
+                        $("#dataAll").val('');
+                        $("#dataAllFlag").val('');
+                        $('#courseId').val('');
+                    }
+                });
+            }
+
+            nodeInfo=function (obj) {
+                newOpen("views/society/schooladmin/updatestuandcounodque/SocietySchoolCountyStudentList.html", obj.data,obj.data.studentName);
+            }
+
+            function newOpen(url,params,name) {
+                var pStr = '';
+                for(var p in params){
+                    if(pStr.indexOf("?")==-1){
+                        pStr += "?"+p+"="+encodeURI(params[p]);
+                    }else {
+                        pStr += "&"+p+"="+encodeURI(params[p]);
+                    }
+                }
+                top.layui.index.openTabsPage(url+pStr,name+"章节信息");
+            }
+        });
+
+</script>
+</body>
+</html>
+

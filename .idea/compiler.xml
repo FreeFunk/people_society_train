@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="CompilerConfiguration">
+    <annotationProcessing>
+      <profile name="Maven default annotation processors profile" enabled="true">
+        <sourceOutputDir name="target/generated-sources/annotations" />
+        <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
+        <outputRelativeToContentRoot value="true" />
+        <module name="people-society-train-ht" />
+        <module name="people-society-train-ht-juxian" />
+        <module name="sys-wx-client-starter" />
+        <module name="people-society-train-data-machine" />
+        <module name="people-society-train-ht-nite" />
+        <module name="people-society" />
+        <module name="people-society-train-qt" />
+        <module name="tdp-codegen" />
+        <module name="sys-wx-common-service-impl" />
+        <module name="people-society-train-dataenum" />
+      </profile>
+    </annotationProcessing>
+    <bytecodeTargetLevel>
+      <module name="people-society" target="1.8" />
+      <module name="people-society-qt" target="1.8" />
+      <module name="people-society-train-data-machine" target="1.8" />
+      <module name="people-society-train-dataenum" target="1.5" />
+      <module name="people-society-train-ht" target="1.8" />
+      <module name="people-society-train-ht-juxian" target="1.8" />
+      <module name="people-society-train-ht-nite" target="1.8" />
+      <module name="people-society-train-qt" target="1.8" />
+      <module name="sys-wx-client-starter" target="1.8" />
+      <module name="sys-wx-common-service-impl" target="1.8" />
+      <module name="tdp-codegen" target="1.7" />
+    </bytecodeTargetLevel>
+  </component>
+  <component name="JavacSettings">
+    <option name="ADDITIONAL_OPTIONS_OVERRIDE">
+      <module name="people-society-train-data-machine" options="-parameters" />
+      <module name="people-society-train-ht" options="-parameters" />
+      <module name="people-society-train-ht-juxian" options="-parameters" />
+      <module name="people-society-train-ht-nite" options="-parameters" />
+      <module name="people-society-train-qt" options="-parameters" />
+      <module name="sys-wx-client-starter" options="-parameters" />
+      <module name="sys-wx-common-service-impl" options="-parameters" />
+    </option>
+  </component>
+</project>

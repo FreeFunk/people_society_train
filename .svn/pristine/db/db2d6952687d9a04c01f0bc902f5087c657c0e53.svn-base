@@ -1,0 +1,214 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.edgedo.society.mapper.SocietyStudentAndNodeMapper" >
+   
+   
+    <resultMap id="BaseResultMap" type="com.edgedo.society.entity.SocietyStudentAndNode" >
+			<id column="ID" property="id"/>
+			<result column="OWNER_STUDENT_AND_COURSE_ID" property="ownerStudentAndCourseId"/>
+			<result column="OWNER_SCHOOL_ID" property="ownerSchoolId"/>
+			<result column="OWNER_SCHOOL_NAME" property="ownerSchoolName"/>
+			<result column="STUDENT_ID" property="studentId"/>
+			<result column="STUDENT_NAME" property="studentName"/>
+			<result column="STUDENT_ID_CARD_NUM" property="studentIdCardNum"/>
+			<result column="OWNER_COURSE_ID" property="ownerCourseId"/>
+			<result column="OWNER_COURSE_NAME" property="ownerCourseName"/>
+			<result column="NODE_ID" property="nodeId"/>
+			<result column="NODE_NAME" property="nodeName"/>
+			<result column="NODE_PROGRESS" property="nodeProgress"/>
+			<result column="STUDY_TIME_LENGTH" property="studyTimeLength"/>
+			<result column="LAST_LEARN_LOCATION" property="lastLearnLocation"/>
+			<result column="LEARN_IS_FINISHED" property="learnIsFinished"/>
+			<result column="LAST_QUESTION_ID" property="lastQuestionId"/>
+			<result column="NODE_QUESTION_SCORE" property="nodeQuestionScore"/>
+			<result column="QUESTION_IS_FINISHED" property="questionIsFinished"/>
+			<result column="QUESTION_IS_PASS" property="questionIsPass"/>
+			<result column="NODE_NAME" property="nodeName"/>
+			<result column="TOTAL_QUESTION_NUM" property="totalQuestionNum"/>
+			<result column="CREATE_TIME" property="createTime"/>
+			<result column="DATA_STATE" property="datastate"/>
+    </resultMap>
+   
+    <resultMap id="BaseResultViewMap" type="com.edgedo.society.queryvo.SocietyStudentAndNodeView" extends="BaseResultMap">
+    
+    </resultMap>
+  
+  
+  <!-- ******* 新增字段请修改这里  ******  -->
+  <sql id="Base_Column_List">
+	 ID, OWNER_STUDENT_AND_COURSE_ID, OWNER_SCHOOL_ID, OWNER_SCHOOL_NAME,STUDENT_ID, STUDENT_NAME,OWNER_COURSE_ID,OWNER_COURSE_NAME,
+	 STUDENT_ID_CARD_NUM, NODE_ID,NODE_NAME, NODE_PROGRESS, LAST_LEARN_LOCATION, LEARN_IS_FINISHED,
+	 LAST_QUESTION_ID, NODE_QUESTION_SCORE, QUESTION_IS_FINISHED, QUESTION_IS_PASS,NODE_NAME,
+	 TOTAL_QUESTION_NUM,STUDY_TIME_LENGTH,CREATE_TIME,DATA_STATE
+  </sql>
+  
+  <!-- ******* 利用好这里的动态查询条件  ******  -->
+  <sql id="where">
+  	<where>
+		DATA_STATE='1'
+		<if test='queryObj != null and  queryObj.id != null and @org.apache.commons.lang3.StringUtils@isNotEmpty(queryObj.id)'>
+		AND  ID = #{queryObj.id}
+		</if>
+		<if test='queryObj != null and  queryObj.ownerStudentAndCourseId != null and @org.apache.commons.lang3.StringUtils@isNotEmpty(queryObj.ownerStudentAndCourseId)'>
+		AND  OWNER_STUDENT_AND_COURSE_ID = #{queryObj.ownerStudentAndCourseId}
+		</if>
+		<if test='queryObj != null and  queryObj.ownerSchoolId != null and @org.apache.commons.lang3.StringUtils@isNotEmpty(queryObj.ownerSchoolId)'>
+		AND  OWNER_SCHOOL_ID = #{queryObj.ownerSchoolId}
+		</if>
+		<if test='queryObj != null and  queryObj.studentId != null and @org.apache.commons.lang3.StringUtils@isNotEmpty(queryObj.studentId)'>
+		AND  STUDENT_ID = #{queryObj.studentId}
+		</if>
+		<if test='queryObj != null and  queryObj.studentName != null and @org.apache.commons.lang3.StringUtils@isNotEmpty(queryObj.studentName)'>
+		AND  STUDENT_NAME = #{queryObj.studentName}
+		</if>
+		<if test='queryObj != null and  queryObj.studentIdCardNum != null and @org.apache.commons.lang3.StringUtils@isNotEmpty(queryObj.studentIdCardNum)'>
+		AND  STUDENT_ID_CARD_NUM = #{queryObj.studentIdCardNum}
+		</if>
+		<if test='queryObj != null and  queryObj.nodeId != null and @org.apache.commons.lang3.StringUtils@isNotEmpty(queryObj.nodeId)'>
+		AND  NODE_ID = #{queryObj.nodeId}
+		</if>
+		<if test='queryObj != null and  queryObj.lastLearnLocation != null and @org.apache.commons.lang3.StringUtils@isNotEmpty(queryObj.lastLearnLocation)'>
+			AND  LAST_LEARN_LOCATION = #{queryObj.lastLearnLocation}
+		</if>
+		<if test='queryObj != null and  queryObj.learnIsFinished != null and @org.apache.commons.lang3.StringUtils@isNotEmpty(queryObj.learnIsFinished)'>
+		AND  LEARN_IS_FINISHED = #{queryObj.learnIsFinished}
+		</if>
+		<if test='queryObj != null and  queryObj.lastQuestionId != null and @org.apache.commons.lang3.StringUtils@isNotEmpty(queryObj.lastQuestionId)'>
+		AND  LAST_QUESTION_ID = #{queryObj.lastQuestionId}
+		</if>
+		<if test='queryObj != null and  queryObj.nodeQuestionScore != null and @org.apache.commons.lang3.StringUtils@isNotEmpty(queryObj.nodeQuestionScore)'>
+			AND  NODE_QUESTION_SCORE = #{queryObj.nodeQuestionScore}
+		</if>
+		<if test='queryObj != null and  queryObj.questionIsFinished != null and @org.apache.commons.lang3.StringUtils@isNotEmpty(queryObj.questionIsFinished)'>
+		AND  QUESTION_IS_FINISHED = #{queryObj.questionIsFinished}
+		</if>
+		<if test='queryObj != null and  queryObj.questionIsPass != null and @org.apache.commons.lang3.StringUtils@isNotEmpty(queryObj.questionIsPass)'>
+		AND  QUESTION_IS_PASS = #{queryObj.questionIsPass}
+		</if>
+		<if test="queryObj != null and  queryObj.ownerSchoolName != null and queryObj.ownerSchoolName != ''">
+			AND  OWNER_SCHOOL_NAME like concat('%',#{queryObj.ownerSchoolName},'%')
+		</if>
+		<if test="queryObj != null and  queryObj.nodeName != null and queryObj.nodeName != ''">
+			AND  NODE_NAME like concat('%',#{queryObj.nodeName},'%')
+		</if>
+  	</where>
+  	
+  </sql>
+
+	<sql id="where1">
+		<where>
+			DATA_STATE='1'
+			<if test='queryObj != null and  queryObj.ownerSchoolId != null and queryObj.ownerSchoolId != ""'>
+				AND  OWNER_SCHOOL_ID = #{queryObj.ownerSchoolId}
+			</if>
+			<if test='queryObj != null and  queryObj.studentId != null and queryObj.studentId != ""'>
+				AND  STUDENT_ID = #{queryObj.studentId}
+			</if>
+			<if test='queryObj != null and  queryObj.ownerCourseId != null and queryObj.ownerCourseId != ""'>
+				AND  OWNER_COURSE_ID = #{queryObj.ownerCourseId}
+			</if>
+			<if test='queryObj != null and  queryObj.ownerStudentAndCourseId != null and queryObj.ownerStudentAndCourseId != ""'>
+				AND  OWNER_STUDENT_AND_COURSE_ID = #{queryObj.ownerStudentAndCourseId}
+			</if>
+			<if test='queryObj != null and  queryObj.studentName != null and queryObj.studentName != ""'>
+				AND  STUDENT_NAME like concat('%',#{queryObj.studentName},'%')
+			</if>
+			<if test='queryObj != null and  queryObj.studentIdCardNum != null and queryObj.studentIdCardNum != ""'>
+				AND  STUDENT_ID_CARD_NUM like concat('%',#{queryObj.studentIdCardNum},'%')
+			</if>
+			<if test="queryObj != null and  queryObj.nodeName != null and queryObj.nodeName != ''">
+				AND  NODE_NAME like concat('%',#{queryObj.nodeName},'%')
+			</if>
+			<if test="queryObj != null and  queryObj.ownerSchoolName != null and queryObj.ownerSchoolName != ''">
+				AND  OWNER_SCHOOL_NAME like concat('%',#{queryObj.ownerSchoolName},'%')
+			</if>
+		</where>
+	</sql>
+
+
+  <!-- ******* 排序判断  ******  
+  <sql id="orderBy">
+  	<if test="orderBy != null and orderBy!= '' ">
+  		order by  ${orderBy}
+  	</if>
+  </sql>-->
+  
+  
+  <!-- 分页条件查询  -->
+  <select id="listPage" parameterType="com.edgedo.society.queryvo.SocietyStudentAndNodeQuery" resultMap="BaseResultViewMap">
+  		select <include refid="Base_Column_List"/> from society_student_and_node 
+  		<include refid="where"/> order by NODE_NAME asc
+  </select>
+
+	<select id="selectByCourseNamelistPage" parameterType="com.edgedo.society.queryvo.SocietyStudentAndNodeQuery" resultMap="BaseResultViewMap">
+		select <include refid="Base_Column_List"/> from society_student_and_node
+		<include refid="where1"/>
+	</select>
+<!--	查出学生关联的小节id-->
+	<select id="selectNodeIdList" parameterType="com.edgedo.society.queryvo.SocietyStudentAndNodeQuery" resultType="String">
+		select NODE_ID from society_student_and_node
+		<include refid="where1"/>
+	</select>
+
+   <!-- 不分页条件查询  -->
+  <select id="listByObj" parameterType="com.edgedo.society.queryvo.SocietyStudentAndNodeQuery" resultMap="BaseResultViewMap">
+  		select <include refid="Base_Column_List"/> from society_student_and_node 
+  		<include refid="where1"/>
+  </select>
+  <!--查询该学员的已经学课程-->
+
+	<select id="selectByNodeIdAndStuId" parameterType="map" resultMap="BaseResultViewMap">
+		select <include refid="Base_Column_List"/> from society_student_and_node
+		where   OWNER_STUDENT_AND_COURSE_ID = #{ownerStudentAndCourseId}
+		and STUDENT_ID = #{studentId}
+		and OWNER_COURSE_ID = #{courseId}
+		and NODE_ID = #{nodeId} and DATA_STATE='1'
+	</select>
+
+	<select id="selectStudentCourse" parameterType="com.edgedo.society.queryvo.SocietyStudentAndNodeQuery" resultMap="BaseResultViewMap">
+		select <include refid="Base_Column_List"/> from society_student_and_node
+		<include refid="where"/>
+	</select>
+
+	<!--根据学员id和小节id查询学员和小节的关联-->
+	<select id="loadByStuIdAndNodeId" parameterType="string" resultMap="BaseResultViewMap">
+		select <include refid="Base_Column_List"/> from society_student_and_node
+		where   OWNER_STUDENT_AND_COURSE_ID = #{stuAndCourseId}
+		and STUDENT_ID = #{studentId}
+		and NODE_ID = #{nodeId} and DATA_STATE='1'
+	</select>
+	<!--统计学员的课程所学的时长-->
+	<select id="sumStudyTimeLength" parameterType="string" resultType="int">
+		select COALESCE(sum(STUDY_TIME_LENGTH),0) from society_student_and_node
+		where   OWNER_STUDENT_AND_COURSE_ID = #{stuAndCourseId} and DATA_STATE='1'
+	</select>
+
+	<select id="selectByNodeIdAndStuIdOne" parameterType="string" resultMap="BaseResultViewMap">
+		select <include refid="Base_Column_List"/> from society_student_and_node
+		where   OWNER_STUDENT_AND_COURSE_ID = #{courseAndStuId}
+		and STUDENT_ID = #{studentId} and OWNER_COURSE_ID=#{courseId}
+		and NODE_ID = #{nodeId} and DATA_STATE='1'
+	</select>
+
+
+
+	<update id="updateByDataState" parameterType="string">
+		update society_student_and_node set DATA_STATE='0'
+		where DATA_STATE='1'
+		and OWNER_STUDENT_AND_COURSE_ID in
+		<foreach item="id" index="index" collection="list" open="(" separator="," close=")">
+			#{id}
+		</foreach>
+	</update>
+
+	<delete id="deleteByStuId" parameterType="string">
+		delete from society_student_and_node where STUDENT_ID=#{id}
+	</delete>
+
+
+	<update id="updateByStuId" parameterType="map">
+		update society_student_and_node set STUDENT_NAME=#{stuName},STUDENT_ID_CARD_NUM=#{idcard}
+		where STUDENT_ID=#{stuId}
+	</update>
+
+</mapper>

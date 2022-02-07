@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>标题</title>
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=0">
+    <link rel="stylesheet" href="/layuiadmin/layui/css/layui.css" media="all">
+    <link rel="stylesheet" href="/layuiadmin/style/admin.css" media="all">
+</head>
+<body>
+
+<div class="layui-form">
+    <div class="layui-fluid">
+        <div class="layui-card">
+            <div class="layui-card-header">
+                <font style="font-size: 22px;font-weight: 600;" id="studentNameTitle">答题记录</font>
+                <a href="javascript:history.back()" style="    margin-top: 10px;
+    position: absolute;
+    right: 15px;" class="layui-btn layui-btn-normal layui-btn-xs">
+                    <i style="position:initial;line-height: inherit" class="layui-icon layui-icon-return"></i>返回</a>
+            </div>
+            <!--<div class="layui-form layui-card-header layuiadmin-card-header-auto">
+                <div class="layui-form-item">
+                    <div class="layui-inline">
+                        <label class="layui-form-label">搜索条件1</label>
+                        <div class="layui-input-inline">
+                            <input type="text" name="queryObj.name" placeholder="请输入" autocomplete="off" class="layui-input">
+                        </div>
+                    </div>
+                    <div class="layui-inline">
+                        <label class="layui-form-label">搜索条件2</label>
+                        <div class="layui-input-inline">
+                            <input type="text" name="queryObj.name" placeholder="请输入" autocomplete="off" class="layui-input">
+                        </div>
+                    </div>
+                    <div class="layui-inline">
+                        <button class="layui-btn layuiadmin-btn-comm layui-btn-sm" data-type="reload" lay-submit lay-filter="SocietyStudentPractiseQuestion-search">
+                            <i class="layui-icon layui-icon-search layuiadmin-button-btn"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>-->
+            <div class="layui-card-body">
+                <div style="font-size: 17px;position: absolute">本次成绩：<span id="num"></span></div>
+                <div style="font-size: 17px;position: absolute;left: 19%;color: green;">正确：<span id="rightNum"></span></div>
+                <div style="font-size: 17px;position: absolute;left: 45%;color: red;">错误：<span id="wrongNum"></span></div>
+                <div style="font-size: 17px;position: absolute;left: 71%;color: #1e9fff;">未答：<span id="noQuestionNum"></span></div>
+                <table style="font-size: 16px;margin-top: 5%;text-align: left;" id="SocietyStudentPractiseQuestion-list" lay-filter="SocietyStudentPractiseQuestion-list"></table>
+                <!--<script type="text/html" id="table-SocietyStudentPractiseQuestion-list">
+                    <a class="layui-btn layui-btn-normal layui-btn-xs" lay-event="edit"><i class="layui-icon layui-icon-edit"></i>编辑</a>
+                    <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del"><i class="layui-icon layui-icon-delete"></i>删除</a>
+                </script>-->
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="/layuiadmin/layui/layui.js"></script>
+<script>
+    layui.config({
+        base: '/layuiadmin/' //静态资源所在路径
+    }).extend({
+        index:'lib/index',
+        common:'common',
+        $tool:'tool'
+    }).use(['index','table', 'form','common','$tool'], function(exports){
+        var $ = layui.$
+            ,table = layui.table
+            ,common = layui.common
+            ,$tool = layui.$tool
+            ,admin = layui.admin
+            ,form = layui.form;
+
+
+        var queryArgs = $tool.getUrlParams();//获取查询参数
+        //var queryArgs = $tool.getQueryParam();//获取查询参数
+        var nodeId = queryArgs.nodeId;
+        var ownerCourseId = queryArgs.ownerCourseId;
+        var ownerSchoolId = queryArgs.ownerSchoolId;
+
+
+        var studentId = queryArgs.studentId;
+        var ownerStudentAndCourseId = queryArgs.ownerStudentAndCourseId;
+        var ownerCourseName = queryArgs.ownerCourseName;
+        //$("#studentNameTitle")[0].innerText = ownerCourseName+">"+nodeName+">"+studentName;
+
+
+        init();
+        function init(){
+            var loading = layer.load(2,{
+                shade: [0.3, '#393D49'],
+                time: 100*1000
+            });
+            admin.req({
+                url:layui.setter.basePath +'/society/societyStudentPractiseQuestion/taskAndStudyList.jsn',
+                data:{
+                    'queryObj.ownerNodeId': nodeId,
+                    'queryObj.ownerCourseId': ownerCourseId,
+                    'queryObj.ownerSchoolId':ownerSchoolId,
+                    'queryObj.studentId':studentId,
+                    'queryObj.ownerStuCourseId':ownerStudentAndCourseId
+                },
+                method:"post",
+                success:function (data) {
+                    debugger
+                    var html ="";
+                    var rightNum = data.data.rightNum;
+                    var wrongNum = data.data.wrongNum;
+                    var num = data.data.num;
+                    var noQuestionNum = data.data.noQuestionNum;
+                    // var questionAndOption = data.data.questionAndOption;
+                    var questionAndOption = data.data.questionAndOption;
+                    $("#num").html(num);
+                    $("#rightNum").html(rightNum);
+                    $("#wrongNum").html(wrongNum);
+                    $("#noQuestionNum").html(noQuestionNum);
+                    if(typeof(data.data.str)!="undefined"){
+                        html +="<div style='position: absolute;top: 57%;left: 43%;font-size: large;'>"+data.data.str+"</div>";
+                        $("#SocietyStudentPractiseQuestion-list").html(html);
+                        layer.close(loading);
+                    }else {
+                        html +="<table  width=\"100%\" border=\"1\" cellspacing=\"0\" cellpadding=\"0\">\n";
+                        $.each(questionAndOption,function(key,value){
+                            //1.题目
+                            var name = key+"、"+value.ownerStudentQuersionName;
+                            //2.选项
+                            if (value.answerState=="1"){
+                                html+="<tr>\n"
+                                    + "<th><i style='color: green;font-weight: inherit;' class=\"layui-icon layui-icon-ok\"></i>"+name+ "</th>\n"
+                                    +"<tr style='margin-top: 1%;display: grid;margin-bottom: 2%;margin-left: 3%;'>"+"<th>";
+                            }else {
+                                html+="<tr>\n"
+                                    + "<th><i style='color: red;font-weight: inherit;' class=\"layui-icon layui-icon-close\"></i>"+name+ "</th>\n"
+                                    +"<tr style='margin-top: 1%;display: grid;margin-bottom: 2%;margin-left: 3%;'>"+"<th>";
+                            }
+
+                            $.each(value.list,function(n,valueOption) {
+                                var option = '';
+                                if(valueOption.optionName=='√' || valueOption.optionName=='×'){
+                                    option = valueOption.optionTitle;
+                                }else {
+                                    option = valueOption.optionTitle+"、"+valueOption.optionName;
+                                }
+                                //学生答案标识 valueOption.optionTitle==value.optionTitle
+                                if(value.optionTitle.indexOf("@@")!=-1){
+                                    //切割
+                                    if(value.optionTitle.indexOf(valueOption.optionTitle)!=-1){
+                                        html+= "<span style='color: #1e9fff;margin-right: 5%;'>"+option+"</span>";
+                                    }else {
+                                        if(valueOption.isRight=='1'){
+                                            html+= "<span style='margin-right: 5%;color: red'>"+option+"</span>";
+                                        }else {
+                                            html+= "<span style='margin-right: 5%;'>"+option+"</span>";
+                                        }
+                                    }
+                                }else {//单选
+                                    if(valueOption.optionTitle==value.optionTitle){
+                                        html+= "<span style='color: #1e9fff;margin-right: 5%;'>"+option+"</span>";
+                                    }else if(valueOption.optionTitle!=value.optionTitle){
+                                        if(valueOption.isRight=='1'){
+                                            html+= "<span style='margin-right: 5%;color: red'>"+option+"</span>";
+                                        }else {
+                                            html+= "<span style='margin-right: 5%;'>"+option+"</span>";
+                                        }
+                                    }
+                                }
+                            });
+                            html+="</th>"+"</tr>\n"+"</tr>\n";
+                            $("#SocietyStudentPractiseQuestion-list").html(html);
+                            layer.close(loading);
+                        });
+                    }
+                },
+            });
+        }
+
+
+        /*
+        * 定义表格
+        * */
+        defineTable = function () {
+            var headers = layui.admin.getTokenHeader();
+            table.render({
+                elem: '#SocietyStudentPractiseQuestion-list' //指定原始表格的选择器（id选择器）
+                ,url:layui.setter.basePath +'/society/societyStudentPractiseQuestion/taskAndStudyList.jsn' //模拟接口
+                ,headers:headers
+                ,method: 'post'
+                ,where: { //请求参数（注意：这里面的参数可任意定义，并非下面固定的格式）
+                    'queryObj.ownerNodeId': nodeId,
+                    'queryObj.ownerCourseId': ownerCourseId,
+                    'queryObj.ownerSchoolId':ownerSchoolId
+                }
+                ,parseData: function(res){ //res 即为原始返回的数据
+                    return {
+                        "code": res.success, //解析接口状态
+                        "msg": res.errMsg, //解析提示文本
+                        "count": res.totalCount, //解析数据长度
+                        "data": res.list //解析数据列表
+                    };
+                }
+                ,response: {
+                    statusCode: true //规定成功的状态码，默认：0
+                }
+                ,cols: [[
+                    {type: 'numbers', fixed: 'left'}
+                    //         ,{field: 'id',align: 'center', width: 200, title: '主键',sort: true,hide:true}
+                    // ,{field: 'ownerStudentAndNodeId',align: 'center', width: 200, title: 'ownerStudentAndNodeId',sort: true}
+                    // ,{field: 'studentId',align: 'center', width: 200, title: '学员ID',sort: true}
+                    ,{field: 'studentName',align: 'center', width: '10%', title: '学生姓名'}
+                    ,{field: 'studentIdCardNum',align: 'center', width: '15%', title: '身份证号'}
+                    // ,{field: 'ownerNodeId',align: 'center', width: 200, title: '所属小节ID',sort: true}
+                    // ,{field: 'quersionId',align: 'center', width: 200, title: '题目ID',sort: true}
+                    ,{field: 'questionName',align: 'center', width: '20%', title: '题目名称'/*,
+                templet: function (d) {
+                    return '<a lay-event="questionNameOnlick" style=" cursor: pointer;\n' +
+                        'text-decoration: none;\n' +
+                        '    border-bottom: 1px solid #01aaed;\n' +
+                        '    color: #01aaed;">' +d.questionName+'</a>';
+                }*/
+                    }
+                    ,{field: 'questionType',align: 'center', width: '10%', title: '题目类型',
+                        templet: function (d) {
+                            if(d.questionType=='1'){
+                                return "单选题";
+                            }else {
+                                return "判断题";
+                            }
+                        }
+                    }
+                    ,{field: 'questionScore',align: 'center', width: '10%', title: '题目分数'}
+                    ,{field: 'getScore',align: 'center', width: '10%', title: '得分'}
+                    // ,{field: 'ownerCourseName',align: 'center', width: 200, title: '课程名称',sort: true}
+                    // ,{field: 'ownerNodeName',align: 'center', width: 200, title: '所属小节名称',sort: true}
+                    // // ,{field: 'ownerSchoolId',align: 'center', width: 200, title: '所属学校ID',sort: true}
+                    // ,{field: 'ownerSchoolName',align: 'center', width: 200, title: '所属学校名',sort: true}
+                    // // ,{field: 'ownerCourseId',align: 'center', width: 200, title: '所属课程ID',sort: true}
+                    // ,{field: 'questionAnalysis',align: 'center', width: 200, title: '题目解析',sort: true}
+                    // ,{field: 'orderNum',align: 'center', width: 200, title: '排序号',sort: true}
+                    // ,{field: 'dataState',align: 'center', width: 200, title: 'dataState',sort: true}
+                    //         ,{title: '操作', minWidth: 150, align: 'center', fixed: 'right', toolbar: '#table-SocietyStudentPractiseQuestion-list'}
+                ]]
+                ,autoSort: false
+                ,page: true
+                ,limit: 10
+                ,limits: [10, 20, 30,40]
+                ,text: {
+                    none: '暂无相关数据'
+                }
+            });
+
+            //为toolbar添加事件响应
+            table.on('tool(SocietyStudentPractiseQuestion-list)', function(obj){ //注：tool是工具条事件名，test是table原始容器的属性 lay-filter="对应的值"
+                /*var data = obj.data;*///获得当前行数据
+                //区分事件
+                switch(obj.event){
+                    case 'questionNameOnlick':
+                        questionNameOnlick(obj);
+                        break;
+                };
+            });
+
+        }
+        // defineTable();
+
+        /**
+         * 课程习题详情 根据小节id 学员id 题目id studentId ownerNodeId quersionId
+         * @param obj
+         */
+        questionNameOnlick = function (obj) {
+            //跳转页面
+            location.href="courseAllInfoList.html?ownerSchoolId="+ encodeURI(obj.data.ownerSchoolId)
+                + "&ownerNodeId="+ encodeURI(obj.data.ownerNodeId)
+                + "&quersionId="+ encodeURI(obj.data.quersionId)
+                + "&ownerCourseId="+ encodeURI(obj.data.ownerCourseId)
+                + "&ownerSchoolId="+ encodeURI(obj.data.ownerSchoolId)
+                + "&questionName="+ encodeURI(obj.data.questionName)
+                + "&ownerNodeName="+ encodeURI(obj.data.ownerNodeName)
+                + "&ownerCourseName="+ encodeURI(obj.data.ownerCourseName);
+        }
+        /*questionNameOnlick = function (obj) {
+            var index = layer.open({
+                type: 2
+                , title: '课程习题详情'
+                , content: 'testPaperTaskInfo.html?studentId=' + encodeURI(obj.data.studentId) +
+                    '&ownerNodeId=' + encodeURI(obj.data.ownerNodeId) +
+                    '&quersionId=' + encodeURI(obj.data.quersionId)
+                    + '&ownerSchoolId='+ encodeURI(obj.data.ownerSchoolId)
+                , area: ['550px', '350px']
+                , maxmin: true
+                , shade: 0
+                , btn: ['关闭']
+                ,yes: function(){
+                    layer.close(index);
+                }
+            });
+        }*/
+
+
+        var active = {
+            //返回上一级页面
+            returnHtml: function(){
+                window.history.back(-1);
+            }
+        }
+
+        //绑定点击事件
+        $('.layui-btn.layui-btn-normal.layui-btn-sm').on('click', function(){
+            var type = $(this).data('type');
+            active[type] ? active[type].call(this) : '';
+        });
+
+    });
+
+</script>
+</body>
+</html>
+

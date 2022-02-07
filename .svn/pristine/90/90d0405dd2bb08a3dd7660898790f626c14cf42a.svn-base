@@ -1,0 +1,58 @@
+<div class="aui-sign-form" style="width: 100%;padding: 0;">
+	<div class="paperTime" style="position: fixed">
+		<div class="timeContainer">
+			<p><label>{{minute}}:{{second}}</label></p>
+		</div>
+		<div class="quesCount">
+			<div class="quesAnsCount">
+				<label>答题进度:</label>
+				<label>{{ansQuesCount}}/{{pageInfoObj.total}}</label>
+			</div>
+		</div>
+	</div>
+	<form action="" id="studentLoginForm" method="post" style="width: 94%;margin-left: 3%;padding-top: 20px;">
+		<div class="aui-course-catalog" style="border: 1px solid lightgray;">
+			<div id="exam_question_panel_item" infinite-scroll-container class="test clearfix" style="{{$index==0?'margin-top:-30':''}}" ng-repeat="que in pageInfoObj.list track by que.id">
+				<div ng-if="que.testPaperQuestionType!='2'">
+					<div class="test_tit">
+						<span ng-if="que.testPaperQuestionType=='1'">（单选）</span>
+						<span ng-if="que.testPaperQuestionType=='3'">（多选）</span>
+						<span ng-bind="$index+1"></span>、<span ng-bind="que.testPaperQuestionName"></span>
+					</div>
+					<div class="test_con">
+						<ul><!--ng-click="que.selectOpId=option.id"-->
+							<li ng-click="computeAnsQuesCount(que,option,$parent.$index)" class="{{option.isSelect=='1'?'on':''}}" ng-repeat="option in que.questionOptionList track by option.id">
+								<i>
+									<span ng-bind="option.optionTitle"></span>.
+									<span ng-bind="option.optionName"></span>
+								</i>
+							</li>
+						</ul>
+					</div>
+				</div>
+				<div ng-if="que.testPaperQuestionType=='2'">
+					<div class="test_tit">
+						<span ng-if="que.testPaperQuestionType=='1'">（判断）</span>
+						<span ng-bind="$index+1"></span>、<span ng-bind="que.testPaperQuestionName"></span>
+					</div>
+					<div class="test_con">
+						<ul>
+							<li ng-click="computeAnsQuesCount(que,option,$parent.$index)" class="{{option.isSelect=='1'?'on':''}}" ng-repeat="option in que.questionOptionList track by option.id">
+								<i>
+									<span ng-bind="option.optionTitle"></span>
+								</i>
+							</li>
+						</ul>
+					</div>
+				</div>
+				<div infinite-scroll-parent="exam_question_panel_item" style="margin-bottom: 0px;" infinite-scroll="nextQuestionPage()" infinite-scroll-distance="0"></div>
+			</div>
+		</div>
+
+		<Div  style="text-align: right;padding-right: 15px;" ng-show="pageInfoObj.totalPage==pageInfoObj.currentPage&&pageInfoObj.totalPage>0">
+			<span class="btn_cd" style="{{pageInfoObj.submitWorking?'background-color:#a09e9e':''}}"  ng-click="submitPaper()">确定提交</span>
+		</Div>
+
+	</form>
+
+</div>

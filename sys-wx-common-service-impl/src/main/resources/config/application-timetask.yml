@@ -1,0 +1,14 @@
+########################备注信息###########################
+######### 根据com.edgedo下面包结构书写下面内容  ###########
+#永不执行的表达式 '-'
+timetask:
+  LoadWxConfigTimeTask:
+    enable: true
+    cron:
+      #加载微信的配置 0/2 * * * * ?
+      loadWxConfig: 0/2 * * * * ?
+  SendWxTxMsgTask:
+    enable: true
+    cron:
+      #发送微信提醒 0/2 * * * * ?
+      sendWxTxMsg: 0/2 * * * * ?

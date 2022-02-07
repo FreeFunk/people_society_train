@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.edgedo.society.mapper.SocietyTestPaperMapper" >
+   
+   
+    <resultMap id="BaseResultMap" type="com.edgedo.society.entity.SocietyTestPaper" >
+			<id column="ID" property="id"/>
+			<result column="CREATE_TIME" property="createTime"/>
+			<result column="CREATE_USER_ID" property="createUserId"/>
+			<result column="CREATE_USER_NAME" property="createUserName"/>
+			<result column="OWNER_SCHOOL_ID" property="ownerSchoolId"/>
+			<result column="OWNER_SCHOOL_NAME" property="ownerSchoolName"/>
+			<result column="OWNER_COURSE_ID" property="ownerCourseId"/>
+			<result column="OWNER_COURSE_NAME" property="ownerCourseName"/>
+			<result column="TEST_PAPER_NAME" property="testPaperName"/>
+			<result column="TOTAL_QUESTION_NUM" property="totalQuestionNum"/>
+			<result column="TOTAL_SCORE" property="totalScore"/>
+			<result column="PASS_SCORE" property="passScore"/>
+			<result column="TEST_PAPER_TIME_LENGTH" property="testPaperTimeLength"/>
+			<result column="DATA_STATE" property="dataState"/>
+    </resultMap>
+   
+    <resultMap id="BaseResultViewMap" type="com.edgedo.society.queryvo.SocietyTestPaperView" extends="BaseResultMap">
+    
+    </resultMap>
+  
+  
+  <!-- ******* 新增字段请修改这里  ******  -->
+  <sql id="Base_Column_List">
+	 ID, CREATE_TIME, CREATE_USER_ID, CREATE_USER_NAME, OWNER_SCHOOL_ID, OWNER_SCHOOL_NAME, OWNER_COURSE_ID, OWNER_COURSE_NAME, TEST_PAPER_NAME,
+	 TOTAL_QUESTION_NUM, TOTAL_SCORE, PASS_SCORE, DATA_STATE, TEST_PAPER_TIME_LENGTH
+  </sql>
+  
+  <!-- ******* 利用好这里的动态查询条件  ******  -->
+  <sql id="where">
+  	<where>
+		<if test='queryObj != null and  queryObj.id != null and @org.apache.commons.lang3.StringUtils@isNotEmpty(queryObj.id)'>
+		AND  ID = #{queryObj.id}
+		</if>
+		<if test='queryObj != null and  queryObj.createTime != null'>
+			AND  CREATE_TIME = #{queryObj.createTime}
+		</if>
+		<if test='queryObj != null and  queryObj.createUserId != null and @org.apache.commons.lang3.StringUtils@isNotEmpty(queryObj.createUserId)'>
+		AND  CREATE_USER_ID = #{queryObj.createUserId}
+		</if>
+		<if test='queryObj != null and  queryObj.createUserName != null and @org.apache.commons.lang3.StringUtils@isNotEmpty(queryObj.createUserName)'>
+		AND  CREATE_USER_NAME = #{queryObj.createUserName}
+		</if>
+		<if test='queryObj != null and  queryObj.ownerSchoolId != null and @org.apache.commons.lang3.StringUtils@isNotEmpty(queryObj.ownerSchoolId)'>
+		AND  OWNER_SCHOOL_ID = #{queryObj.ownerSchoolId}
+		</if>
+		<if test='queryObj != null and  queryObj.ownerSchoolName != null and @org.apache.commons.lang3.StringUtils@isNotEmpty(queryObj.ownerSchoolName)'>
+		AND  OWNER_SCHOOL_NAME = #{queryObj.ownerSchoolName}
+		</if>
+		<if test='queryObj != null and  queryObj.ownerCourseId != null and @org.apache.commons.lang3.StringUtils@isNotEmpty(queryObj.ownerCourseId)'>
+		AND  OWNER_COURSE_ID = #{queryObj.ownerCourseId}
+		</if>
+		<if test='queryObj != null and  queryObj.ownerCourseName != null and @org.apache.commons.lang3.StringUtils@isNotEmpty(queryObj.ownerCourseName)'>
+		AND  OWNER_COURSE_NAME = #{queryObj.ownerCourseName}
+		</if>
+		<if test='queryObj != null and  queryObj.testPaperName != null and @org.apache.commons.lang3.StringUtils@isNotEmpty(queryObj.testPaperName)'>
+		AND  TEST_PAPER_NAME = #{queryObj.testPaperName}
+		</if>
+		<if test='queryObj != null and  queryObj.totalQuestionNum != null and @org.apache.commons.lang3.StringUtils@isNotEmpty(queryObj.totalQuestionNum)'>
+			AND  TOTAL_QUESTION_NUM = #{queryObj.totalQuestionNum}
+		</if>
+		<if test='queryObj != null and  queryObj.totalScore != null and @org.apache.commons.lang3.StringUtils@isNotEmpty(queryObj.totalScore)'>
+			AND  TOTAL_SCORE = #{queryObj.totalScore}
+		</if>
+		<if test='queryObj != null and  queryObj.passScore != null and @org.apache.commons.lang3.StringUtils@isNotEmpty(queryObj.passScore)'>
+			AND  PASS_SCORE = #{queryObj.passScore}
+		</if>
+		<if test='queryObj != null and  queryObj.dataState != null and @org.apache.commons.lang3.StringUtils@isNotEmpty(queryObj.dataState)'>
+		AND  DATA_STATE = #{queryObj.dataState}
+		</if>
+  	</where>
+  	
+  </sql>
+  
+  <!-- ******* 排序判断  ******  
+  <sql id="orderBy">
+  	<if test="orderBy != null and orderBy!= '' ">
+  		order by  ${orderBy}
+  	</if>
+  </sql>-->
+  
+  
+  <!-- 分页条件查询  -->
+  <select id="listPage" parameterType="com.edgedo.society.queryvo.SocietyTestPaperQuery" resultMap="BaseResultViewMap">
+  		select <include refid="Base_Column_List"/> from society_test_paper 
+  		<include refid="where"/>
+  </select>
+  
+   <!-- 不分页条件查询  -->
+  <select id="listByObj" parameterType="com.edgedo.society.queryvo.SocietyTestPaperQuery" resultMap="BaseResultViewMap">
+  		select <include refid="Base_Column_List"/> from society_test_paper 
+  		<include refid="where"/>
+  </select>
+
+	<!-- 根据学校和课程查询试卷 -->
+	<select id="selectVoByCourseAndSchool" parameterType="map" resultMap="BaseResultViewMap">
+		select <include refid="Base_Column_List"/> from society_test_paper
+		where DATA_STATE='1'
+		and OWNER_SCHOOL_ID=#{ownerSchoolId}
+		and OWNER_COURSE_ID=#{ownerCourseId}
+		order by CREATE_TIME desc limit 1
+	</select>
+  
+  
+</mapper>

@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>编辑</title>
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=0">
+    <link rel="stylesheet" href="/layuiadmin/layui/css/layui.css" media="all">
+    <link rel="stylesheet" href="/layuiadmin/style/app.css" media="all">
+</head>
+<body>
+
+<div class="layui-form" lay-filter="SocietyTestPaperQuestion-form" id="SocietyTestPaperQuestion-form" style="padding: 20px 30px 0 0;">
+    <div class="layui-row">
+                <div class="layui-form-item layui-hide">
+                    <label class="layui-form-label">主键</label>
+                    <div class="layui-input-block">
+                        <input type="text" name="id" id="id" lay-verify="required" placeholder="请输入主键" autocomplete="off" class="layui-input">
+                        <input type="hidden" id="options" class="layui-input"/>
+                    </div>
+                </div>
+        <!--<div class="layui-col-xs12 layui-col-sm12 layui-col-md12">
+            <div class="layui-form-item">
+                <label class="layui-form-label">所属学校ID</label>
+                <div class="layui-input-block">
+                    <input type="text" name="ownerSchoolId" lay-verify="required" placeholder="请输入所属学校ID" autocomplete="off" class="layui-input">
+                </div>
+            </div>
+        </div>
+
+        <div class="layui-col-xs12 layui-col-sm12 layui-col-md12">
+            <div class="layui-form-item">
+                <label class="layui-form-label">所属学校名</label>
+                <div class="layui-input-block">
+                    <input type="text" name="ownerSchoolName" lay-verify="required" placeholder="请输入所属学校名" autocomplete="off" class="layui-input">
+                </div>
+            </div>
+        </div>
+
+        <div class="layui-col-xs12 layui-col-sm12 layui-col-md12">
+            <div class="layui-form-item">
+                <label class="layui-form-label">所属课程ID</label>
+                <div class="layui-input-block">
+                    <input type="text" name="ownerCourseId" lay-verify="required" placeholder="请输入所属课程ID" autocomplete="off" class="layui-input">
+                </div>
+            </div>
+        </div>
+
+        <div class="layui-col-xs12 layui-col-sm12 layui-col-md12">
+            <div class="layui-form-item">
+                <label class="layui-form-label">课程名称</label>
+                <div class="layui-input-block">
+                    <input type="text" name="ownerCourseName" lay-verify="required" placeholder="请输入课程名称" autocomplete="off" class="layui-input">
+                </div>
+            </div>
+        </div>
+
+        <div class="layui-col-xs12 layui-col-sm12 layui-col-md12">
+            <div class="layui-form-item">
+                <label class="layui-form-label">所属试卷ID</label>
+                <div class="layui-input-block">
+                    <input type="text" name="ownerTestPaperId" lay-verify="required" placeholder="请输入所属试卷ID" autocomplete="off" class="layui-input">
+                </div>
+            </div>
+        </div>-->
+
+        <div class="layui-form-item">
+            <label class="layui-form-label">所属试卷名</label>
+            <div class="layui-input-block">
+                <input type="text" name="ownerTestPaperName" lay-verify="required" placeholder="请输入所属试卷名" autocomplete="off" class="layui-input">
+            </div>
+        </div>
+
+        <div class="layui-form-item">
+            <label class="layui-form-label">题目名</label>
+            <div class="layui-input-block">
+                <input type="text" name="questionName" lay-verify="required" placeholder="请输入题目名" autocomplete="off" class="layui-input">
+            </div>
+        </div>
+
+        <div class="layui-form-item">
+            <label class="layui-form-label">题目类型</label>
+            <div class="layui-input-block">
+                <input type="text" id="questionTypeInput" name="questionTypeInput" hidden>
+                <input type="radio" lay-filter="questionTypeSelect" lay-verify="required" name="questionType" value="1" title="选择题">
+                <input type="radio" lay-filter="questionTypeSelect" lay-verify="required" name="questionType" value="2" title="判断题">
+            </div>
+        </div>
+
+        <div class="layui-form-item">
+            <label class="layui-form-label">题目分数</label>
+            <div class="layui-input-block">
+                <input type="text" name="questionScore" placeholder="请输入题目分数" autocomplete="off" class="layui-input">
+            </div>
+        </div>
+
+        <input type="text" hidden id="questionAnswerInput">
+        <div class="layui-form-item" id="questionAnswerContainerDiv" style="display: none">
+            <label class="layui-form-label">正确答案</label>
+            <div id="questionAnswerContainer" class="layui-input-block">
+            </div>
+        </div>
+        <div id="optionContainer" style="display: none">
+
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">题目解析</label>
+            <div class="layui-input-block">
+                <textarea name="questionAnalysis" placeholder="请输入内容" class="layui-textarea"></textarea>
+            </div>
+        </div>
+        <!--<div class="layui-col-xs12 layui-col-sm12 layui-col-md12">
+            <div class="layui-form-item">
+                <label class="layui-form-label">排序号</label>
+                <div class="layui-input-block">
+                    <input type="text" name="orderNum" lay-verify="required" placeholder="请输入排序号" autocomplete="off" class="layui-input">
+                </div>
+            </div>
+        </div>-->
+
+
+
+    </div>
+    <!--<div class="layui-form-item layui-hide">
+        <input type="button" lay-submit lay-filter="SocietyTestPaperQuestion-form-edit" id="SocietyTestPaperQuestion-form-edit" value="确认编辑">
+    </div>-->
+</div>
+
+<script src="/layuiadmin/layui/layui.js"></script>
+<script>
+        layui.config({
+            base: '/layuiadmin/' //静态资源所在路径
+        }).extend({
+            index: 'lib/index', //主入口模块
+            $tool:'tool'
+        }).use(['index', 'form','$tool','laydate'], function(){
+
+            var $ = layui.$
+                ,$tool = layui.$tool
+                ,laydate = layui.laydate
+                ,admin = layui.admin
+                ,form = layui.form;
+            debugger
+            var options = $("#options").val();
+            var optionNameArr = options.split(",");
+            for(var i=0;i<optionNameArr.length;i++){//.replace(/\s/g,"");
+                optionNameArr[i] = optionNameArr[i].replace(/\s/g,"");
+            }
+
+            var questionAnswer = $("#questionAnswerInput").val();
+            var questionType = $("#questionTypeInput").val();
+            function init(questionType){
+                if(questionType == '1'){
+                    $("#questionAnswerContainerDiv").css("display","none");
+                    $("#optionContainer").css("display","block");
+                    var html = "<table id='table_optionId' class='layui-table' lay-skin='nob' style='text-align: center;margin-left: 3.3%;'>" +
+                        "<tr><td width='14%'>选项编号</td><td width='70%'>选项内容</td>" +
+                        "<td width='14%'>正确答案</td>" +
+                        "<td width='10%'><a onclick='addOptionId()' ><i class='layui-icon layui-icon-add-circle'></i></a></td></tr>";
+                    if(questionAnswer.indexOf("@@") != -1){
+                        var str = questionAnswer.split("@@");
+                        for(var i = 0 ;i<optionNameArr.length;i++){
+                            var ziMu = String.fromCharCode((65 + i));
+                            var falg = 1;
+                            for (var j = 0 ;j<str.length;j++){
+                                if(str[j] == ziMu){
+                                    falg = 0;
+                                    html = html + "<tr><td>"+ziMu+"</td>" +
+                                        "<td><input id='optionArr"+i+"' style='font-size: 12px' class='layui-input' autocomplete='off' name='optionArr' type='text'/></td>" +
+                                        "<td style='padding-left: 2%;'><input lay-skin='primary' type='checkbox' name='questionAnswer' checked value="+ziMu+" ></td>" +
+                                        "<td><a onclick='deleteEnumItem(this)' ><i class='layui-icon layui-icon-reduce-circle'></i></a></td></tr>";
+                                    continue;
+                                }
+                            }
+                            if(falg == 0){
+                                continue;
+                            }else {
+                                html = html + "<tr><td>"+ziMu+"</td>" +
+                                    "<td><input id='optionArr"+i+"' style='font-size: 12px' class='layui-input' autocomplete='off' name='optionArr' type='text'/></td>" +
+                                    "<td style='padding-left: 2%;'><input lay-skin='primary' type='checkbox' name='questionAnswer' value="+ziMu+" ></td>" +
+                                    "<td><a onclick='deleteEnumItem(this)' ><i class='layui-icon layui-icon-reduce-circle'></i></a></td></tr>";
+                            }
+                        }
+                    }else {
+                        for(var i = 0 ;i<optionNameArr.length;i++){
+                            var ziMu = String.fromCharCode((65 + i));
+                            if(questionAnswer == ziMu){
+                                html = html + "<tr><td>"+ziMu+"</td>" +
+                                    "<td><input id='optionArr"+i+"' style='font-size: 12px' class='layui-input' autocomplete='off' name='optionArr' type='text'/></td>" +
+                                    "<td style='padding-left: 2%;'><input lay-skin='primary' type='checkbox' name='questionAnswer' checked value="+ziMu+" ></td>" +
+                                    "<td><a onclick='deleteEnumItem(this)' ><i class='layui-icon layui-icon-reduce-circle'></i></a></td></tr>";
+                            }else {
+                                html = html + "<tr><td>"+ziMu+"</td>" +
+                                    "<td><input id='optionArr"+i+"' style='font-size: 12px' class='layui-input' autocomplete='off' name='optionArr' type='text'/></td>" +
+                                    "<td style='padding-left: 2%;'><input lay-skin='primary' type='checkbox' name='questionAnswer' value="+ziMu+" ></td>" +
+                                    "<td><a onclick='deleteEnumItem(this)' ><i class='layui-icon layui-icon-reduce-circle'></i></a></td></tr>";
+                            }
+                        }
+                    }
+                    html = html+"</table>";
+                    $("#optionContainer").html(html);
+                    $.each(optionNameArr, function(i,val){
+                        $(eval("optionArr"+i)).val(val);
+                    });
+                }else{
+                    $("#optionContainer").css("display","none");
+                    $("#questionAnswerContainerDiv").css("display","block");
+                    if(questionAnswer == '√'){
+                        var html = "<input type='radio' name='questionAnswer' lay-verify='required' autocomplete='off' checked value='√' title='√'>"+
+                            "<input type='radio' name='questionAnswer' lay-verify='required' autocomplete='off' value='×' title='×'>";
+                    }else {
+                        var html = "<input type='radio' name='questionAnswer' lay-verify='required' autocomplete='off' value='√' title='√'>"+
+                            "<input type='radio' name='questionAnswer' lay-verify='required' checked autocomplete='off' value='×' title='×'>";
+                    }
+                    $("#questionAnswerContainer").html(html);
+                }
+                form.render(); //更新全部
+            }
+            init(questionType);
+            /*$("#questionTypeSelect").find("option[value='"+questionType+"']").attr("selected", "selected");
+            form.render();*/
+
+            //监听下拉框
+            form.on('radio(questionTypeSelect)',function(data){
+                var questionType = data.value;
+                if(questionType == '1'){
+                    $("#questionAnswerContainerDiv").css("display","none");
+                    $("#optionContainer").css("display","block");
+                    init(questionType);
+                }else{
+                    $("#optionContainer").css("display","none");
+                    $("#questionAnswerContainerDiv").css("display","block");
+
+                    var html = "<input type='radio' name='questionAnswer' lay-verify='required' autocomplete='off' value='√' title='√'>"+
+                        "<input type='radio' name='questionAnswer' lay-verify='required' autocomplete='off' value='×' title='×'>";
+                    $("#questionAnswerContainer").html(html);
+                }
+                form.render();
+            })
+
+
+            addOptionId = function(){
+                //获取table行数
+                var num = $("#table_optionId").find("tr").length-1;
+                //获取增加一行的字母
+                var ziMu = String.fromCharCode((65 + num));
+                var html = "<tr>" +
+                    "<td>"+ziMu+"</td>" +
+                    "<td><input style='font-size: 12px' placeholder='请输入内容' autocomplete='off' name='optionArr' class='layui-input' type='text'/></td>" +
+                    "<td style='padding-left: 2%;'><input lay-skin='primary' type='checkbox' name='questionAnswer' value="+ziMu+" ></td>" +
+                    "<td><a onclick='deleteEnumItem(this)' ><i class='layui-icon layui-icon-reduce-circle'></i></a></td>" +
+                    "</tr>";
+                $('#table_optionId tbody').append(html);
+                form.render();
+            }
+
+
+            deleteEnumItem = function(obj) {
+                $(arguments[0]).parent().parent().remove();
+                form.render();
+            }
+
+            /*var queryArgs = $tool.getQueryParam();//获取查询参数
+            var id = queryArgs['id'];*/
+            //监听修改保存
+            form.on('submit(SocietyTestPaperQuestion-form-edit)', function(data){
+                var field = data.field; //获取提交的字段
+                var index = parent.layer.getFrameIndex(window.name);//先得到当前iframe层的索引
+                admin.req({
+                    url:layui.setter.basePath +'/society/societyTestPaperQuestion/saveOrUpdate.jsn',
+                    data:field,
+                    method:"post",
+                    success:function (data) {
+                        if(data.success){
+                            parent.layui.table.reload('SocietyTestPaperQuestion-list'); //重载表格
+                            parent.layer.close(index); //再执行关闭
+                            parent.layer.msg('修改成功', {
+                                icon: 1
+                            });
+                        }else{
+                            parent.layer.msg(data.errMsg, {
+                            });
+                        }
+                    }
+                });
+            });
+
+            laydate.render({
+                elem: '#createTime', //指定元素
+                type:'datetime'
+            });
+        })
+</script>
+</body>
+</html>

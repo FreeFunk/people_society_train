@@ -1,0 +1,364 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>学员课程进度统计,学校管理员页面</title>
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=0">
+    <link rel="stylesheet" href="/layuiadmin/layui/css/layui.css" media="all">
+    <link rel="stylesheet" href="/layuiadmin/style/admin.css" media="all">
+    <style type="text/css">
+        .officialSealFourth{
+            opacity: 1.8;
+            transform: rotate(90deg);
+            margin-left: 72%;
+            height: 162px;
+            border: none;
+            margin-top: -12%;
+        }
+        officialSealAll{
+            opacity: 1.8;
+            height: 162px;
+            border: none;
+            /*width: 50px;*/
+            margin-top: 40%;
+            /* max-width: 165px; */
+            z-index: 9;
+            position: absolute;
+            background-size: 162px 162px;
+            /*background-position-x: -100px;*/
+            background-image: url(/layuiadmin/images/hege.png);
+            margin-left: 58%;
+        }
+        .layui-table td{
+            border:0.5px solid black;
+        }
+        body,td,th {color: black;}
+        .layui-table-cell {
+            padding: 0 5px;
+        }
+        .bodyDiv{
+            width: 794px;
+            height: 1123px;
+            text-align: center;
+            margin-left: 15%;
+            margin-bottom: 0.6%;
+            page-break-before:left;
+        }
+
+        .bodyFourthTitle{
+            font-family: monospace;
+            font-size: 35px;
+            position: relative;
+            top: 6%;
+            font-weight: 700;
+        }
+        .bodyFourthCodeTitle{
+            font-family: monospace;
+            font-size: 16px;
+            position: relative;
+            float: left;
+            left: 9%;
+            top: 9%;
+        }
+        .bodyFourthTableDiv{
+            position: relative;
+            left: 9%;
+            top: 9.4%;
+            text-align: left;
+        }
+        .bodyFourthTable{
+            table-layout: fixed;
+            width: 82%;
+        }
+        .sencondStudyDiv{
+            float: right;
+            margin-top: 7%;
+            margin-right: 5%;
+        }
+        .tiltFont{
+            font-family: initial;
+            font-size: 53px;
+            font-weight: 500;
+            color: rgb(125 125 125 / 16%);
+            -ms-transform: rotate(-37deg);
+            -moz-transform: rotate(-37deg);
+            -webkit-transform: rotate(-37deg);
+            position: absolute;
+            -o-transform: rotate(-37deg);
+            z-index: 2;
+            margin-top: 25%;
+            /*margin-left: 8%;*/
+        }
+    </style>
+</head>
+<body>
+
+<div class="layui-fluid">
+    <div class="layui-inline " style="left: 91%;position: fixed">
+        <button type="button" class="layui-btn layuiadmin-btn-comm layui-btn-sm" onclick="exportData()">
+            <i class="layui-icon layui-icon-export layuiadmin-button-btn"></i>导出
+        </button>
+    </div>
+    <div class="layui-card bodyDiv" >
+        <div style="height: 900px">
+            <div class="bodyFourthTitle">职业提升培训线上学习情况审核表</div>
+            <div class="bodyFourthCodeTitle" id="fourthTitleCode"></div>
+            <div class="tiltFont"></div>
+            <div class="bodyFourthTableDiv">
+                <table class="layui-table bodyFourthTable" style="border:1px solid black;">
+                    <tr>
+                        <td>培训机构名称</td>
+                        <td><p id="ownerSchoolName"></p></td>
+                    </tr>
+                    <tr>
+                        <td>班级编码</td>
+                        <td><p id="classCode"></p></td>
+                    </tr>
+                    <tr>
+                        <td>班级名称</td>
+                        <td><p id="className"></p></td>
+                    </tr>
+                    <tr>
+                        <td>行政区划</td>
+                        <td><p id="xianquName"></p></td>
+                    </tr>
+                    <tr>
+                        <td>培训工种</td>
+                        <td><p id="studyType"></p></td>
+                    </tr>
+                    <tr>
+                        <td>培训等级</td>
+                        <td><p id="studyLevel"></p></td>
+                    </tr>
+                    <tr>
+                        <td>培训起止时间</td>
+                        <td><p id="studyTime"></p></td>
+                    </tr>
+                    <tr>
+                        <td>计划培训人数</td>
+                        <td><p id="studyPersonNum"></p></td>
+                    </tr>
+                    <tr>
+                        <td>学习合格人数</td>
+                        <td><p id="classUseRate"></p></td>
+                    </tr>
+                    <tr>
+                        <td>培训计划课时</td>
+                        <td><p id="courseTotalNum"></p></td>
+                    </tr>
+                    <tr>
+                        <td>实际完成课时</td>
+                        <td><p id="courseTotalNumNew"></p></td>
+                    </tr>
+                    <tr>
+                        <td>人群类型</td>
+                        <td><p id="peopleType"></p></td>
+                    </tr>
+                    <tr>
+                        <td>负责人</td>
+                        <td><p id="personInCharge"></p></td>
+                    </tr>
+                    <tr>
+                        <td>负责人电话</td>
+                        <td><p id="personInChargePhoneNum"></p></td>
+                    </tr>
+                    <tr>
+                        <td colspan="2">
+                            <div class="sencondStudyDiv">
+                                <p style="    text-align: center;">培训平台</p>
+                                <p id="createTimeStr"></p>
+                            </div>
+                            <img style="max-width: 165px;" class="officialSealFourth" src="/layuiadmin/images/hege.png">
+                        </td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<script src="/layuiadmin/layui/layui.js"></script>
+<!--<script src="https://cdn.bootcdn.net/ajax/libs/exif-js/2.3.0/exif.js"></script>-->
+<script>
+    layui.config({
+        base: '/layuiadmin/' //静态资源所在路径
+    }).extend({
+        index:'lib/index',
+        common:'common',
+        $tool:'tool',
+        html2canvas: 'layui_ext/html2canvas/html2canvas',
+        jspdf: 'layui_ext/jspdf/jspdf.debug'
+    }).use(['index','common','excel','$tool','html2canvas','jspdf'], function(exports){
+        var $ = layui.$
+            ,common = layui.common
+            ,$tool = layui.$tool
+            ,html2canvas = layui.html2canvas
+            ,jspdf = layui.jspdf
+            ,admin = layui.admin;
+
+        var queryArgs = $tool.getUrlParams();//获取查询参数
+        var classId = queryArgs.classId;
+
+
+        $(function(){
+            init();
+
+        });
+
+        //动态赋值
+        function init(){
+
+            var loadIndex =  parent.layer.load(1, {shade: [0.1, '#393D49']});
+            admin.req({
+                url:layui.setter.basePath +'/society/societySchoolClassAndStudent/studyExamine.jsn',
+                data:{
+                    'classId':classId
+                },
+                method:"post",
+                success:function (data) {
+                    console.log(data.data);
+                    document.getElementsByClassName('tiltFont')[0].innerHTML="手机培训宝平台学习情况审核专用";
+                    //第四部分
+                    fourthData(data.data);
+                    parent.layer.close(loadIndex);
+                }
+            });
+        }
+
+        function fourthData(data) {
+            //fourthTitleCode
+
+            $('#ownerSchoolName').html(data.ownerSchoolName);
+            //fourthStudentName
+            $('#classCode').html(data.classCode);
+            //fourthStudentIdCradType
+            $('#className').html(data.className);
+            //fourthStudentIdCrad
+            $('#xianquName').html(data.xianquName);
+            //fourthSchoolName
+            $('#studyType').html(data.studyType);
+            //fourthClassName
+            $('#studyLevel').html(data.studyLevel);
+            //fourthStudentName
+            $('#studyTime').html(data.studyTime);
+            //fourthStudentIdCradType
+            $('#studyPersonNum').html(data.studyPersonNum);
+            //fourthStudentIdCrad
+            $('#classUseRate').html(data.classUseNum);
+            //fourthSchoolName
+            $('#courseTotalNum').html(data.courseTotalNum + "课时");
+            //fourthClassName
+            $('#courseTotalNumNew').html(data.courseTotalNum + "课时");
+            //fourthStudentName
+            $('#peopleType').html(data.peopleType);
+            //fourthStudentIdCradType
+            $('#personInCharge').html(data.personInCharge);
+            //fourthStudentIdCrad
+            $('#personInChargePhoneNum').html(data.personInChargePhoneNum);
+            $('#createTimeStr').html(data.createTimeStr);
+        }
+
+
+        function fifthData(data){//21
+            var stuName = '姓名：'+data.studentName;
+            $('#ThirStudentName').html(stuName);
+
+            var stuIdCard = '身份证号：'+data.studentIdCardNum+'（盖章）';
+            $('#ThirStudentIdCard').html(stuIdCard);
+
+            var nodeList = data.nodeList;
+
+            var html = '<tr>\n' +
+                '        <td>课程名称</td>\n' +
+                '        <td colspan="3">'+data.courseName+'</td>\n' +
+                '</tr>\n' +
+                ' <tr>\n' +
+                '         <td>序号</td>\n' +
+                '         <td>课程内容</td>\n' +
+                '         <td>课时</td>\n' +
+                '         <td>讲师</td>\n' +
+                '</tr>';
+            var htmlTableSecond = '';
+            var htmlTableThird = '';
+            var htmlTableFourth = '';
+            if(nodeList.length>20){
+                $.each(nodeList, function(i,val){
+                    var teacherName = val.teacherName;
+                    if(teacherName==null||$.trim(teacherName)==""){
+                        teacherName = '无';
+                    }
+                    if(i<=20){
+                        html = html+'<tr>\n' +
+                            '   <td>'+Number(i+1)+'</td>\n' +
+                            '   <td>'+val.nodeName+'</td>\n' +
+                            '   <td>1</td>\n' +
+                            '   <td>'+teacherName+'</td>\n' +
+                            '</tr>';
+                    }else if(i>=21 & i<=41){
+                        htmlTableSecond = htmlTableSecond+'<tr>\n' +
+                            '   <td style="width: 18.7%;">'+Number(i+1)+'</td>\n' +
+                            '   <td style="width: 49.8%;">'+val.nodeName+'</td>\n' +
+                            '   <td style="width: 18.7%;">1</td>\n' +
+                            '   <td >'+teacherName+'</td>\n' +
+                            '</tr>';
+                    }else if(i>=42 & i<=62){
+                        htmlTableThird = htmlTableThird+'<tr>\n' +
+                            '   <td style="width: 18.7%;">'+Number(i+1)+'</td>\n' +
+                            '   <td style="width: 49.8%;">'+val.nodeName+'</td>\n' +
+                            '   <td style="width: 18.7%;">1</td>\n' +
+                            '   <td>'+teacherName+'</td>\n' +
+                            '</tr>';
+                    }
+
+                });
+
+            }
+            $('#thirTable').html(html);
+            if(htmlTableSecond!=''){
+                $('#nodeListDivSecond').css('display','block');
+                $('#nodeListSecond').html(htmlTableSecond);
+            }
+            if(htmlTableThird!=''){
+                $('#nodeListDivThird').css('display','block');
+                $('#nodeListThird').html(htmlTableThird);
+
+            }
+            if(htmlTableFourth!=''){
+                $('#nodeListDivFourth').css('display','block');
+                $('#nodeListFourth').html(htmlTableFourth);
+            }
+            page();
+        }
+        exportData = function () {
+            window.pageYOffset = 0;
+            document.documentElement.scrollTop = 0;
+            document.body.scrollTop = 0;
+            var pdf = new jsPDF('', 'pt', 'a4');
+            var flag1 = false;
+            var pageData1;
+            var imgHeight1;
+            html2canvas(document.getElementsByClassName('layui-card bodyDiv')[0],{useCORS:true,allowTaint : false, taintTest: true,scale: 2}).then(function (canvas) {
+                var contentWidth = canvas.width;
+                var contentHeight = canvas.height;
+                imgHeight1 = 592.28/contentWidth * contentHeight;
+                pageData1 = canvas.toDataURL('image/jpeg', 1.0);
+                flag1 = true;
+            })
+            var downLoadPdf = setInterval(function () {
+                if(flag1 ){
+                    pdf.addImage(pageData1, 'JPEG', 0, 0, 595.28, imgHeight1 );
+                    pdf.save('职业提升培训线上学习情况审核表.pdf');
+                    clearInterval(downLoadPdf);
+                }
+            },300)
+
+        }
+    });
+
+</script>
+</body>
+</html>
+

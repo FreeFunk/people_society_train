@@ -1,0 +1,41 @@
+server:
+  port: 8177
+#  ssl:
+#    key-store: classpath:keystore.p12
+#    key-store-password: 123456
+#    keyStoreType: PKCS12
+#    keyAlias: tomcat
+  tomcat:
+    max-http-post-size: -1
+mybatis:
+  mapper-locations: classpath:mapper/society/*.xml
+mybatis-plus:
+  global-config:
+    db-config:
+      db-type: MYSQL
+spring:
+  profiles:
+    active: app,redis,timetask
+  datasource:
+    name: datasource
+    url: jdbc:mysql://27.128.174.240:3435/people_society_train?useUnicode=true&amp;characterEncoding=UTF-8&allowMultiQueries=true
+    driver-class-name: com.mysql.jdbc.Driver
+    username: people_society_train
+    password: people_society_train123
+#    url: jdbc:mysql://27.128.230.87:3435/people_society_train?useUnicode=true&amp;characterEncoding=UTF-8&allowMultiQueries=true
+#    driver-class-name: com.mysql.jdbc.Driver
+#    username: root
+#    password: Qhd_Jx!QAZ46433
+    tomcat:
+      max-active: 5
+      min-idle: 2
+      max-idle: 5
+      initial-size: 2
+      test-on-borrow: true
+      test-on-return: false
+      max-wait: 3000
+  aop:
+    proxy-target-class: true
+    auto: true
+
+controller.scanPackage: com.edgedo

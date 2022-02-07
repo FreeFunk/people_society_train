@@ -1,0 +1,11 @@
+########################备注信息###########################
+######### 根据com.edgedo下面包结构书写下面内容  ###########
+#永不执行的表达式 '-'
+timetask:
+  #########driver包
+  minganword:
+    MinGanCiFreshTask:
+      enable: true
+      cron:
+        #测试表达式
+        freshMinganWords: 0 0 * * * ?

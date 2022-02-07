@@ -1,0 +1,57 @@
+<div class="w1200">
+
+    <h4>学员注册</h4>
+
+    <Div>
+        <form id="studentRealNameForm">
+            <div class="aui-sign-form" style="padding: 0">
+                <div class="aui-flex" style="margin: 0 0 1rem 0;">
+                    <label>手&nbsp;机&nbsp;号：</label>
+                    <div class="aui-flex-box">
+                        <input type="text" id="studentPhoneNum" name="studentPhoneNum" autocomplete="off" placeholder="请输入手机号">
+                    </div>
+                </div>
+                <div class="aui-flex" style="margin: 0 0 1rem 0;">
+                    <label>密&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;码：</label>
+                    <div class="aui-flex-box">
+                        <input type="password" id="password" name="password" autocomplete="off" placeholder="请输入密码">
+                    </div>
+                </div>
+                <div class="aui-flex" style="margin: 0 0 1rem 0;">
+                    <label>确认密码：</label>
+                    <div class="aui-flex-box">
+                        <input type="password" id="conPassword" name="conPassword" autocomplete="off" placeholder="请再次输入密码">
+                    </div>
+                </div>
+            </div>
+
+            <Div class="bgys">
+                <input type="hidden" id="idCardImage" ng-model="realNameObj.idCardImage" name="idCardImage"/>
+                <input type="hidden" id="idCardImageParam"  name="idCardImageParam"/>
+                <img id="idCardImageShow" style="width:215px;height: 230px;" src="images/zhengmian.png" ng-click="updateLoadIdCard()">
+                <input onChange="uploadImageFile(this,'idCardImage',false,1200,false)" type="file" id="uploadIdCardImage" accept="image/*" style="display: none"/>
+            </Div>
+            <h3>身份证正面上传</h3>
+            <Div class="bgys">
+                <input type="hidden" id="faceImageUrl" ng-model="realNameObj.faceImageUrl" name="faceImageUrl" />
+                <input type="hidden" id="faceImageUrlParam" name="faceImageUrlParam" />
+                <img id="faceImageUrlShow" style="width:215px;height: 180px;" src="images/renlian.png" >
+            </Div>
+        </form>
+        <h3>人脸拍照</h3>
+        <div class="blank10"></div>
+        <div style="color: red;width: 90%;margin: auto;margin-top: 10px;" ng-bind="realNameObj.failReason"></div>
+        <Div style="width:200px; margin: auto">
+            <button class="aui-sign-login" ng-show="checkCount==10&&realNameState!='pass'" ng-click="studentSubmitRealName()">立即提交</button>
+        </Div>
+    </Div>
+
+</div>
+
+<!--  人脸拍照 -->
+<div  style="display: none;">
+    <canvas id="face_preview_canvas"
+            style="display:none;margin: auto;" width="520" height="400"></canvas>
+    <video id="face_camare_vedio"
+           style="width: 520px;height: 400px;background-color: #333333;" autoplay></video>
+</div>

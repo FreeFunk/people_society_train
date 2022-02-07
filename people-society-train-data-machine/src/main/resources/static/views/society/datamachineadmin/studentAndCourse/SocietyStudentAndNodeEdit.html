@@ -1,0 +1,434 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>编辑</title>
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=0">
+    <link rel="stylesheet" href="/layuiadmin/layui/css/layui.css" media="all">
+    <link rel="stylesheet" href="/layuiadmin/style/app.css" media="all">
+</head>
+<body>
+
+<div class="layui-form" lay-filter="SocietyStudentAndNodeEdit-form" id="SocietyStudentAndNodeEdit-form" style="padding: 20px 30px 0 0;">
+    <div class="layui-row">
+        <div class="layui-form-item layui-hide">
+            <label class="layui-form-label">主键</label>
+            <div class="layui-input-block">
+                <input type="text" name="id" id="id" lay-verify="required" placeholder="请输入主键" autocomplete="off" class="layui-input">
+            </div>
+        </div>
+        <div class="layui-form-item layui-hide">
+            <label class="layui-form-label">主键</label>
+            <div class="layui-input-block">
+                <input type="text" name="ownerStudentAndCourseId" id="ownerStudentAndCourseId" lay-verify="required" placeholder="请输入主键" autocomplete="off" class="layui-input">
+            </div>
+        </div>
+        <div class="layui-form-item layui-hide">
+            <label class="layui-form-label">主键</label>
+            <div class="layui-input-block">
+                <input type="text" name="nodeId" id="nodeId" lay-verify="required" placeholder="请输入主键" autocomplete="off" class="layui-input">
+            </div>
+        </div>
+
+        <div class="layui-form-item layui-hide">
+            <label class="layui-form-label">主键</label>
+            <div class="layui-input-block">
+                <input type="text" name="studentId" id="studentId" lay-verify="required" placeholder="请输入主键" autocomplete="off" class="layui-input">
+            </div>
+        </div>
+        <div class="layui-col-xs6 layui-col-sm6 layui-col-md6">
+            <div class="layui-form-item">
+                <label class="layui-form-label">课程名称</label>
+                <div class="layui-input-block">
+                    <input type="text" name="ownerCourseName" autocomplete="off" class="layui-input">
+                </div>
+            </div>
+        </div>
+        <div class="layui-col-xs6 layui-col-sm6 layui-col-md6">
+            <div class="layui-form-item">
+                <label class="layui-form-label">章节名称</label>
+                <div class="layui-input-block">
+                    <input type="text" name="nodeName" autocomplete="off" class="layui-input">
+                </div>
+            </div>
+        </div>
+
+        <div class="layui-col-xs6 layui-col-sm6 layui-col-md6">
+            <div class="layui-form-item">
+                <label class="layui-form-label">学生姓名</label>
+                <div class="layui-input-block">
+                    <input type="text" name="studentName" autocomplete="off" class="layui-input">
+                </div>
+            </div>
+        </div>
+        <div class="layui-col-xs6 layui-col-sm6 layui-col-md6">
+            <div class="layui-form-item">
+                <label class="layui-form-label">身份证号</label>
+                <div class="layui-input-block">
+                    <input type="text" name="studentIdCardNum" autocomplete="off" class="layui-input">
+                </div>
+            </div>
+        </div>
+        <div class="layui-col-xs6 layui-col-sm6 layui-col-md6">
+            <div class="layui-form-item">
+                <label class="layui-form-label">章节进度</label>
+                <div class="layui-input-block">
+                    <input type="text" name="nodeProgress" value="100" autocomplete="off" class="layui-input">
+                </div>
+            </div>
+        </div>
+        <div class="layui-col-xs6 layui-col-sm6 layui-col-md6">
+            <div class="layui-form-item">
+                <label class="layui-form-label">最大学习位置</label>
+                <div class="layui-input-block" >
+                    <input  readonly type="text" id="maxLearnLocation" name="maxLearnLocation" autocomplete="off" class="layui-input" placeholder="格式：天 小时 分钟 秒">
+                </div>
+            </div>
+        </div>
+        <input type="hidden" id="lastLearnLocationInput">
+        <div class="layui-col-xs6 layui-col-sm6 layui-col-md6">
+            <div class="layui-form-item">
+                <label class="layui-form-label" style="    width: 20%;">上次学习位置</label>
+                <div class="layui-input-block" style="margin-left: 33.4%;">
+                    <button id="subtractionLastStudy" style="height: 100%;position: absolute;right: 100%;" type="button" class="layui-btn layui-btn-primary layui-btn-sm">
+                        <i class="layui-icon layui-icon-subtraction" style="left: 27%;top: 42%;"></i>
+                    </button>
+                    <input style="width: 58%" type="text" id="lastLearnLocation" name="lastLearnLocation" autocomplete="off" class="layui-input" placeholder="格式：天 小时 分钟 秒">
+                    <button id="addLastStudy" style="height: 100%;position: absolute;left: 58%;top: 1%;" type="button" class="layui-btn layui-btn-primary layui-btn-sm">
+                        <i class="layui-icon layui-icon-addition" style="right: 22%;top: 42%;"></i>
+                    </button>
+
+                </div>
+            </div>
+        </div>
+
+        <div class="layui-col-xs6 layui-col-sm6 layui-col-md6">
+            <div class="layui-form-item">
+                <label class="layui-form-label">学习时长</label>
+                <div class="layui-input-block" style="margin-left: 33.4%;">
+                    <button id="subtractionStudyLength" style="height: 100%;position: absolute;right: 100%;" type="button" class="layui-btn layui-btn-primary layui-btn-sm">
+                        <i class="layui-icon layui-icon-subtraction" style="left: 27%;top: 42%;"></i>
+                    </button>
+                    <input style="width: 58%" type="text" id="studyTimeLength" name="studyTimeLength" autocomplete="off" class="layui-input" placeholder="格式：天 小时 分钟 秒">
+                    <button id="addStudyLength" style="height: 100%;position: absolute;left: 58%;top: 1%;" type="button" class="layui-btn layui-btn-primary layui-btn-sm">
+                        <i class="layui-icon layui-icon-addition" style="right: 22%;top: 42%;"></i>
+                    </button>
+                    <button id="suijiTime" style="height: 88%;position: absolute;left: 73%;top: 8%;" type="button" class="layui-btn layui-btn-primary layui-btn-sm">
+                        随机时长
+                    </button>
+                </div>
+            </div>
+        </div>
+
+
+
+        <div class="layui-col-xs6 layui-col-sm6 layui-col-md6">
+            <div class="layui-form-item">
+                <label class="layui-form-label">是否完成</label>
+                <div class="layui-input-block">
+                    <select id="learnIsFinished" lay-verify="required"  name="learnIsFinished" lay-search="" >
+                        <option value="1">是</option>
+                        <option value="0">否</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+
+        <!--<div class="layui-col-xs6 layui-col-sm6 layui-col-md6">
+            <div class="layui-form-item">
+                <label class="layui-form-label">习题得分</label>
+                <div class="layui-input-block">
+                    <input type="text" name="nodeQuestionScore" autocomplete="off" class="layui-input">
+                </div>
+            </div>
+        </div>
+
+        <div class="layui-col-xs6 layui-col-sm6 layui-col-md6">
+            <div class="layui-form-item">
+                <label class="layui-form-label">是否完成习题</label>
+                <div class="layui-input-block">
+                    <select id="questionIsFinished" lay-verify="required"  name="questionIsFinished" lay-search="" >
+                        <option value=""></option>
+                        <option value="1">是</option>
+                        <option value="0">否</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+
+        <div class="layui-col-xs6 layui-col-sm6 layui-col-md6">
+            <div class="layui-form-item">
+                <label class="layui-form-label">习题是否合格</label>
+                <div class="layui-input-block">
+                    <select id="questionIsPass" lay-verify="required"  name="questionIsPass" lay-search="" >
+                        <option value=""></option>
+                        <option value="1">是</option>
+                        <option value="0">否</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+
+        <div class="layui-col-xs6 layui-col-sm6 layui-col-md6">
+            <div class="layui-form-item">
+                <label class="layui-form-label">习题总数</label>
+                <div class="layui-input-block">
+                    <input type="text" name="totalQuestionNum" autocomplete="off" class="layui-input">
+                </div>
+            </div>
+        </div>-->
+
+
+
+        <div class="layui-col-xs6 layui-col-sm6 layui-col-md6">
+            <div class="layui-form-item">
+                <label class="layui-form-label">章节完成时间</label>
+                <div class="layui-input-block">
+                    <input type="text" lay-verify="required" id="finishTime" name="finishTime" autocomplete="off" class="layui-input">
+                </div>
+            </div>
+        </div>
+        <div class="layui-col-xs6 layui-col-sm6 layui-col-md6">
+            <div class="layui-form-item">
+                <label class="layui-form-label">答题时间</label>
+                <div class="layui-input-block">
+                    <input type="text" lay-verify="required" id="questionTime" name="questionTime" autocomplete="off" class="layui-input">
+                </div>
+            </div>
+        </div>
+
+        <div class="layui-col-xs6 layui-col-sm6 layui-col-md6">
+            <div class="layui-form-item">
+                <label class="layui-form-label">创建时间</label>
+                <div class="layui-input-block">
+                    <input type="text" id="createTime" name="createTime" autocomplete="off" class="layui-input">
+                </div>
+            </div>
+        </div>
+
+        <input type="hidden" id="nodeLength">
+        <input type="hidden" id="majorIdInput">
+        <input type="hidden" id="classIdInput">
+        <input type="hidden" id="courseIdInput">
+        <input type="hidden" id="lastNodeInput">
+    </div>
+    <div class="layui-form-item layui-hide">
+        <input type="button" lay-submit lay-filter="SocietyStudentAndNodeEdit-form-edit" id="SocietyStudentAndNodeEdit-form-edit" value="确认编辑">
+    </div>
+</div>
+<!--专业 ownerMajorId-->
+<script id="ownerMajorList" type="text/html">
+    <option value="">请选择专业</option>
+    {{#  layui.each(d.data, function(index, item){ }}
+    <option value="{{item.id}}">{{ item.majorName }}</option>
+    {{#  }); }}
+</script>
+<!--班级 classId-->
+<script id="classList" type="text/html">
+    <option value="">请选择班级</option>
+    {{#  layui.each(d.data, function(index, item){ }}
+    <option value="{{item.id}}">{{ item.className }}</option>
+    {{#  }); }}
+</script>
+<!--课程 courseId-->
+<script id="courseList" type="text/html">
+    <option value="">请选择课程</option>
+    {{#  layui.each(d.data, function(index, item){ }}
+    <option value="{{item.id}}">{{ item.courseName }}</option>
+    {{#  }); }}
+</script>
+<!--上次章节 lastLearnNodeId-->
+<script id="lastLearnNodeIdList" type="text/html">
+    <option value="">请选择章节</option>
+    {{#  layui.each(d.data, function(index, item){ }}
+    <option value="{{item.id}}">{{ item.nodeName }}</option>
+    {{#  }); }}
+</script>
+
+
+<script src="/layuiadmin/layui/layui.js"></script>
+<script>
+    layui.config({
+        base: '/layuiadmin/' //静态资源所在路径
+    }).extend({
+        index: 'lib/index', //主入口模块
+        common:'common',
+        $tool:'tool'
+    }).use(['index', 'form','$tool','laydate','laytpl','common'], function(){
+
+        var $ = layui.$
+            ,$tool = layui.$tool
+            ,laydate = layui.laydate
+            ,admin = layui.admin
+            ,laytpl = layui.laytpl
+            ,form = layui.form;
+
+          //subtractionStudyLength addStudyLength subtractionMaxStudy maxLearnLocation
+        $("#subtractionLastStudy").click(function(){
+            var lastLearnLocation = $("#lastLearnLocation").val();
+            var num = formatSecondsText(lastLearnLocation);
+            if(num=='0'){//禁用按钮
+                $("#lastLearnLocation").val('0秒');
+            }else {
+                var s = (num-1).toString();
+                $("#lastLearnLocation").val(formatSeconds(s));
+            }
+        });
+        //加1
+        $("#addLastStudy").click(function(){
+            var lastLearnLocation = $("#lastLearnLocation").val();
+            var num = formatSecondsText(lastLearnLocation);
+            var s = (num+1).toString();
+            $("#lastLearnLocation").val(formatSeconds(s));
+        });
+
+
+        $("#subtractionStudyLength").click(function(){
+            var lastLearnLocation = $("#studyTimeLength").val();
+            var num = formatSecondsText(lastLearnLocation);
+            if(num=='0'){//禁用按钮
+                $("#studyTimeLength").val('0秒');
+            }else {
+                var s = (num-1).toString();
+                $("#studyTimeLength").val(formatSeconds(s));
+            }
+        });
+        //加1
+        $("#addStudyLength").click(function(){
+            var lastLearnLocation = $("#studyTimeLength").val();
+            var num = formatSecondsText(lastLearnLocation);
+            var s = (num+1).toString();
+            $("#studyTimeLength").val(formatSeconds(s));
+        });
+
+
+        function init(){
+            var hourSuiji = parseInt(Math.random() * 1800+1);
+
+            var x = Number($('#nodeLength').val());
+            $("#studyTimeLength").val(formatSeconds(x+hourSuiji));
+        }
+        init();
+        $('#suijiTime').click(function () {
+            //lastLearnLocation studyTimeLength maxLearnLocation
+            var hourSuiji = parseInt(Math.random() * 1800+1);
+
+            var x = Number($('#nodeLength').val());
+            $("#studyTimeLength").val(formatSeconds(x+hourSuiji));
+
+        })
+
+
+        //监听修改保存
+        form.on('submit(SocietyStudentAndNodeEdit-form-edit)', function(data){
+            if ($('#questionTime').val()==''){
+                return layer.msg('请填写答题时间!');
+            }
+            var loading = parent.layer.load(2,{
+                shade: [0.3, '#393D49'],
+                time: 100*1000
+            });
+            var field = data.field; //获取提交的字段
+            var index = parent.layer.getFrameIndex(window.name);//先得到当前iframe层的索引
+            field.lastLearnLocation = formatSecondsText($("#lastLearnLocation").val());
+            field.studyTimeLength = formatSecondsText($("#studyTimeLength").val());
+            field.maxLearnLocation = formatSecondsText($("#maxLearnLocation").val());
+            admin.req({
+                url:layui.setter.basePath +'/society/societyStudentAndNode/saveOrUpdateNew.jsn',
+                data:field,
+                method:"post",
+                success:function (data) {
+                    parent.layer.close(loading); //再执行关闭
+                    if(data.success){
+                        $("#flag",window.parent.document).val('0');
+                        parent.layui.table.reload('SocietySchoolCourseInfoList-list'); //重载表格
+                        parent.layer.close(index); //再执行关闭
+                    }else{
+                        $("#flag",window.parent.document).val('1');
+                        parent.layer.msg(data.errMsg, {
+                        });
+                    }
+                }
+            });
+        });
+
+        laydate.render({
+            elem: '#createTime'
+            ,type: 'datetime'
+            ,trigger: 'click'
+        });
+        laydate.render({
+            elem: '#finishTime'
+            ,type: 'datetime'
+            ,trigger: 'click'
+        });
+
+        laydate.render({
+            elem: '#questionTime'
+            ,type: 'datetime'
+            ,trigger: 'click'
+        });
+
+        function formatSeconds(value) {
+            var theTime = parseInt(value);// 需要转换的时间秒
+            var theTime1 = 0;// 分
+            var theTime2 = 0;// 小时
+            var theTime3 = 0;// 天
+            if(theTime > 60) {
+                theTime1 = parseInt(theTime/60);
+                theTime = parseInt(theTime%60);
+                if(theTime1 > 60) {
+                    theTime2 = parseInt(theTime1/60);
+                    theTime1 = parseInt(theTime1%60);
+                    if(theTime2 > 24){
+                        //大于24小时
+                        theTime3 = parseInt(theTime2/24);
+                        theTime2 = parseInt(theTime2%24);
+                    }
+                }
+            }
+            var result = '';
+            if(theTime > 0){
+                result = ""+parseInt(theTime)+"秒";
+            }
+            if(theTime1 > 0) {
+                result = ""+parseInt(theTime1)+"分钟"+result;
+            }
+            if(theTime2 > 0) {
+                result = ""+parseInt(theTime2)+"小时"+result;
+            }
+            if(theTime3 > 0) {
+                result = ""+parseInt(theTime3)+"天"+result;
+            }
+            return result;
+        }
+
+
+        function formatSecondsText(value) {
+            var msStr = value.replace(/[^0-9]+/g, ',');
+            var ms = msStr.split(",");
+
+            if(ms.length == 5){
+                var s = Number(ms[0] * 86400) + Number(ms[1] * 3600) + Number(ms[2] * 60) + Number(ms[3])
+                return s;
+            }
+            if(ms.length == 4){
+                var s =Number(ms[0] * 3600) + Number(ms[1] * 60) + Number(ms[2])
+                return s;
+            }
+            if(ms.length == 3){
+                var s = Number(ms[0] * 60) + Number(ms[1])
+                return s;
+            }
+            if(ms.length == 2){
+                var s = Number(ms[0])
+                return s;
+            }
+        }
+
+    })
+</script>
+</body>
+</html>

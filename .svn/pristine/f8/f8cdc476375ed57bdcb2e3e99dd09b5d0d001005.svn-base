@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<parent>
+		<groupId>com.edgedo.plant</groupId>
+		<artifactId>edgedo_plant</artifactId>
+		<version>1.0-RELEASE</version>
+	</parent>
+	<groupId>com.edgedo.society</groupId>
+	<artifactId>people-society-train-ht</artifactId>
+	<version>0.0.1-SNAPSHOT</version>
+	<packaging>jar</packaging>
+	<name>手机培训宝培训后台管理系统</name>
+	<description>手机培训宝培训后台管理系统</description>
+
+	<properties>
+	</properties>
+
+	<dependencies>
+		<dependency>
+			<groupId>com.edgedo.plant</groupId>
+			<artifactId>sys-mng-web</artifactId>
+			<version>1.0-RELEASE</version>
+		</dependency>
+		<dependency>
+			<groupId>com.edgedo.plant</groupId>
+			<artifactId>sys-mng-cms-web</artifactId>
+			<version>1.0-RELEASE</version>
+		</dependency>
+		<dependency>
+		    <groupId>com.belerweb</groupId>
+		    <artifactId>pinyin4j</artifactId>
+		    <version>2.5.0</version>
+		</dependency>
+		<dependency>
+			<groupId>com.edgedo.plant</groupId>
+			<artifactId>sys-tyiyun-oos-client-starter</artifactId>
+			<version>1.0-RELEASE</version>
+		</dependency>
+		<!--微信发送提醒消息依赖-->
+		<dependency>
+			<groupId>com.edgedo.plant</groupId>
+			<artifactId>sys-wx-tx-msg-client-starter</artifactId>
+			<version>1.0-RELEASE</version>
+		</dependency>
+		<dependency>
+			<groupId>com.edgedo.society</groupId>
+			<artifactId>people-society-train-dataenum</artifactId>
+			<version>1.0-SNAPSHOT</version>
+		</dependency>
+	</dependencies>
+
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.springframework.boot</groupId>
+				<artifactId>spring-boot-maven-plugin</artifactId>
+				<configuration>
+					<fork>true</fork>
+					<addResources>true</addResources>
+					<classifier>exec</classifier>
+				</configuration>
+			</plugin>
+
+		</plugins>
+	</build>
+
+
+</project>

@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.edgedo.society.mapper.SocietySchoolClassMapper" >
+   
+   
+    <resultMap id="BaseResultMap" type="com.edgedo.society.entity.SocietySchoolClass" >
+			<id column="ID" property="id"/>
+			<result column="CREATE_TIME" property="createTime"/>
+			<result column="CREATE_USER_ID" property="createUserId"/>
+			<result column="CREATE_USER_NAME" property="createUserName"/>
+			<result column="OWNER_SCHOOL_ID" property="ownerSchoolId"/>
+			<result column="OWNER_SCHOOL_NAME" property="ownerSchoolName"/>
+			<result column="OWNER_MAJOR_ID" property="ownerMajorId"/>
+			<result column="OWNER_MAJOR_NAME" property="ownerMajorName"/>
+			<result column="PERSON_IN_CHARGE" property="personInCharge"/>
+			<result column="PERSON_IN_CHARGE_PHONE_NUM" property="personInChargePhoneNum"/>
+			<result column="CLASS_NAME" property="className"/>
+			<result column="CLASS_START_TIME" property="classStartTime"/>
+			<result column="CLASS_END_TIME" property="classEndTime"/>
+			<result column="CLASS_PERSON_NUM" property="classPersonNum"/>
+			<result column="TOTAL_LESSONS" property="totalLessons"/>
+			<result column="FINISHED_PERSON_NUM" property="finishedPersonNum"/>
+			<result column="NOT_FINISHED_PERSON_NUM" property="notFinishedPersonNum"/>
+			<result column="DATA_STATE" property="dataState"/>
+    </resultMap>
+   
+    <resultMap id="BaseResultViewMap" type="com.edgedo.society.queryvo.SocietySchoolClassView" extends="BaseResultMap">
+    
+    </resultMap>
+  
+  
+  <!-- ******* 新增字段请修改这里  ******  -->
+  <sql id="Base_Column_List">
+	 ID, CREATE_TIME, CREATE_USER_ID, CREATE_USER_NAME, OWNER_SCHOOL_ID, OWNER_SCHOOL_NAME, OWNER_MAJOR_ID, OWNER_MAJOR_NAME, PERSON_IN_CHARGE, PERSON_IN_CHARGE_PHONE_NUM, CLASS_NAME, CLASS_START_TIME, CLASS_END_TIME, CLASS_PERSON_NUM, TOTAL_LESSONS, FINISHED_PERSON_NUM, NOT_FINISHED_PERSON_NUM, DATA_STATE
+  </sql>
+  
+  <!-- ******* 利用好这里的动态查询条件  ******  -->
+  <sql id="where">
+  	<where>
+		<if test='queryObj != null and  queryObj.id != null and @org.apache.commons.lang3.StringUtils@isNotEmpty(queryObj.id)'>
+		AND  ID = #{queryObj.id}
+		</if>
+		<if test='queryObj != null and  queryObj.createTime != null'>
+			AND  CREATE_TIME = #{queryObj.createTime}
+		</if>
+		<if test='queryObj != null and  queryObj.createUserId != null and @org.apache.commons.lang3.StringUtils@isNotEmpty(queryObj.createUserId)'>
+		AND  CREATE_USER_ID = #{queryObj.createUserId}
+		</if>
+		<if test='queryObj != null and  queryObj.createUserName != null and @org.apache.commons.lang3.StringUtils@isNotEmpty(queryObj.createUserName)'>
+		AND  CREATE_USER_NAME = #{queryObj.createUserName}
+		</if>
+		<if test='queryObj != null and  queryObj.ownerSchoolId != null and @org.apache.commons.lang3.StringUtils@isNotEmpty(queryObj.ownerSchoolId)'>
+		AND  OWNER_SCHOOL_ID = #{queryObj.ownerSchoolId}
+		</if>
+		<if test='queryObj != null and  queryObj.ownerSchoolName != null and @org.apache.commons.lang3.StringUtils@isNotEmpty(queryObj.ownerSchoolName)'>
+		AND  OWNER_SCHOOL_NAME = #{queryObj.ownerSchoolName}
+		</if>
+		<if test='queryObj != null and  queryObj.ownerMajorId != null and @org.apache.commons.lang3.StringUtils@isNotEmpty(queryObj.ownerMajorId)'>
+		AND  OWNER_MAJOR_ID = #{queryObj.ownerMajorId}
+		</if>
+		<if test='queryObj != null and  queryObj.ownerMajorName != null and @org.apache.commons.lang3.StringUtils@isNotEmpty(queryObj.ownerMajorName)'>
+		AND  OWNER_MAJOR_NAME = #{queryObj.ownerMajorName}
+		</if>
+		<if test='queryObj != null and  queryObj.personInCharge != null and @org.apache.commons.lang3.StringUtils@isNotEmpty(queryObj.personInCharge)'>
+		AND  PERSON_IN_CHARGE = #{queryObj.personInCharge}
+		</if>
+		<if test='queryObj != null and  queryObj.personInChargePhoneNum != null and @org.apache.commons.lang3.StringUtils@isNotEmpty(queryObj.personInChargePhoneNum)'>
+		AND  PERSON_IN_CHARGE_PHONE_NUM = #{queryObj.personInChargePhoneNum}
+		</if>
+		<if test='queryObj != null and  queryObj.className != null and @org.apache.commons.lang3.StringUtils@isNotEmpty(queryObj.className)'>
+		AND  CLASS_NAME = #{queryObj.className}
+		</if>
+		<if test='queryObj != null and  queryObj.classStartTime != null'>
+			AND  CLASS_START_TIME = #{queryObj.classStartTime}
+		</if>
+		<if test='queryObj != null and  queryObj.classEndTime != null'>
+			AND  CLASS_END_TIME = #{queryObj.classEndTime}
+		</if>
+		<if test='queryObj != null and  queryObj.classPersonNum != null and @org.apache.commons.lang3.StringUtils@isNotEmpty(queryObj.classPersonNum)'>
+			AND  CLASS_PERSON_NUM = #{queryObj.classPersonNum}
+		</if>
+		<if test='queryObj != null and  queryObj.totalLessons != null and @org.apache.commons.lang3.StringUtils@isNotEmpty(queryObj.totalLessons)'>
+			AND  TOTAL_LESSONS = #{queryObj.totalLessons}
+		</if>
+		<if test='queryObj != null and  queryObj.finishedPersonNum != null and @org.apache.commons.lang3.StringUtils@isNotEmpty(queryObj.finishedPersonNum)'>
+			AND  FINISHED_PERSON_NUM = #{queryObj.finishedPersonNum}
+		</if>
+		<if test='queryObj != null and  queryObj.notFinishedPersonNum != null and @org.apache.commons.lang3.StringUtils@isNotEmpty(queryObj.notFinishedPersonNum)'>
+			AND  NOT_FINISHED_PERSON_NUM = #{queryObj.notFinishedPersonNum}
+		</if>
+		<if test='queryObj != null and  queryObj.dataState != null and @org.apache.commons.lang3.StringUtils@isNotEmpty(queryObj.dataState)'>
+		AND  DATA_STATE = #{queryObj.dataState}
+		</if>
+  	</where>
+  	
+  </sql>
+  
+  <!-- ******* 排序判断  ******  
+  <sql id="orderBy">
+  	<if test="orderBy != null and orderBy!= '' ">
+  		order by  ${orderBy}
+  	</if>
+  </sql>-->
+  
+  
+  <!-- 分页条件查询  -->
+  <select id="listPage" parameterType="com.edgedo.society.queryvo.SocietySchoolClassQuery" resultMap="BaseResultViewMap">
+  		select <include refid="Base_Column_List"/> from society_school_class 
+  		<include refid="where"/>
+  </select>
+  
+   <!-- 不分页条件查询  -->
+  <select id="listByObj" parameterType="com.edgedo.society.queryvo.SocietySchoolClassQuery" resultMap="BaseResultViewMap">
+  		select <include refid="Base_Column_List"/> from society_school_class 
+  		<include refid="where"/>
+  </select>
+
+	<!-- 根据学校查询所有的班级 -->
+	<select id="selectAllClassBySchool" parameterType="string" resultMap="BaseResultViewMap">
+		select <include refid="Base_Column_List"/> from society_school_class
+		where DATA_STATE='1'
+		and OWNER_SCHOOL_ID=#{ownerSchoolId}
+	</select>
+  
+  
+</mapper>

@@ -1,0 +1,464 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>标题</title>
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=0">
+    <link rel="stylesheet" href="/layuiadmin/layui/css/layui.css" media="all">
+    <link rel="stylesheet" href="/layuiadmin/style/admin.css" media="all">
+    <script src="https://cdn.bootcss.com/jspdf/1.5.3/jspdf.debug.js"></script>
+    <script src="https://cdn.bootcss.com/html2canvas/0.5.0-beta4/html2canvas.min.js"></script>
+    <style type="text/css">
+        .layui-table-cell {
+            padding: 0 5px;
+        }
+        .layui-table-body{overflow-x: hidden;}
+    </style>
+</head>
+<body>
+
+<div class="layui-fluid">
+    <div class="layui-card">
+        <div class="layui-form layui-card-header layuiadmin-card-header-auto">
+            <div class="layui-form-item">
+                <div class="layui-inline">
+                    <label class="layui-form-label">学员姓名</label>
+                    <div class="layui-input-inline">
+                        <input type="text" id="studentName" name="queryObj.studentName" placeholder="请输入学员姓名" autocomplete="off" class="layui-input">
+                    </div>
+                </div>
+                <div class="layui-inline">
+                    <label class="layui-form-label">身份证号</label>
+                    <div class="layui-input-inline">
+                        <input type="text" id="studentIdCardNum" name="queryObj.studentIdCardNum" placeholder="请输入身份证号" autocomplete="off" class="layui-input">
+                    </div>
+                </div>
+                <div class="layui-inline">
+                    <label class="layui-form-label">档案编号</label>
+                    <div class="layui-input-inline">
+                        <input type="text" id="archivesCode" name="queryObj.archivesCode" placeholder="请输入档案编号" autocomplete="off" class="layui-input">
+                    </div>
+                </div>
+                <div class="layui-inline">
+                    <button class="layui-btn layuiadmin-btn-comm layui-btn-sm" data-type="reload" lay-submit lay-filter="SocietyStudentArchivesList-search">
+                        <i class="layui-icon layui-icon-search layuiadmin-button-btn"></i>查询
+                    </button>
+                </div>
+                <!--<div class="layui-inline ">
+                    <button type="button" class="layui-btn layuiadmin-btn-comm layui-btn-sm" onclick="exportData()">
+                        <i class="layui-icon layui-icon-export layuiadmin-button-btn"></i>导出
+                    </button>
+                </div>
+                <div class="layui-inline ">
+                    <button type="button" class="layui-btn layuiadmin-btn-comm layui-btn-sm" onclick="uploadStuCer()">
+                        <i class="layui-icon layui-icon-download-circle layuiadmin-button-btn"></i>下载学员证书
+                    </button>
+                </div>-->
+            </div>
+        </div>
+        <div class="layui-card-body">
+            <!--<div style="padding-bottom: 10px;">
+                <button class="layui-btn layuiadmin-btn-comm  layui-btn-sm" data-type="batchdel">删除</button>
+                <button class="layui-btn layuiadmin-btn-comm  layui-btn-sm" data-type="add">添加</button>
+            </div>-->
+            <table id="SocietyStudentArchivesList-list" lay-filter="SocietyStudentArchivesList-list"></table>
+            <script type="text/html" id="table-SocietyStudentArchivesList-list">
+                <a class="layui-btn layui-btn-normal layui-btn-xs" lay-event="look">查看档案</a>
+<!--                <a class="layui-btn layui-btn-normal layui-btn-xs" lay-event="faceRec">人脸记录</a>-->
+                <!--<a class="layui-btn layui-btn-normal layui-btn-xs" lay-event="edit"><i class="layui-icon layui-icon-edit"></i>编辑</a>
+                <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del"><i class="layui-icon layui-icon-delete"></i>删除</a>-->
+            </script>
+        </div>
+    </div>
+</div>
+<script src="/layuiadmin/layui/layui.js"></script>
+<script>
+    layui.config({
+        base: '/layuiadmin/' //静态资源所在路径
+    }).extend({
+        index:'lib/index',
+        common:'common'
+    }).use(['index','table', 'form','common','excel'], function(exports){
+        var $ = layui.$
+            ,table = layui.table
+            ,common = layui.common
+            ,admin = layui.admin
+            ,excel = layui.excel
+            ,form = layui.form;
+
+        //查询
+        form.on('submit(SocietyStudentArchivesList-search)', function(data){
+            var field = data.field;
+
+            //执行重载
+            table.reload('SocietyStudentArchivesList-list', {
+                where: field,
+            });
+        });
+
+        /*
+        * 定义表格
+        * */
+        defineTable = function () {
+            var headers = layui.admin.getTokenHeader();
+            table.render({
+                elem: '#SocietyStudentArchivesList-list' //指定原始表格的选择器（id选择器）
+                ,url:layui.setter.basePath +'/society/societySchoolClassAndStudent/listpageArchives.jsn' //模拟接口
+                ,headers:headers
+                ,method: 'post'
+                ,parseData: function(res){ //res 即为原始返回的数据
+                    return {
+                        "code": res.success, //解析接口状态
+                        "msg": res.errMsg, //解析提示文本
+                        "count": res.totalCount, //解析数据长度
+                        "data": res.list //解析数据列表
+                    };
+                }
+                ,response: {
+                    statusCode: true //规定成功的状态码，默认：0
+                }
+                ,cols: [[
+                    {type: 'numbers', fixed: 'left',title: '序号'}
+                    ,{field: 'studentName',align: 'center', width: '10%', title: '学员姓名'}
+                    ,{field: 'studentIdCardNum',align: 'center', width: '15%', title: '身份证号'}
+                    ,{field: 'ownerMajorName',align: 'center', width: '15%', title: '专业'}
+                    ,{field: 'courseName',align: 'center', width: '15%', title: '课程'}
+                    ,{field: 'archivesCode',align: 'center', width: '15%', title: '档案编号'}
+                    ,{title: '操作',  align: 'center', fixed: 'right', toolbar: '#table-SocietyStudentArchivesList-list'}
+                ]]
+                ,autoSort: false
+                ,page: true
+                ,limit: 50
+                ,limits: [10, 20, 30,40,50]
+                ,text: {
+                    none: '暂无相关数据'
+                }
+            });
+
+            //为toolbar添加事件响应
+            table.on('tool(SocietyStudentArchivesList-list)', function(obj){ //注：tool是工具条事件名，test是table原始容器的属性 lay-filter="对应的值"
+                /*var data = obj.data;*///获得当前行数据
+                //区分事件
+                switch(obj.event){
+                    case 'del':
+                        deleteVo(obj);
+                        break;
+                    case 'edit':
+                        editVo(obj);
+                        break;
+                    case 'look':
+                        lookVo(obj);
+                        break;
+                    case 'faceRec':
+                        faceRec(obj);
+                        break;
+                };
+            });
+        }
+        defineTable();
+        //下载学员证书
+        uploadStuCer = function(){
+            var html = '<html><body><div id="uploadId" >';
+            layer.confirm('确定下载吗？', function(index){
+                //1.根据条件吧所有的学员证书查出来
+                admin.req({
+                    url:layui.setter.basePath +'/society/societyStudentCertificate/listByObjForSchool.jsn',
+                    data:{
+                        'queryObj.studentIdCardNum':$('#studentIdCardNum').val()
+                        ,'queryObj.studentName':$('#studentName').val()
+                    },
+                    method:"post",
+                    success:function (data) {
+                        var list = data.list;
+                        for(var i = 0;i<list.length;i++){
+                            //2.得到的list  遍历  拼接html
+                            html = html + '<div class="layui-row" style="border: 1px solid #cccccc;border-radius: 5px;">\n' +
+                                '        <div class="layui-col-xs12 layui-col-sm12 layui-col-md12" style="text-align: center;letter-spacing: 15px;margin-top: 35px">\n' +
+                                '            <h1>结课证书</h1>\n' +
+                                '        </div>\n' +
+                                '        <div class="layui-col-xs12 layui-col-sm12 layui-col-md12" style="padding-left: 60px;\n' +
+                                '    margin-top: 35px;\n' +
+                                '    letter-spacing: 3px;\n' +
+                                '    line-height: 45px;\n' +
+                                '    padding: 0 60px;">\n' +
+                                '            <h3 style="text-indent: 2em;">\n' +
+                                '                <span style="font-size: 20px;" id="studentName">'+list[i].studentName+'</span> 同志在<span id="schoolName">'+list[i].ownerSchoolName+'</span>完成<span id="courseName">'+list[i].courseName+'</span>课程，经考核，成绩合格，特发此证。\n' +
+                                '            </h3>\n' +
+                                '        </div>\n' +
+                                '        <div class="layui-col-xs6 layui-col-sm6 layui-col-md6" style="\n' +
+                                '         margin-bottom: 60px;\n' +
+                                '        padding-left: 60px;\n' +
+                                '        margin-top: 40px;">\n' +
+                                '            <h3>\n' +
+                                '                证书编号：<span id="certCode">'+list[i].certificateCode+'</span>\n' +
+                                '            </h3>\n' +
+                                '        </div>\n' +
+                                '        <div class="layui-col-xs6 layui-col-sm6 layui-col-md6" style="    letter-spacing: 1px;\n' +
+                                '    margin-bottom: 60px;\n' +
+                                '    padding-right: 100px;\n' +
+                                '    text-align: right;\n' +
+                                '    padding-left: 60px;\n' +
+                                '    margin-top: 40px;">\n' +
+                                '            <h3>\n' +
+                                '              <span id="sendTime">'+common.DateFormat(list[i].certificateTime,"yyyy年MM月dd日")+'</span>\n' +
+                                '            </h3>\n' +
+                                '            <img style="opacity: 0.8;\n' +
+                                '    transform: rotate(-45deg);\n' +
+                                '    margin-right: 15px;\n' +
+                                '    height: 120px;\n' +
+                                '    border: none;\n' +
+                                '    margin-top: -60px;" src="/layuiadmin/images/hege.png">\n' +
+                                '        </div>\n' +
+                                '    \n' +
+                                '    </div> <br/>'
+                        }
+                        html = html + '</div></body></html>';
+                        layer.open({
+                            title: '下载证书'
+                            ,content: html
+                            ,area: ['650px', '500px']
+                            ,btn: ['下载', '关闭']
+                            ,yes: function(index, layero){
+                                //3.调用生成pdf方法
+                                getPDF();
+
+                                parent.layer.msg('下载成功', {
+                                    icon: 1
+                                });
+                                layer.closeAll();
+                            }
+                            ,btn2: function(index, layero){
+                                parent.layer.close(index);
+                            }
+                        });
+                    }
+                });
+
+            });
+        }
+
+
+        function getPDF(){//document.getElementById("uploadId").scrollWidth
+            window.pageYoffset = 0,
+                document.documentElement.scrollTop = 0;
+            document.body.scrollTop = 0;
+            let uploadId = $("#uploadId");
+            // let copyDom = targetDom.clone();
+            let copyDom = $("<div/>");
+            copyDom.addClass('super');
+            copyDom.width(uploadId.width() + "px");
+            copyDom.height(uploadId.height() + "px");
+            $('body').append(copyDom);
+            let cont = document.getElementById("uploadId");
+            html2canvas(uploadId, {
+                dpi: 172,//导出pdf清晰度
+                allowTaint: true,
+                height:cont.offsetHeight,
+                onrendered: function (canvas) {
+                    var contentWidth = canvas.width;
+                    var contentHeight = canvas.height;
+
+                    //一页pdf显示html页面生成的canvas高度;
+                    var pageHeight = contentWidth / 592.28 * 841.89;
+                    //未生成pdf的html页面高度
+                    var leftHeight = contentHeight;
+                    //pdf页面偏移
+                    var position = 0;
+                    //html页面生成的canvas在pdf中图片的宽高（a4纸的尺寸[595.28,841.89]）
+                    var imgWidth = 595.28;
+                    var imgHeight = 592.28 / contentWidth * contentHeight;
+
+                    var pageData = canvas.toDataURL('image/jpeg', 1.0);
+                    var pdf = new jsPDF('', 'pt', 'a4');
+
+                    //有两个高度需要区分，一个是html页面的实际高度，和生成pdf的页面高度(841.89)
+                    //当内容未超过pdf一页显示的范围，无需分页
+                    debugger
+                    if (leftHeight < pageHeight) {
+                        pdf.addImage(pageData, 'JPEG', 0, 0, imgWidth, imgHeight);
+                    } else {
+                        while (leftHeight > 0) {
+                            pdf.addImage(pageData, 'JPEG', 0, position, imgWidth, imgHeight)
+                            leftHeight -= pageHeight;
+                            position -= 841.89;
+                            //避免添加空白页
+                            if (leftHeight > 0) {
+                                pdf.addPage();
+                            }
+                        }
+                    }
+                    pdf.save('学员证书.pdf');
+                },
+                //背景设为白色（默认为黑色）
+                background: "#fff"
+            });
+
+        }
+
+        //查看人脸记录
+        faceRec = function (obj) {
+            admin.req({
+                url:layui.setter.basePath +'/society/societyStudentAndCourse/selectBySchoolIdAndClassIdAndCourseId.jsn',
+                data:{
+                    'schoolId':obj.data.ownerSchoolId,
+                    'classId':obj.data.classId,
+                    'courseId':obj.data.courseId,
+                    'studentId':obj.data.studentId
+                },
+                method:"post",
+                success:function (data) {
+                    layer.open({
+                        type: 2
+                        ,title: '人脸记录'
+                        ,content: 'SocietyStudentStudyProcessFaceList.html?stuCourseId='+data.data.id
+                        ,maxmin: true
+                        ,area: ['900px', '550px']
+                        ,success: function(layero, index){
+
+                        }
+                        ,yes: function(index, layero){
+
+                        }
+                    });
+                }
+            });
+
+        }
+
+        //Excel导出
+        exportData = function () {
+            layer.confirm('确定导出吗？', function(index){
+                exportDataDetail();
+            });
+        }
+
+        exportDataDetail = function () {
+            layer.open({
+                title: '提示'
+                ,content: '正在导出，请稍后！！！'
+                ,id:'id_alert'
+                ,btn:[]
+            });
+            admin.req({
+                url:layui.setter.basePath +'/society/societyStudentCertificate/listByObjForSchool.jsn',
+                data:{
+                    'queryObj.studentName':$('input[name="queryObj.studentName"]').val()
+                    ,'queryObj.studentIdCardNum':$('input[name="queryObj.studentIdCardNum"]').val()
+                },
+                method:"post",
+                success:function (data) {
+                    if(data.list&&data.list.length>0){
+                        // 1. 数组头部新增表头
+                        var titles = {};
+                        var fields = [];
+                        var str = ["","A","B","C","D","E","F","G","H","I","J","K","L","M","N","O","P","Q","R","S","T","U","V","W","X","Y","Z"];
+                        $('div[lay-id="SocietyStudentCertificate-list"]').find("th").each(function(){
+                            var field = $(this).attr('data-field');
+                            var title = $(this).find('span').html();
+                            if(field&&field.length>2){
+                                titles[field] = title;
+                                fields.push(field);
+                            }
+                        });
+                        data.list.unshift(titles);
+                        // 2. 如果需要调整顺序，请执行梳理函数
+                        var dataE = excel.filterExportData(data.list, fields);
+                        // 3. 执行导出函数，系统会弹出弹框
+
+                        //标题行样式
+                        excel.setExportCellStyle(dataE, 'A1:'+str[fields.length]+'1', {
+                            s: {
+                                fill: { bgColor: { indexed: 64 }, fgColor: { rgb: "C0C0C0" } },
+                                alignment: {
+                                    horizontal: 'center',
+                                    vertical: 'center'
+                                },
+                                font:{
+                                    name:'微软雅黑',
+                                    sz: '10',
+                                    bold: true
+                                },
+                                border:{
+                                    top: {style: 'thin', color: {rgb: 'FF000000'}},
+                                    bottom: {style: 'thin', color: {rgb: 'FF000000'}},
+                                    left: {style: 'thin', color: {rgb: 'FF000000'}},
+                                    right: {style: 'thin', color: {rgb: 'FF000000'}}
+                                }
+                            }
+                        }, function(cell, newCell, row, config, currentRow, currentCol, fieldKey) {
+                            // 回调参数，cell:原有数据，newCell:根据批量设置规则自动生成的样式，row:所在行数据，config:传入的配置,currentRow:当前行索引,currentCol:当前列索引，fieldKey:当前字段索引
+                            return newCell;
+                        } );
+                        //数据行样式
+                        excel.setExportCellStyle(dataE, 'A2:'+str[fields.length]+dataE.length, {
+                            s: {
+                                alignment: {
+                                    horizontal: 'center',
+                                    vertical: 'center'
+                                },
+                                font:{
+                                    name:'微软雅黑',
+                                    sz: '10'
+                                },
+                                border:{
+                                    top: {style: 'thin', color: {rgb: 'FF000000'}},
+                                    bottom: {style: 'thin', color: {rgb: 'FF000000'}},
+                                    left: {style: 'thin', color: {rgb: 'FF000000'}},
+                                    right: {style: 'thin', color: {rgb: 'FF000000'}}
+                                }
+                            }
+                        }, function(cell, newCell, row, config, currentRow, currentCol, fieldKey) {
+                            // 回调参数，cell:原有数据，newCell:根据批量设置规则自动生成的样式，row:所在行数据，config:传入的配置,currentRow:当前行索引,currentCol:当前列索引，fieldKey:当前字段索引
+                            return newCell;
+                        } );
+                        // 设置列宽
+                        var colConf = excel.makeColConfig({
+                            'B': 110,
+                            'Z': 80
+                        }, 80);
+                        //导出
+                        excel.exportExcel({
+                            sheet1: dataE
+                        }, '学员证书统计_'+ new Date().toLocaleString() +'.xlsx', 'xlsx', {
+                            extend: {
+                                '!cols': colConf
+                            }
+                        });
+                        $('#id_alert').parent().find('a[class="layui-layer-btn0"]').click()
+                        layer.msg('导出成功！');
+                    }else{
+                        $('#id_alert').parent().find('a[class="layui-layer-btn0"]').click()
+                        layer.msg('无数据！');
+                    }
+
+                },
+            });
+        }
+
+        //查看
+        lookVo = function (obj) {
+            newOpen("views/society/schooladmin/studentCertificateSelect/SocietyStudentStudyPDF.html", obj.data);
+        }
+
+        function newOpen(url,params) {
+            var pStr = '';
+            for(var p in params){
+                if(pStr.indexOf("?")==-1){
+                    pStr += "?"+p+"="+encodeURI(params[p]);
+                }else {
+                    pStr += "&"+p+"="+encodeURI(params[p]);
+                }
+            }
+            top.layui.index.openTabsPage(url+pStr,"学员学习档案");
+        }
+    });
+
+
+
+
+</script>
+</body>
+</html>
+

@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.edgedo.society.mapper.SocietyStudentTestPaperQuestionMapper" >
+   
+   
+    <resultMap id="BaseResultMap" type="com.edgedo.society.entity.SocietyStudentTestPaperQuestion" >
+			<id column="ID" property="id"/>
+			<result column="CREATE_TIME" property="createTime"/>
+			<result column="CREATE_USER_ID" property="createUserId"/>
+			<result column="CREATE_USER_NAME" property="createUserName"/>
+			<result column="STUDENT_ID" property="studentId"/>
+			<result column="OWNER_SCHOOL_ID" property="ownerSchoolId"/>
+			<result column="OWNER_SCHOOL_NAME" property="ownerSchoolName"/>
+			<result column="OWNER_COURSE_ID" property="ownerCourseId"/>
+			<result column="OWNER_COURSE_NAME" property="ownerCourseName"/>
+			<result column="OWNER_TEST_PAPER_ID" property="ownerTestPaperId"/>
+			<result column="OWNER_TEST_PAPER_NAME" property="ownerTestPaperName"/>
+			<result column="TEST_PAPER_QUESTION_ID" property="testPaperQuestionId"/>
+			<result column="TEST_PAPER_QUESTION_NAME" property="testPaperQuestionName"/>
+			<result column="TEST_PAPER_QUESTION_TYPE" property="testPaperQuestionType"/>
+			<result column="TEST_PAPER_QUESTION_SCORE" property="testPaperQuestionScore"/>
+			<result column="TEST_PAPER_QUESTION_ANALYSIS" property="testPaperQuestionAnalysis"/>
+			<result column="GET_SCORE" property="getScore"/>
+			<result column="ORDER_NUM" property="orderNum"/>
+			<result column="DATA_STATE" property="dataState"/>
+    </resultMap>
+   
+    <resultMap id="BaseResultViewMap" type="com.edgedo.society.queryvo.SocietyStudentTestPaperQuestionView" extends="BaseResultMap">
+    
+    </resultMap>
+  
+  
+  <!-- ******* 新增字段请修改这里  ******  -->
+  <sql id="Base_Column_List">
+	 ID, CREATE_TIME, CREATE_USER_ID, CREATE_USER_NAME, STUDENT_ID, OWNER_SCHOOL_ID, OWNER_SCHOOL_NAME, OWNER_COURSE_ID, OWNER_COURSE_NAME, OWNER_TEST_PAPER_ID, OWNER_TEST_PAPER_NAME, TEST_PAPER_QUESTION_ID, TEST_PAPER_QUESTION_NAME, TEST_PAPER_QUESTION_TYPE, TEST_PAPER_QUESTION_SCORE, TEST_PAPER_QUESTION_ANALYSIS, GET_SCORE, ORDER_NUM, DATA_STATE
+  </sql>
+  
+  <!-- ******* 利用好这里的动态查询条件  ******  -->
+  <sql id="where">
+  	<where>
+		DATA_STATE='1'
+		<if test='queryObj != null and  queryObj.studentId != null and queryObj.studentId != ""'>
+		AND  STUDENT_ID = #{queryObj.studentId}
+		</if>
+		<if test='queryObj != null and  queryObj.ownerSchoolId != null and queryObj.ownerSchoolId != ""'>
+		AND  OWNER_SCHOOL_ID = #{queryObj.ownerSchoolId}
+		</if>
+		<if test='queryObj != null and  queryObj.ownerCourseId != null and queryObj.ownerCourseId != ""'>
+		AND  OWNER_COURSE_ID = #{queryObj.ownerCourseId}
+		</if>
+		<if test='queryObj != null and  queryObj.ownerTestPaperId != null and queryObj.ownerTestPaperId != ""'>
+		AND  OWNER_TEST_PAPER_ID = #{queryObj.ownerTestPaperId}
+		</if>
+  	</where>
+  	
+  </sql>
+
+  <!-- ******* 排序判断  ******  
+  <sql id="orderBy">
+  	<if test="orderBy != null and orderBy!= '' ">
+  		order by  ${orderBy}
+  	</if>
+  </sql>-->
+  
+  
+  <!-- 分页条件查询  -->
+  <select id="listPage" parameterType="com.edgedo.society.queryvo.SocietyStudentTestPaperQuestionQuery" resultMap="BaseResultViewMap">
+  		select <include refid="Base_Column_List"/> from society_student_test_paper_question 
+  		<include refid="where"/>
+  </select>
+  
+   <!-- 不分页条件查询  -->
+  <select id="listByObj" parameterType="com.edgedo.society.queryvo.SocietyStudentTestPaperQuestionQuery" resultMap="BaseResultViewMap">
+  		select <include refid="Base_Column_List"/> from society_student_test_paper_question 
+  		<include refid="where"/>
+  </select>
+
+<!--	查出学员考试题目表所有已经答完的题目-->
+	<select id="selectByStudentTestPaperComplete" parameterType="map" resultMap="BaseResultViewMap">
+		select <include refid="Base_Column_List"/> from society_student_test_paper_question
+		where OWNER_SCHOOL_ID = #{ownerSchoolId} AND  OWNER_COURSE_ID = #{ownerCourseId}
+		AND  OWNER_TEST_PAPER_ID = #{ownerTestPaperId} AND  STUDENT_ID = #{studentId} and DATA_STATE='1'
+	</select>
+
+	<!--根据学员id和试题id查询-->
+	<select id="loadByStuIdAndQuestionId" parameterType="string" resultMap="BaseResultViewMap">
+		select <include refid="Base_Column_List"/> from society_student_test_paper_question
+		where OWNER_TEST_PAPER_ID = #{testPaperId}
+		AND  STUDENT_ID = #{studentId}
+		AND  TEST_PAPER_QUESTION_ID = #{questionId}
+		and DATA_STATE='1'
+	</select>
+	<!--统计答对题目个数-->
+	<select id="countRightQuestionNumByType" parameterType="string" resultType="int">
+		select count(1) from society_student_test_paper_question
+		where OWNER_TEST_PAPER_ID = #{testPaperId}
+		AND  STUDENT_ID = #{studentId}
+		AND  TEST_PAPER_QUESTION_TYPE = #{type}
+		and DATA_STATE='1'
+		and GET_SCORE > 0
+	</select>
+
+	<delete id="deleteByStuId" parameterType="string">
+		delete from society_student_test_paper_question where STUDENT_ID=#{id}
+	</delete>
+
+</mapper>
